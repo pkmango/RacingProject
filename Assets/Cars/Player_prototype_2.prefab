@@ -84,7 +84,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardForce: 60
   backForce: -60
+  rotationSpeed: 0
   jumpForce: 300
+  wheelTag: Wheel
+  maxSpeed: 0
+  wheelTurningSpeed: 0
+  isCollision: 0
 --- !u!1 &1359148393998869411
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,17 +4,36 @@ public class PlayerController : MonoBehaviour
 {
     public float forwardForce;
     public float backForce;
-    public float torque;
+    public float rotationSpeed;
     public float jumpForce;
     public string wheelTag = "Wheel";
+    public float maxSpeed;
+    public float wheelTurningSpeed;
+    public float flyTorque; // Крутящий момент в полете
+    private bool addedFlyTorque = false; // Крутящий момент в полете добавлен?
+
+    private float tiresFrictionDelta;
+    private float currentRotationSpeed = 0f;
+    private bool firstAcceleration = true;
+    private bool moveForward = false;
+
+    public float drag = 0.5f;
+    public float dragMax = 1.5f;
+    private float dragDelta;
 
     private Rigidbody rb;
     [SerializeField] private bool isCollision = false;
+    private Vector3 spawnPoint;
 
     void Start()
     {
+        spawnPoint = gameObject.transform.position;
+
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
+
+        rb.drag = drag;
+        dragDelta = dragMax - drag;
     }
 
     void Update()
@@ -26,6 +45,14 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(0f, jumpForce, 0f);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            gameObject.transform.position = spawnPoint;
+            gameObject.transform.rotation = Quaternion.identity;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
         
     }
 
@@ -33,30 +60,135 @@ public class PlayerController : MonoBehaviour
     {
         if (isCollision)
         {
-            if (Input.GetKey(KeyCode.W))
+            addedFlyTorque = false;
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0f, rb.angularVelocity.z);
+
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
             {
-                rb.AddRelativeForce(forwardForce, 0f, 0f);
+                if (firstAcceleration)
+                {
+                    currentRotationSpeed = 0f;
+                    firstAcceleration = false;
+                }
+
+                if (Input.GetKey(KeyCode.W))
+                {
+                    moveForward = true;
+                    rb.AddRelativeForce(forwardForce, 0f, 0f);
+                }
+                else
+                {
+                    moveForward = false;
+                    rb.AddRelativeForce(backForce, 0f, 0f);
+                } 
             }
-            if (Input.GetKey(KeyCode.S))
+            else
             {
-                rb.AddRelativeForce(backForce, 0f, 0f);
+                firstAcceleration = true;
             }
-            if (Input.GetKey(KeyCode.D))
+
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
             {
-                rb.AddRelativeTorque(0f, torque, 0f);
+                TurningWheels();
+
+                if (Input.GetKey(KeyCode.D))
+                    PlayerRotation(currentRotationSpeed);
+                else
+                    PlayerRotation(-currentRotationSpeed);
             }
-            if (Input.GetKey(KeyCode.A))
+            else
             {
-                rb.AddRelativeTorque(0f, -torque, 0f);
+                currentRotationSpeed = 0f;
             }
         }
-        
+        else
+        {
+            if (!addedFlyTorque)
+            {
+                FlyBehavior();
+                addedFlyTorque = true;
+            }
+        }
+
+        if (rb.velocity.magnitude != 0f)
+            ChangeDrag();
+
+        Debug.Log(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
     }
 
-    //void OnCollisionEnter(Collision collision)
-    //{
-    //    isCollision = true;
-    //}
+    void PlayerRotation(float _rotationSpeed)
+    {
+        Vector3 newRotationAngle = rb.rotation.eulerAngles;
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            newRotationAngle += new Vector3(0f, _rotationSpeed, 0f);
+        }else if (Input.GetKey(KeyCode.S))
+        {
+            newRotationAngle -= new Vector3(0f, _rotationSpeed, 0f);
+        }else if (rb.velocity.magnitude != 0f)
+        {
+            float speedPercent = rb.velocity.magnitude / (maxSpeed * 0.01f) / 100f;
+
+            if (moveForward)
+                newRotationAngle += new Vector3(0f, _rotationSpeed * speedPercent, 0f);
+            else
+                newRotationAngle -= new Vector3(0f, _rotationSpeed * speedPercent, 0f);
+        }
+
+        rb.rotation = Quaternion.Euler(newRotationAngle);
+    }
+
+    void ChangeDrag()
+    {
+        float velocityAngle = Mathf.Abs(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
+
+        if (velocityAngle <= 90)
+            rb.drag = drag + velocityAngle * dragDelta / 90f;
+        else
+            rb.drag = drag + (180 - velocityAngle) * dragDelta / 90f;
+    }
+
+    void TurningWheels()
+    {
+        if (currentRotationSpeed < rotationSpeed)
+        {
+            currentRotationSpeed += wheelTurningSpeed;
+        }
+        else
+        {
+            currentRotationSpeed = rotationSpeed;
+        }
+    }
+
+    float VelocityAngle()
+    {
+        float velocityAngle = 0f;
+        float magnitudeXZ = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
+
+        if (magnitudeXZ != 0f)
+        {
+            if (rb.velocity.z > 0f)
+                velocityAngle = 360f - Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
+            else
+                velocityAngle = +Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
+        }
+
+        return velocityAngle;
+    }
+
+    void FlyBehavior()
+    {
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S))
+        {
+            rb.AddRelativeTorque(0f, -flyTorque, 0f);
+        }
+
+        if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.S))
+        {
+            rb.AddRelativeTorque(0f, flyTorque, 0f);
+        }
+    }
 
     void OnCollisionExit(Collision collision)
     {
@@ -65,20 +197,17 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        //Collider myCollider = collision.contacts[0].thisCollider;
-        //Debug.Log(myCollider.gameObject.tag);
+        int numberOfContacts = 0;
 
-        //Debug.Log(collision.GetContact(0).thisCollider.tag);
-
-        if (collision.GetContact(0).thisCollider.tag == wheelTag)
+        for (int i = 0; i < collision.contactCount; i++)
         {
-            isCollision = true;
-        }
-        else
-        {
-            isCollision = false;
-        }
+            if (collision.GetContact(0).thisCollider.tag == wheelTag)
+            {
+                numberOfContacts++;
 
-        
+                if (numberOfContacts > 1)
+                    isCollision = true;
+            }
+        }  
     }
 }
