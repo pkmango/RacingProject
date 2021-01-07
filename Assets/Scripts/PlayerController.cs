@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
         if (rb.velocity.magnitude != 0f)
             ChangeDrag();
 
-        Debug.Log(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
+        //Debug.Log(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
     }
 
     void PlayerRotation(float _rotationSpeed)
@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour
             if (rb.velocity.z > 0f)
                 velocityAngle = 360f - Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
             else
-                velocityAngle = +Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
+                velocityAngle = Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
         }
 
         return velocityAngle;
