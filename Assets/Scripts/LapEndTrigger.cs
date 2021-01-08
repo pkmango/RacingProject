@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class LapEndTrigger : MonoBehaviour
 {
-    public int maxCheckPointNumber;
+    public int maxCheckPointNumber; // Наибольший номер чекопоинта
 
     private GameController gameController;
-    private int checkPointNumber = 0;
+    private int checkPointNumber = 0; // Считаем этот коллайдер чекпоинтом с номером 0
 
     void Start()
     {
@@ -34,7 +34,7 @@ public class LapEndTrigger : MonoBehaviour
             }
 
             gameController.checkPointNumber = checkPointNumber;
-            gameController.checkPointNumberText.text = checkPointNumber.ToString();
+            gameController.checkPointNumberText.text = "CP: " + checkPointNumber.ToString();
         }
     }
 }

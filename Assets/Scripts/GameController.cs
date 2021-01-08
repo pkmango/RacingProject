@@ -8,30 +8,31 @@ public class GameController : MonoBehaviour
 {
     public Text lapTimeText; // Текстовое поле для отображения времени круга
     public Text checkPointNumberText; // Текстовое поле для отображения номера пройденного чекпоинта (временно)
-    public int checkPointNumber; // Номер пройденного чекпоинта
+    [HideInInspector] public int checkPointNumber; // Номер пройденного чекпоинта
+    public Coroutine lapTimerCor; // Корутина для периодического отображения времени круга
 
-    public Coroutine lapTimerCor;
+    private float timeDisplayFrequency = 0.1f; // Частота отображения времени круга
 
     void Start()
     {
+        //DateTime now = DateTime.Now;
+
         lapTimerCor = StartCoroutine(LapTimer());
     }
 
-    void Update()
-    {
-
-    }
-
+    // Корутина для периодического отображения времени круга
     public IEnumerator LapTimer()
     {
-        float startLapTime = Time.time;
+        DateTime lapTime = new DateTime();
 
         while (true)
         {
-            lapTimeText.text = Math.Round(Time.time - startLapTime, 1).ToString();
+            lapTime = lapTime.AddMilliseconds(100);
+            lapTimeText.text = lapTime.ToString("mm:ss:f");
 
-
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(timeDisplayFrequency);
         }
     }
+
+    
 }
