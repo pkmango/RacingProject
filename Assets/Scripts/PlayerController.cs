@@ -23,11 +23,14 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     [SerializeField] private bool isCollision = false;
-    private Vector3 spawnPoint;
+    private Vector3 spawnPosition;
+    private Quaternion spawnRotation;
+    public float Speed { get; private set; } // Абсолютная скорость игрока в горизонтальной плоскости
 
     void Start()
     {
-        spawnPoint = gameObject.transform.position;
+        spawnPosition = transform.position;
+        spawnRotation = transform.rotation;
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -38,26 +41,21 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (isCollision)
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                rb.AddForce(0f, jumpForce, 0f);
-            }
+            Jump();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            gameObject.transform.position = spawnPoint;
-            gameObject.transform.rotation = Quaternion.identity;
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+            Respawn();
         }
-        
     }
 
     void FixedUpdate()
     {
+        //Speed = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
+
         if (isCollision)
         {
             addedFlyTorque = false;
@@ -100,6 +98,9 @@ public class PlayerController : MonoBehaviour
             {
                 currentRotationSpeed = 0f;
             }
+
+            if (Speed > 0.1f)
+                ChangeDrag();
         }
         else
         {
@@ -110,10 +111,29 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (rb.velocity.magnitude != 0f)
-            ChangeDrag();
+        //Debug.Log(VelocityAngle());
+    }
 
-        //Debug.Log(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
+    public void Gas()
+    {
+        Debug.Log("Нажал на газ");
+    }
+
+    public void Jump()
+    {
+        if (isCollision)
+        {
+            rb.drag = drag;
+            rb.AddForce(0f, jumpForce, 0f);
+        }
+    }
+
+    public void Respawn()
+    {
+        transform.position = spawnPosition;
+        transform.rotation = spawnRotation;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 
     void PlayerRotation(float _rotationSpeed)
@@ -161,17 +181,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    float VelocityAngle()
+    public float VelocityAngle()
     {
         float velocityAngle = 0f;
-        float magnitudeXZ = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
+        Speed = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
 
-        if (magnitudeXZ != 0f)
+        if (Speed != 0f)
         {
             if (rb.velocity.z > 0f)
-                velocityAngle = 360f - Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
+                velocityAngle = 360f - Mathf.Acos(rb.velocity.x / Speed) * Mathf.Rad2Deg;
             else
-                velocityAngle = Mathf.Acos(rb.velocity.x / magnitudeXZ) * Mathf.Rad2Deg;
+                velocityAngle = Mathf.Acos(rb.velocity.x / Speed) * Mathf.Rad2Deg;
         }
 
         return velocityAngle;
@@ -179,6 +199,8 @@ public class PlayerController : MonoBehaviour
 
     void FlyBehavior()
     {
+        rb.drag = drag;
+
         if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S))
         {
             rb.AddRelativeTorque(0f, -flyTorque, 0f);
@@ -206,7 +228,9 @@ public class PlayerController : MonoBehaviour
                 numberOfContacts++;
 
                 if (numberOfContacts > 1)
+                {
                     isCollision = true;
+                }
             }
         }  
     }

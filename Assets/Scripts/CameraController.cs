@@ -4,42 +4,32 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform player;
-    public float cameraDeflection; // Значение отклонения камеры
-    public float deflectionDelay; // Время задержки для отклонения камеры
-    public float deflectionMinAngel; // Минимальный угол для срабатывания отклонения камеры
     public float deflectionSpeed; // Скорость отклонения камеры
     public float speedRatio; // Передаточный коэффициент зависимости скорости камеры от скорости игрока
     //public GameObject testSphere;
 
     private Vector3 zeroPosition;
     private Rigidbody playerRB;
-    //private float lastRBAngle = 0f; // Угол поворота игрока на прошлом кадре
-    private float currentCameraDeflection = 0f; // Текущее значение отклонения камеры
+    private float angleRatio; // Угловой коэффициент, нужен для более сильного отклонения камеры когда игрок едет вниз
+    private float angleRatioPercent = 0.1f; // Синус угла от скорости слишком большой, берем 10%
+    private PlayerController playerController;
 
     void Start()
     {
         zeroPosition = transform.position;
         playerRB = player.GetComponent<Rigidbody>();
+        playerController = player.GetComponent<PlayerController>();
     }
 
     void FixedUpdate()
     {
-        float angleRad = (90f + playerRB.rotation.eulerAngles.y) * Mathf.Deg2Rad;
-        Vector2 cameraDeflectionXZ = new Vector2(cameraDeflection * Mathf.Cos(angleRad), cameraDeflection * Mathf.Sin(angleRad));
-        Vector3 newPosition = new Vector3(player.position.x + zeroPosition.x + (playerRB.velocity.x * speedRatio), transform.position.y, player.position.z + zeroPosition.z + (playerRB.velocity.z * speedRatio));
+        angleRatio = angleRatioPercent * Mathf.Sin(playerController.VelocityAngle() * Mathf.Deg2Rad); // Берем процент угла от скорости
+        float newSpeedRatio = speedRatio + angleRatio; // Из-за angleRatio камера будет отставать сильнее когда игрок едет вниз, сделано для улучшения обзора
+        Vector3 newPosition = new Vector3
+            (player.position.x + zeroPosition.x + (playerRB.velocity.x * newSpeedRatio),
+            transform.position.y,
+            player.position.z + zeroPosition.z + (playerRB.velocity.z * newSpeedRatio));
 
         transform.position = Vector3.Lerp(transform.position, newPosition, deflectionSpeed);
     }
-
-    //IEnumerator SmoothCameraDeflection()
-    //{
-    //    yield return new WaitForSeconds(deflectionDelay);
-
-    //    while (currentCameraDeflection < cameraDeflection)
-    //    {
-    //        currentCameraDeflection += deflectionSpeed;
-
-    //        yield return new WaitForEndOfFrame();
-    //    }
-    //}
 }
