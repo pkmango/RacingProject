@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,6 +28,14 @@ public class PlayerController : MonoBehaviour
     private Quaternion spawnRotation;
     public float Speed { get; private set; } // Абсолютная скорость игрока в горизонтальной плоскости
 
+    private ControlManager controls;
+    private bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
+
+    private void Awake()
+    {
+        controls = new ControlManager();
+    }
+
     void Start()
     {
         spawnPosition = transform.position;
@@ -37,31 +46,25 @@ public class PlayerController : MonoBehaviour
 
         rb.drag = drag;
         dragDelta = dragMax - drag;
-    }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Jump();
-        }
+        controls.Player.Respawn.performed += _ => Respawn();
+        controls.Player.Jump.performed += _ => Jump();
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Respawn();
-        }
+        //Debug.Log(controls.Player);
     }
 
     void FixedUpdate()
     {
         //Speed = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
 
+        CheckButtons();
+
         if (isCollision)
         {
             addedFlyTorque = false;
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0f, rb.angularVelocity.z);
 
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+            if (gasOn || reverseOn)
             {
                 if (firstAcceleration)
                 {
@@ -69,7 +72,7 @@ public class PlayerController : MonoBehaviour
                     firstAcceleration = false;
                 }
 
-                if (Input.GetKey(KeyCode.W))
+                if (gasOn)
                 {
                     moveForward = true;
                     rb.AddRelativeForce(forwardForce, 0f, 0f);
@@ -85,11 +88,11 @@ public class PlayerController : MonoBehaviour
                 firstAcceleration = true;
             }
 
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+            if (rightBtnOn || leftBtnOn)
             {
                 TurningWheels();
 
-                if (Input.GetKey(KeyCode.D))
+                if (rightBtnOn)
                     PlayerRotation(currentRotationSpeed);
                 else
                     PlayerRotation(-currentRotationSpeed);
@@ -114,9 +117,12 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(VelocityAngle());
     }
 
-    public void Gas()
+    private void CheckButtons()
     {
-        Debug.Log("Нажал на газ");
+        rightBtnOn = controls.Player.Right.ReadValue<float>() > 0 ? true : false;
+        leftBtnOn = controls.Player.Left.ReadValue<float>() > 0 ? true : false;
+        gasOn = controls.Player.Gas.ReadValue<float>() > 0 ? true : false;
+        reverseOn = controls.Player.Reverse.ReadValue<float>() > 0 ? true : false;
     }
 
     public void Jump()
@@ -140,10 +146,10 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 newRotationAngle = rb.rotation.eulerAngles;
 
-        if (Input.GetKey(KeyCode.W))
+        if (gasOn)
         {
             newRotationAngle += new Vector3(0f, _rotationSpeed, 0f);
-        }else if (Input.GetKey(KeyCode.S))
+        }else if (reverseOn)
         {
             newRotationAngle -= new Vector3(0f, _rotationSpeed, 0f);
         }else if (rb.velocity.magnitude != 0f)
@@ -201,12 +207,12 @@ public class PlayerController : MonoBehaviour
     {
         rb.drag = drag;
 
-        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S))
+        if (leftBtnOn && gasOn || rightBtnOn && reverseOn)
         {
             rb.AddRelativeTorque(0f, -flyTorque, 0f);
         }
 
-        if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.S))
+        if (rightBtnOn && gasOn || leftBtnOn && reverseOn)
         {
             rb.AddRelativeTorque(0f, flyTorque, 0f);
         }
@@ -233,5 +239,15 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }  
+    }
+
+    private void OnEnable()
+    {
+        controls.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Player.Disable();
     }
 }
