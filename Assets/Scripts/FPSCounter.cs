@@ -16,7 +16,7 @@ public class FPSCounter : MonoBehaviour
 
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 100, 34), "FPS: " + counter, style);
+        GUI.Label(new Rect(15, 15, 100, 34), "FPS: " + counter, style);
     }
 
     void Update()

@@ -27,7 +27,7 @@ public class CheckPoint : MonoBehaviour
         {
             if(gameController.checkPointNumber + 1 == checkPointNumber)
             {
-                gameController.checkPointNumberText.text = "CP: " + checkPointNumber.ToString();
+                //gameController.checkPointNumberText.text = "CP: " + checkPointNumber.ToString();
                 gameController.checkPointNumber = checkPointNumber;
             }
         }

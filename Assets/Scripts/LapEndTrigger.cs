@@ -18,6 +18,8 @@ public class LapEndTrigger : MonoBehaviour
         {
             Debug.Log("GameController not found");
         }
+
+        gameController.lapNumberText.text = "Lap: " + gameController.currentLapNumber + "/" + gameController.numberOfLaps;
     }
 
     void OnTriggerExit(Collider col)
@@ -27,12 +29,22 @@ public class LapEndTrigger : MonoBehaviour
             if(gameController.checkPointNumber == maxCheckPointNumber)
             {
                 Debug.Log("Игрок пересек линию финиша");
+
+                // Перезапускаем время круга
                 gameController.StopCoroutine(gameController.lapTimerCor);
                 gameController.lapTimerCor = gameController.StartCoroutine(gameController.LapTimer());
+
+                // Считаем круги
+                if (gameController.currentLapNumber == gameController.numberOfLaps)
+                {
+                    Debug.Log("Все круги пройдены!");
+                }
+                gameController.currentLapNumber++;
+                gameController.lapNumberText.text = "Lap: " + gameController.currentLapNumber + "/" + gameController.numberOfLaps;
             }
 
             gameController.checkPointNumber = checkPointNumber;
-            gameController.checkPointNumberText.text = "CP: " + checkPointNumber.ToString();
+            //gameController.checkPointNumberText.text = "CP: " + checkPointNumber.ToString();
         }
     }
 }

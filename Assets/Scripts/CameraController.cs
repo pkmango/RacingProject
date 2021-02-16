@@ -6,9 +6,9 @@ public class CameraController : MonoBehaviour
     public Transform player;
     public float deflectionSpeed; // Скорость отклонения камеры
     public float speedRatio; // Передаточный коэффициент зависимости скорости камеры от скорости игрока
-    //public GameObject testSphere;
+    public Vector3 zeroPosition; // Нулевая позиция камеры относительно игрока
 
-    private Vector3 zeroPosition;
+    //private Vector3 zeroPosition;
     private Rigidbody playerRB;
     private float angleRatio; // Угловой коэффициент, нужен для более сильного отклонения камеры когда игрок едет вниз
     private float angleRatioPercent = 0.1f; // Синус угла от скорости слишком большой, берем 10%
@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        zeroPosition = transform.position;
+        //zeroPosition = transform.position;
         playerRB = player.GetComponent<Rigidbody>();
         playerController = player.GetComponent<PlayerController>();
     }
