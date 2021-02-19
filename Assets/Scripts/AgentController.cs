@@ -2,9 +2,11 @@
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class AgentController : Agent
 {
+    public string agentName = "Agent_1";
     public float forwardForce;
     public float backForce;
     public float rotationSpeed;
@@ -28,6 +30,7 @@ public class AgentController : Agent
     [SerializeField] private bool isCollision = false;
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;
+    public GameObject minimapMarker;
     public float Speed { get; private set; } // Абсолютная скорость игрока в горизонтальной плоскости
 
     private ControlManager controls;
@@ -41,6 +44,8 @@ public class AgentController : Agent
     private int currentCheckPointInd = 0;
     private Vector3 currentAgentCheckPoint;
 
+    private int currentLap = 1; // Текущий номер круга
+
     private void Awake()
     {
         controls = new ControlManager();
@@ -50,6 +55,7 @@ public class AgentController : Agent
     {
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
+        minimapMarker.SetActive(true);
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -67,7 +73,7 @@ public class AgentController : Agent
 
     public override void OnEpisodeBegin()
     {
-        Debug.Log("EpisodeBegine");
+        //Debug.Log("EpisodeBegine");
         //foreach (Transform i in agentCheckPoints)
         //{
         //    i.gameObject.SetActive(true);
@@ -358,15 +364,32 @@ public class AgentController : Agent
             if (currentCheckPointInd == agentCheckPoints.Length)
             {
                 if (training)
+                {
                     EndEpisode();
+                }
                 else
+                {
                     ResetAgentCheckPoints();
+                    currentLap++;
+                }
             }
             else
             {
                 currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
             }
         }
+    }
+
+    // Функция принимает словарь со значением дистанций для всех чекпоинтов, длину круга и возвращает оставшиюся до финиша дистанцию
+    public float GetRemainingDistance(Dictionary<Transform, float> checkpointDistances, float lapLength, int numberOfLaps)
+    {
+        float remainingDistance = 0;
+        Transform currentCheckPoint = agentCheckPoints[currentCheckPointInd];
+        float distanceToCheckpoint = (agentCheckPoints[currentCheckPointInd].position - transform.position).magnitude;
+
+        remainingDistance = (numberOfLaps - currentLap) * lapLength + checkpointDistances[currentCheckPoint] + distanceToCheckpoint;
+
+        return remainingDistance;
     }
 
     private void ResetAgentCheckPoints()

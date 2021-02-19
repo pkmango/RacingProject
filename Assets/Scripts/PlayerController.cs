@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public string playerName = "Player_1";
     public float forwardForce;
     public float backForce;
     public float rotationSpeed;
@@ -22,14 +24,21 @@ public class PlayerController : MonoBehaviour
     public float dragMax = 1.5f;
     private float dragDelta;
 
+    private GameController gameController;
     private Rigidbody rb;
     [SerializeField] private bool isCollision = false;
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;
+    public GameObject minimapMarker;
     public float Speed { get; private set; } // Абсолютная скорость игрока в горизонтальной плоскости
 
     private ControlManager controls;
     private bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
+
+    public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
+    private int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
+    private Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
+    private int currentLap = 1; // Текущий номер круга
 
     private void Awake()
     {
@@ -38,8 +47,16 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+            gameController = gameControllerObject.GetComponent<GameController>();
+        else
+            Debug.Log("GameController not found");
+
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
+        ResetAgentCheckPoints();
+        minimapMarker.SetActive(true);
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -55,7 +72,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        //Speed = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
+        Speed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
 
         CheckButtons();
 
@@ -187,19 +204,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public float VelocityAngle()
+    public float VelocityAngle() // Угол наравления скорости
     {
         float velocityAngle = 0f;
-        Speed = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.z * rb.velocity.z);
 
         if (Speed != 0f)
         {
-            if (rb.velocity.z > 0f)
-                velocityAngle = 360f - Mathf.Acos(rb.velocity.x / Speed) * Mathf.Rad2Deg;
-            else
-                velocityAngle = Mathf.Acos(rb.velocity.x / Speed) * Mathf.Rad2Deg;
-        }
+            velocityAngle = Mathf.Acos(Mathf.Clamp(rb.velocity.x / Speed, -1f, 1f)) * Mathf.Rad2Deg;
 
+            if (rb.velocity.z > 0f)
+            {
+                velocityAngle = 360f - velocityAngle;
+            }
+        }
         return velocityAngle;
     }
 
@@ -239,6 +256,41 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }  
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("AgentCheckPoint") && other.transform == agentCheckPoints[currentCheckPointInd])
+        {
+            currentCheckPointInd++;
+            if (currentCheckPointInd == agentCheckPoints.Length)
+            {
+                ResetAgentCheckPoints();
+                currentLap++;
+            }
+            else
+            {
+                currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
+            }
+        }
+    }
+
+    // Функция принимает словарь со значением дистанций для всех чекпоинтов, длину круга и возвращает оставшиюся до финиша дистанцию
+    public float GetRemainingDistance (Dictionary<Transform, float> checkpointDistances, float lapLength, int numberOfLaps)
+    {
+        float remainingDistance = 0;
+        Transform currentCheckPoint = agentCheckPoints[currentCheckPointInd];
+        float distanceToCheckpoint = (agentCheckPoints[currentCheckPointInd].position - transform.position).magnitude;
+
+        remainingDistance = (numberOfLaps - currentLap) * lapLength + checkpointDistances[currentCheckPoint] + distanceToCheckpoint;
+
+        return remainingDistance;
+    }
+
+    private void ResetAgentCheckPoints()
+    {
+        currentCheckPointInd = 0;
+        currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
     }
 
     private void OnEnable()

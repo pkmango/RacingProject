@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,10 @@ public class GameController : MonoBehaviour
 
     private float timeDisplayFrequency = 0.1f; // Частота отображения времени круга
 
+    public Transform[] agentCheckPoints; // Чекпоинты для агента. Здесь используются для определения позиций агентов и игрока на трассе
+    private Dictionary<Transform, float> checkpointDistances = new Dictionary<Transform, float>(); // Дистанции до конца круга для всех агентских чекпоинтов
+    private float lapLength; // Длина круга
+
     void Start()
     {
         trafficLights.SetActive(false);
@@ -35,13 +40,16 @@ public class GameController : MonoBehaviour
             i.enabled = false;
         }
 
+        SetRemaningDistances();
+        PlacesCheck();
+
         // Для тренировки агента
         //startBtn.gameObject.SetActive(false);
         //startDelay = 0;
         //StartCoroutine(StartRace());
     }
 
-    // Корутина для периодического отображения времени круга
+    // Корутина для периодического отображения времени круга, скорости, текущей позиции
     public IEnumerator LapTimer()
     {
         DateTime lapTime = new DateTime();
@@ -52,9 +60,29 @@ public class GameController : MonoBehaviour
             lapTimeText.text = lapTime.ToString("mm:ss:f");
 
             speedText.text = Mathf.Round(player.Speed * speedRatio) + " km/h";
+            PlacesCheck();
 
             yield return new WaitForSeconds(timeDisplayFrequency);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        
+    }
+
+    private void PlacesCheck()
+    {
+        float playerRemainingDistance = player.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);
+        //Debug.Log(playerRemainingDistance);
+        int playerPlace = 1; // Место игрока в гонке
+
+        foreach (AgentController agent in agents)
+        {
+            if (agent.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps) < playerRemainingDistance)
+                playerPlace++;
+        }
+        positionText.text = "Pos: " + playerPlace + "/" + (agents.Length + 1);
     }
 
     public void OnPressStart()
@@ -77,6 +105,11 @@ public class GameController : MonoBehaviour
         lapTimerCor = StartCoroutine(LapTimer());
     }
 
+    public IEnumerator FinishRace()
+    {
+        yield return new WaitForSeconds(1f);
+    }
+
     public void Pause()
     {
         Time.timeScale = 0f;
@@ -90,6 +123,37 @@ public class GameController : MonoBehaviour
         pauseBtn.SetActive(true);
         pauseGroup.SetActive(false);
     }
+
+    // Вычисление оставшейся дистанции до конца круга
+    //private float RemainingDistance(Vector3 currentPosition, int startIndex = 0)
+    //{
+    //    float lapLength = (agentCheckPoints[startIndex].position - currentPosition).magnitude;
+
+    //    for (int i = startIndex + 1; i < agentCheckPoints.Length; i++)
+    //    {
+    //        lapLength += (agentCheckPoints[i].position - agentCheckPoints[i - 1].position).magnitude;
+    //    }
+
+    //    return lapLength;
+    //}
+
+    private void SetRemaningDistances()
+    {
+        float segmentLength = 0f;
+
+        // Длина последнего отрезка равна нулю (точка финиша)
+        checkpointDistances.Add(agentCheckPoints[agentCheckPoints.Length - 1], 0f);
+
+        for (int i = agentCheckPoints.Length - 1; i > 0; i--)
+        {
+            segmentLength += (agentCheckPoints[i - 1].position - agentCheckPoints[i].position).magnitude;
+            checkpointDistances.Add(agentCheckPoints[i - 1], segmentLength);
+            //Debug.Log("чекпоинт №" + (i - 1) + " до финиша: " + checkpointDistances[agentCheckPoints[i - 1]]);
+        }
+        // Чтобы узнать полную длину круга добавляем оставшийся отрезок между первым и последним чекпоинтом
+        lapLength = segmentLength + (agentCheckPoints[agentCheckPoints.Length - 1].position - agentCheckPoints[0].position).magnitude;
+        //Debug.Log("Длина круга: " + lapLength);
+}
 
     public void Quit()
     {
