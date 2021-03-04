@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -24,7 +25,6 @@ public class PlayerController : MonoBehaviour
     public float dragMax = 1.5f;
     private float dragDelta;
 
-    private GameController gameController;
     private Rigidbody rb;
     [SerializeField] private bool isCollision = false;
     private Vector3 spawnPosition;
@@ -36,9 +36,10 @@ public class PlayerController : MonoBehaviour
     private bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
 
     public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
-    private int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
+    public int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
     private Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
-    private int currentLap = 1; // Текущий номер круга
+    public int currentLap = 1; // Текущий номер круга
+    public UnityEvent lapIsOver; // Круг окончен
 
     private void Awake()
     {
@@ -47,12 +48,6 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-        if (gameControllerObject != null)
-            gameController = gameControllerObject.GetComponent<GameController>();
-        else
-            Debug.Log("GameController not found");
-
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
         ResetAgentCheckPoints();
@@ -267,6 +262,7 @@ public class PlayerController : MonoBehaviour
             {
                 ResetAgentCheckPoints();
                 currentLap++;
+                lapIsOver?.Invoke();
             }
             else
             {
@@ -291,6 +287,17 @@ public class PlayerController : MonoBehaviour
     {
         currentCheckPointInd = 0;
         currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
+    }
+
+    public void Restart()
+    {
+        transform.position = spawnPosition;
+        transform.rotation = spawnRotation;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.drag = drag;
+        currentLap = 1;
+        ResetAgentCheckPoints();
     }
 
     private void OnEnable()

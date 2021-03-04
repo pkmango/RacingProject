@@ -2,7 +2,11 @@
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.MLAgents.Policies;
+using System;
+using Random = UnityEngine.Random;
 
 public class AgentController : Agent
 {
@@ -35,6 +39,7 @@ public class AgentController : Agent
 
     private ControlManager controls;
     private bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
+    public bool heuristicAlowed;
 
     // Настройки агента
     public bool training; // Нужно включить если будем обучать агента
@@ -43,19 +48,21 @@ public class AgentController : Agent
     public Transform[] agentCheckPoints;
     private int currentCheckPointInd = 0;
     private Vector3 currentAgentCheckPoint;
+    private bool flipCheck = false; // Идет проверка на переворот
+    private Coroutine flipCor; // Корутина для проверки на переворот
+    private float flipCheckDelay = 2f; // Задержка для проверки на переворот
+    private float maxSpeedForNormalization = 69f; // Максимальная возможная скорость агента, нужно для нормализации
+    public bool newAgent = false; // Для тестов новых агентов
 
     private int currentLap = 1; // Текущий номер круга
+    [HideInInspector] public bool finished = false; // Агент финишировал? Статус используется в GameController
+    [HideInInspector] public DateTime raceTime = new DateTime(); // Общее время со старта гонки передается из GameController
 
     private void Awake()
     {
         controls = new ControlManager();
-    }
-
-    void Start()
-    {
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
-        minimapMarker.SetActive(true);
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -63,22 +70,23 @@ public class AgentController : Agent
         rb.drag = drag;
         dragDelta = dragMax - drag;
 
+        minimapMarker.SetActive(true);
         Speed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
+    }
 
+    void Start()
+    {
         //controls.Player.Respawn.performed += _ => Respawn();
         //controls.Player.Jump.performed += _ => Jump();
-
-        //Debug.Log(controls.Player);
     }
 
     public override void OnEpisodeBegin()
     {
-        //Debug.Log("EpisodeBegine");
-        //foreach (Transform i in agentCheckPoints)
-        //{
-        //    i.gameObject.SetActive(true);
-        //}
+        currentLap = 1;
         ResetAgentCheckPoints();
+        flipCheck = false;
+        if (flipCor != null)
+            StopCoroutine(flipCor);
 
         if (training)
         {
@@ -106,11 +114,32 @@ public class AgentController : Agent
         sensor.AddObservation(Vector3.Dot(rb.velocity.normalized, direction));
 
         //sensor.AddObservation(transform.localRotation.eulerAngles.y / 360f);
+
+        // Quaternion.Dot показывает поворот агента относительно направления на чекпоинт
+        sensor.AddObservation(Quaternion.Dot(rb.rotation, Quaternion.LookRotation(direction)));
+
+        if (newAgent)
+        {
+            // Текущая нормализованная скорость в плоскости x-z
+            sensor.AddObservation(Speed / maxSpeedForNormalization);
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
+        //Debug.Log(actionBuffers.DiscreteActions);
         ActionHandler(actionBuffers.DiscreteActions);
+    }
+
+    public void Freeze()
+    {
+        GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.HeuristicOnly;
+    }
+
+    public void UnFreeze()
+    {
+        GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.InferenceOnly;
+        EndEpisode();
     }
 
     void FixedUpdate()
@@ -172,6 +201,11 @@ public class AgentController : Agent
                 FlyBehavior();
                 addedFlyTorque = true;
             }
+            if (!flipCheck)
+            {
+                flipCheck = true;
+                flipCor = StartCoroutine(Flip());
+            }
         }
 
         //Debug.Log(VelocityAngle());
@@ -188,10 +222,9 @@ public class AgentController : Agent
     private void ActionHandler(ActionSegment<int> act)
     {
         AddReward(-0.0002f);
-
         int rotateAction = act[0];
         int forwardAction = act[1];
-
+        //Debug.Log("Action");
         if (rotateAction == 1) // Поворот налево
         {
             leftBtnOn = true;
@@ -240,6 +273,19 @@ public class AgentController : Agent
     //    rb.velocity = Vector3.zero;
     //    rb.angularVelocity = Vector3.zero;
     //}
+
+    void AgentRespawn()
+    {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.rotation = spawnRotation * Quaternion.LookRotation(currentAgentCheckPoint - transform.position);
+        //transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+        transform.position = currentAgentCheckPoint;
+        flipCheck = false;
+        if (flipCor != null)
+            StopCoroutine(flipCor);
+    }
+
 
     void PlayerRotation(float _rotationSpeed)
     {
@@ -322,6 +368,19 @@ public class AgentController : Agent
         }
     }
 
+    IEnumerator Flip()
+    {
+        //Debug.Log("Начата проверка на переворот");
+        yield return new WaitForSeconds(flipCheckDelay);
+        //Debug.Log("Проверка закончена,  isCollision = " + isCollision);
+        flipCheck = false;
+        if (!isCollision)
+        {
+            //EndEpisode();
+            AgentRespawn();
+        }
+    }
+
     void OnCollisionExit(Collision collision)
     {
         isCollision = false;
@@ -398,35 +457,28 @@ public class AgentController : Agent
         currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
     }
 
-    //private void OnEnable()
-    //{
-    //    controls.Player.Enable();
-    //}
-
-    //private void OnDisable()
-    //{
-    //    controls.Player.Disable();
-    //}
-
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        var discreteActionsOut = actionsOut.DiscreteActions;
-        discreteActionsOut.Clear();
-        if (controls.Player.Right.ReadValue<float>() > 0)
+        if (heuristicAlowed)
         {
-            discreteActionsOut[0] = 2;
-        }
-        if (controls.Player.Gas.ReadValue<float>() > 0)
-        {
-            discreteActionsOut[1] = 1;
-        }
-        if (controls.Player.Left.ReadValue<float>() > 0)
-        {
-            discreteActionsOut[0] = 1;
-        }
-        if (controls.Player.Reverse.ReadValue<float>() > 0)
-        {
-            discreteActionsOut[1] = 2;
+            var discreteActionsOut = actionsOut.DiscreteActions;
+            discreteActionsOut.Clear();
+            if (controls.Player.Right.ReadValue<float>() > 0)
+            {
+                discreteActionsOut[0] = 2;
+            }
+            if (controls.Player.Gas.ReadValue<float>() > 0)
+            {
+                discreteActionsOut[1] = 1;
+            }
+            if (controls.Player.Left.ReadValue<float>() > 0)
+            {
+                discreteActionsOut[0] = 1;
+            }
+            if (controls.Player.Reverse.ReadValue<float>() > 0)
+            {
+                discreteActionsOut[1] = 2;
+            }
         }
     }
 

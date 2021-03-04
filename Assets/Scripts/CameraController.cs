@@ -34,4 +34,9 @@ public class CameraController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, newPosition, deflectionSpeed);
         }
     }
+
+    public void SetStartPosition()
+    {
+        transform.position = playerController.gameObject.transform.position + zeroPosition;
+    }
 }

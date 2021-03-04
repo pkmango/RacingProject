@@ -671,9 +671,11 @@ MonoBehaviour:
   dragMax: 2
   isCollision: 0
   minimapMarker: {fileID: 2354388505916634308}
+  heuristicAlowed: 0
   training: 0
   startPositions: []
   agentCheckPoints: []
+  finished: 0
 --- !u!114 &4418192460708371972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687,8 +689,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 2
-    NumStackedVectorObservations: 9
+    VectorObservationSize: 3
+    NumStackedVectorObservations: 8
     m_ActionSpec:
       m_NumContinuousActions: 0
       BranchSizes: 0300000003000000
@@ -696,7 +698,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: f0d0faf83aef3ce41919e0ccb1b9dbb3, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 5ebf9823025e37240a7b1f126d2ff6da, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 2
   m_BehaviorName: RacingAgent
@@ -729,7 +731,7 @@ MonoBehaviour:
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 51
-  m_ObservationStacks: 9
+  m_ObservationStacks: 8
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
   m_StartVerticalOffset: -0.005
