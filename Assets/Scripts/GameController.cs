@@ -242,12 +242,10 @@ public class GameController : MonoBehaviour
         {
             segmentLength += (agentCheckPoints[i - 1].position - agentCheckPoints[i].position).magnitude;
             checkpointDistances.Add(agentCheckPoints[i - 1], segmentLength);
-            //Debug.Log("чекпоинт №" + (i - 1) + " до финиша: " + checkpointDistances[agentCheckPoints[i - 1]]);
         }
         // Чтобы узнать полную длину круга добавляем оставшийся отрезок между первым и последним чекпоинтом
         lapLength = segmentLength + (agentCheckPoints[agentCheckPoints.Length - 1].position - agentCheckPoints[0].position).magnitude;
-        //Debug.Log("Длина круга: " + lapLength);
-}
+    }
 
     public void Quit()
     {

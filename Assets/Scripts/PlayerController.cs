@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     public float wheelTurningSpeed;
     public float flyTorque; // Крутящий момент в полете
     private bool addedFlyTorque = false; // Крутящий момент в полете добавлен?
+    public PlacesForRespawn placesForRespawn; // Массив с вариантами смещения относительно центра при респауне
+    [Range(0, 3)]
+    public int respawnPlaceID; // Номер элемента массива placesForRespawn
+    public LayerMask surfaceSearchMask;
+    private Vector3 distanceToGround; // Расстояние начала координат агента до земли
 
     private float tiresFrictionDelta;
     private float currentRotationSpeed = 0f;
@@ -62,13 +67,15 @@ public class PlayerController : MonoBehaviour
         controls.Player.Respawn.performed += _ => Respawn();
         controls.Player.Jump.performed += _ => Jump();
 
-        //Debug.Log(controls.Player);
+        // Вычисляем расстояние от центра координат машины до земли
+        Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
+        distanceToGround = transform.position - hit.point;
     }
 
     void FixedUpdate()
     {
         Speed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
-
+        
         CheckButtons();
 
         if (isCollision)
@@ -148,10 +155,34 @@ public class PlayerController : MonoBehaviour
 
     public void Respawn()
     {
-        transform.position = spawnPosition;
-        transform.rotation = spawnRotation;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
+        // Ищем предыдущий чекпоинт
+        Vector3 previousAgentCheckPoint;
+        if (currentCheckPointInd - 1 < 0)
+            previousAgentCheckPoint = agentCheckPoints[agentCheckPoints.Length - 1].position;
+        else
+            previousAgentCheckPoint = agentCheckPoints[currentCheckPointInd - 1].position;
+
+        // Вычисляем новую позицию для машины
+        PointOnLine respawnPoint = new PointOnLine(); // Точка ближайшая точка на прямой между текущим и предыдущим чекопоинтом
+        Vector3 requiredPoint = respawnPoint.GetPointOnLine(previousAgentCheckPoint, currentAgentCheckPoint, transform.position); // Получаем ближайшую точку на прямой между чекпоинтами
+        requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
+        transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
+        gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
+        {
+            transform.position = hit.point + distanceToGround;
+            //Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name);
+        }
+        else
+        {
+            transform.position = requiredPoint + distanceToGround;
+            //Debug.Log("Пересечение не найдено!");
+        }
+        transform.rotation = Quaternion.LookRotation(currentAgentCheckPoint - previousAgentCheckPoint) * Quaternion.AngleAxis(-90, Vector3.up);
+        gameObject.layer = LayerMask.NameToLayer("Agent"); // После респауна возрващаем слой агента
     }
 
     void PlayerRotation(float _rotationSpeed)

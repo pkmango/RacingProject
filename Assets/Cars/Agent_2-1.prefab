@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2801311838734391268}
   - component: {fileID: 4016146471146097758}
+  - component: {fileID: 1059537786777054376}
   m_Layer: 9
   m_Name: MinimapMarker
   m_TagString: Untagged
@@ -25,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2298865525764555040}
   m_LocalRotation: {x: -0.7071068, y: -0.000000026692542, z: -0.000000026692542, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.03, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 6307981036023954983}
@@ -81,6 +82,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1059537786777054376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2298865525764555040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d501110bc88dc7a4aa63bd0f285acca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2898241331501612077
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,6 +392,11 @@ MonoBehaviour:
   maxSpeed: 40
   wheelTurningSpeed: 0.5
   flyTorque: 800
+  placesForRespawn: {fileID: 0}
+  respawnPlaceID: 0
+  surfaceSearchMask:
+    serializedVersion: 2
+    m_Bits: 1025
   drag: 0.2
   dragMax: 2
   isCollision: 0

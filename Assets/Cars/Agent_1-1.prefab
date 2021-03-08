@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2354388505916634308}
   m_LocalRotation: {x: -0.7071068, y: -0.000000026692542, z: -0.000000026692542, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.06, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 7548370044269448131}
@@ -667,6 +667,7 @@ MonoBehaviour:
   maxSpeed: 40
   wheelTurningSpeed: 0.5
   flyTorque: 800
+  placeForRespawn: {x: 0, y: 0, z: 0}
   drag: 0.2
   dragMax: 2
   isCollision: 0
@@ -675,6 +676,7 @@ MonoBehaviour:
   training: 0
   startPositions: []
   agentCheckPoints: []
+  newAgent: 0
   finished: 0
 --- !u!114 &4418192460708371972
 MonoBehaviour:
