@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [Range(0, 3)]
     public int respawnPlaceID; // Номер элемента массива placesForRespawn
     public LayerMask surfaceSearchMask;
+    public GameObject explosion;
     private Vector3 distanceToGround; // Расстояние начала координат агента до земли
 
     private float tiresFrictionDelta;
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
 
     private ControlManager controls;
     private bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
+    private WeaponController weaponController;
 
     public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
     public int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
@@ -57,6 +59,7 @@ public class PlayerController : MonoBehaviour
         spawnRotation = transform.rotation;
         ResetAgentCheckPoints();
         minimapMarker.SetActive(true);
+        weaponController = GetComponent<WeaponController>();
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -66,6 +69,7 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.Respawn.performed += _ => Respawn();
         controls.Player.Jump.performed += _ => Jump();
+        controls.Player.Fire.performed += _ => weaponController.Fire();
 
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
@@ -155,6 +159,9 @@ public class PlayerController : MonoBehaviour
 
     public void Respawn()
     {
+        if (explosion != null)
+            Instantiate(explosion, transform.position, Quaternion.identity);
+
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
@@ -174,12 +181,12 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
         {
             transform.position = hit.point + distanceToGround;
-            //Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name);
+            Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name);
         }
         else
         {
             transform.position = requiredPoint + distanceToGround;
-            //Debug.Log("Пересечение не найдено!");
+            Debug.Log("Пересечение не найдено!");
         }
         transform.rotation = Quaternion.LookRotation(currentAgentCheckPoint - previousAgentCheckPoint) * Quaternion.AngleAxis(-90, Vector3.up);
         gameObject.layer = LayerMask.NameToLayer("Agent"); // После респауна возрващаем слой агента

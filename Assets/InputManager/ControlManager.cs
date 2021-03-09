@@ -19,17 +19,17 @@ public class @ControlManager : IInputActionCollection, IDisposable
             ""id"": ""df80aa89-f1b1-452d-8e03-7f1891512a59"",
             ""actions"": [
                 {
-                    ""name"": ""Respawn"",
+                    ""name"": ""Jump"",
                     ""type"": ""Button"",
-                    ""id"": ""5c27a7ac-dadf-4e57-b58d-982cf28e947c"",
+                    ""id"": ""9fbe50ac-596d-43b3-915a-b56326d51ff4"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""Respawn"",
                     ""type"": ""Button"",
-                    ""id"": ""9fbe50ac-596d-43b3-915a-b56326d51ff4"",
+                    ""id"": ""5c27a7ac-dadf-4e57-b58d-982cf28e947c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -65,6 +65,14 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d56efc5-7559-4d3a-bba3-f21483d775b9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -76,17 +84,6 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Respawn"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a1ff80af-0733-4a08-8a41-2318f0a8a717"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -133,6 +130,28 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""action"": ""Reverse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64b12bd4-b5d8-4d55-99a9-3aca7b3d8048"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1ff80af-0733-4a08-8a41-2318f0a8a717"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -141,12 +160,13 @@ public class @ControlManager : IInputActionCollection, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Respawn = m_Player.FindAction("Respawn", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Respawn = m_Player.FindAction("Respawn", throwIfNotFound: true);
         m_Player_Left = m_Player.FindAction("Left", throwIfNotFound: true);
         m_Player_Right = m_Player.FindAction("Right", throwIfNotFound: true);
         m_Player_Gas = m_Player.FindAction("Gas", throwIfNotFound: true);
         m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
+        m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -196,22 +216,24 @@ public class @ControlManager : IInputActionCollection, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_Respawn;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Respawn;
     private readonly InputAction m_Player_Left;
     private readonly InputAction m_Player_Right;
     private readonly InputAction m_Player_Gas;
     private readonly InputAction m_Player_Reverse;
+    private readonly InputAction m_Player_Fire;
     public struct PlayerActions
     {
         private @ControlManager m_Wrapper;
         public PlayerActions(@ControlManager wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Respawn => m_Wrapper.m_Player_Respawn;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Respawn => m_Wrapper.m_Player_Respawn;
         public InputAction @Left => m_Wrapper.m_Player_Left;
         public InputAction @Right => m_Wrapper.m_Player_Right;
         public InputAction @Gas => m_Wrapper.m_Player_Gas;
         public InputAction @Reverse => m_Wrapper.m_Player_Reverse;
+        public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -221,12 +243,12 @@ public class @ControlManager : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @Respawn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRespawn;
-                @Respawn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRespawn;
-                @Respawn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRespawn;
                 @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Respawn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRespawn;
+                @Respawn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRespawn;
+                @Respawn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRespawn;
                 @Left.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
                 @Left.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
                 @Left.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
@@ -239,16 +261,19 @@ public class @ControlManager : IInputActionCollection, IDisposable
                 @Reverse.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReverse;
                 @Reverse.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReverse;
                 @Reverse.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReverse;
+                @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Respawn.started += instance.OnRespawn;
-                @Respawn.performed += instance.OnRespawn;
-                @Respawn.canceled += instance.OnRespawn;
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Respawn.started += instance.OnRespawn;
+                @Respawn.performed += instance.OnRespawn;
+                @Respawn.canceled += instance.OnRespawn;
                 @Left.started += instance.OnLeft;
                 @Left.performed += instance.OnLeft;
                 @Left.canceled += instance.OnLeft;
@@ -261,17 +286,21 @@ public class @ControlManager : IInputActionCollection, IDisposable
                 @Reverse.started += instance.OnReverse;
                 @Reverse.performed += instance.OnReverse;
                 @Reverse.canceled += instance.OnReverse;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
     public interface IPlayerActions
     {
-        void OnRespawn(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnRespawn(InputAction.CallbackContext context);
         void OnLeft(InputAction.CallbackContext context);
         void OnRight(InputAction.CallbackContext context);
         void OnGas(InputAction.CallbackContext context);
         void OnReverse(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }

@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 7782725704262371431}
   - component: {fileID: 7782725704261345695}
   - component: {fileID: 7890509747681273483}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Wheel1-2
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 7782725704262431451}
   - component: {fileID: 7782725704261278319}
   - component: {fileID: 4170908052182573422}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Wheel1-3
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -449,7 +449,7 @@ GameObject:
   - component: {fileID: 7782725704262476033}
   - component: {fileID: 7782725704261347303}
   - component: {fileID: 2782628552994841946}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Wheel1-4
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -544,7 +544,7 @@ GameObject:
   - component: {fileID: 7782725704262418103}
   - component: {fileID: 7782725704261361123}
   - component: {fileID: 7770102863626328168}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Wheel1-1
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -640,7 +640,7 @@ GameObject:
   - component: {fileID: 7782725704261368499}
   - component: {fileID: 7782725704013714047}
   - component: {fileID: 7782725704013714043}
-  - component: {fileID: 6345639009395364141}
+  - component: {fileID: 5846176500021464304}
   - component: {fileID: 2308639442936003126}
   - component: {fileID: 2747925291555155660}
   - component: {fileID: 4147933894590426562}
@@ -752,7 +752,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.0412, y: 0.009, z: 0.019}
   m_Center: {x: 0.0004371684, y: -0.0019, z: -0.000000016763806}
---- !u!65 &6345639009395364141
+--- !u!65 &5846176500021464304
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -764,7 +764,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.025, y: 0.014, z: 0.019}
-  m_Center: {x: -0.005, y: 0.0006, z: -0.0000000018626451}
+  m_Center: {x: -0.005, y: 0.0006, z: -0.000000001862645}
 --- !u!114 &2308639442936003126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -808,6 +808,7 @@ MonoBehaviour:
   surfaceSearchMask:
     serializedVersion: 2
     m_Bits: 1025
+  explosion: {fileID: 100012, guid: 384371afbb4354cc9a3fc68eab303756, type: 3}
   drag: 0.2
   dragMax: 2
   isCollision: 0

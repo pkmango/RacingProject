@@ -24,6 +24,7 @@ public class AgentController : Agent
     [Range(0, 3)]
     public int respawnPlaceID; // Номер элемента массива placesForRespawn
     public LayerMask surfaceSearchMask;
+    public GameObject explosion; // Эффект взрыва при уничтожении
     private Vector3 distanceToGround; // Расстояние начала координат агента до земли
 
     private float tiresFrictionDelta;
@@ -275,8 +276,11 @@ public class AgentController : Agent
     //    }
     //}
 
-    void AgentRespawn()
+    public void AgentRespawn()
     {
+        if (explosion != null)
+            Instantiate(explosion, transform.position, Quaternion.identity);
+
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         
@@ -293,6 +297,10 @@ public class AgentController : Agent
         requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
         transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
+        //foreach(Transform i in GetComponentsInChildren<Transform>())
+        //{
+        //    Debug.Log(i.gameObject.layer);
+        //}
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
         {
             transform.position = hit.point + distanceToGround;

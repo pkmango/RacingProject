@@ -6,17 +6,17 @@
             "id": "df80aa89-f1b1-452d-8e03-7f1891512a59",
             "actions": [
                 {
-                    "name": "Respawn",
+                    "name": "Jump",
                     "type": "Button",
-                    "id": "5c27a7ac-dadf-4e57-b58d-982cf28e947c",
+                    "id": "9fbe50ac-596d-43b3-915a-b56326d51ff4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
                 {
-                    "name": "Jump",
+                    "name": "Respawn",
                     "type": "Button",
-                    "id": "9fbe50ac-596d-43b3-915a-b56326d51ff4",
+                    "id": "5c27a7ac-dadf-4e57-b58d-982cf28e947c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -52,6 +52,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "4d56efc5-7559-4d3a-bba3-f21483d775b9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -63,17 +71,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Respawn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a1ff80af-0733-4a08-8a41-2318f0a8a717",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -118,6 +115,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reverse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "64b12bd4-b5d8-4d55-99a9-3aca7b3d8048",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a1ff80af-0733-4a08-8a41-2318f0a8a717",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
