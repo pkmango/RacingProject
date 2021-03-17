@@ -27,6 +27,10 @@ public class AgentController : Agent
     public GameObject explosion; // Эффект взрыва при уничтожении
     private Vector3 distanceToGround; // Расстояние начала координат агента до земли
 
+    public int hp = 3; // Health Points
+    [HideInInspector] public int currentHp = 3;
+    public HealthBar healthBar;
+
     private float tiresFrictionDelta;
     private float currentRotationSpeed = 0f;
     private bool firstAcceleration = true;
@@ -85,7 +89,15 @@ public class AgentController : Agent
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
         distanceToGround = transform.position - hit.point;
-        
+
+        // Создаем Healthbar
+        if (healthBar != null)
+            healthBar.CreateHealthbar(hp);
+        else
+            Debug.Log(agentName + ": Healthbar not found");
+
+        currentHp = hp;
+
         //controls.Player.Respawn.performed += _ => Respawn();
         //controls.Player.Jump.performed += _ => Jump();
     }
@@ -94,6 +106,9 @@ public class AgentController : Agent
     {
         currentLap = 1;
         ResetAgentCheckPoints();
+        currentHp = hp;
+        healthBar.ChangeHP(hp, currentHp);
+
         flipCheck = false;
         if (flipCor != null)
             StopCoroutine(flipCor);
@@ -297,10 +312,7 @@ public class AgentController : Agent
         requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
         transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
-        //foreach(Transform i in GetComponentsInChildren<Transform>())
-        //{
-        //    Debug.Log(i.gameObject.layer);
-        //}
+
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
         {
             transform.position = hit.point + distanceToGround;
@@ -317,10 +329,26 @@ public class AgentController : Agent
         flipCheck = false;
         if (flipCor != null)
             StopCoroutine(flipCor);
+
+        currentHp = hp;
+        healthBar.ChangeHP(hp, currentHp);
     }
 
+    public void HitHandler(int damage = 1)
+    {
+        currentHp -= damage;
 
-    void PlayerRotation(float _rotationSpeed)
+        if (currentHp > 0)
+        {
+            healthBar.ChangeHP(hp, currentHp, true);
+        }
+        else
+        {
+            AgentRespawn();
+        }
+    }
+
+    private void PlayerRotation(float _rotationSpeed)
     {
         Vector3 newRotationAngle = rb.rotation.eulerAngles;
 
@@ -345,7 +373,7 @@ public class AgentController : Agent
         rb.rotation = Quaternion.Euler(newRotationAngle);
     }
 
-    void ChangeDrag()
+    private void ChangeDrag()
     {
         // Вычисляем угол между направлением скорости и поворотом авто
         float velocityAngle = Mathf.Abs(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
@@ -358,7 +386,7 @@ public class AgentController : Agent
         //Debug.Log(rb.drag);
     }
 
-    void TurningWheels()
+    private void TurningWheels()
     {
         if (currentRotationSpeed < rotationSpeed)
         {
@@ -386,7 +414,7 @@ public class AgentController : Agent
         return velocityAngle;
     }
 
-    void FlyBehavior()
+    private void FlyBehavior()
     {
         rb.drag = drag;
 
@@ -449,7 +477,6 @@ public class AgentController : Agent
     {
         if (other.gameObject.CompareTag("AgentCheckPoint") && other.transform == agentCheckPoints[currentCheckPointInd])
         {
-            //Debug.Log(currentCheckPointInd);
             //other.gameObject.SetActive(false);
             AddReward(1f / agentCheckPoints.Length);
             currentCheckPointInd++;

@@ -73,6 +73,14 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""LandMine"",
+                    ""type"": ""Button"",
+                    ""id"": ""3fc616b2-3a6d-4a4d-9dce-e484cc8b3b7f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -152,6 +160,17 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e5d33e1-4bf4-4754-86a0-5bb4f2fdee72"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LandMine"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -167,6 +186,7 @@ public class @ControlManager : IInputActionCollection, IDisposable
         m_Player_Gas = m_Player.FindAction("Gas", throwIfNotFound: true);
         m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_LandMine = m_Player.FindAction("LandMine", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -223,6 +243,7 @@ public class @ControlManager : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Gas;
     private readonly InputAction m_Player_Reverse;
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_LandMine;
     public struct PlayerActions
     {
         private @ControlManager m_Wrapper;
@@ -234,6 +255,7 @@ public class @ControlManager : IInputActionCollection, IDisposable
         public InputAction @Gas => m_Wrapper.m_Player_Gas;
         public InputAction @Reverse => m_Wrapper.m_Player_Reverse;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @LandMine => m_Wrapper.m_Player_LandMine;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -264,6 +286,9 @@ public class @ControlManager : IInputActionCollection, IDisposable
                 @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @LandMine.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLandMine;
+                @LandMine.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLandMine;
+                @LandMine.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLandMine;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -289,6 +314,9 @@ public class @ControlManager : IInputActionCollection, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @LandMine.started += instance.OnLandMine;
+                @LandMine.performed += instance.OnLandMine;
+                @LandMine.canceled += instance.OnLandMine;
             }
         }
     }
@@ -302,5 +330,6 @@ public class @ControlManager : IInputActionCollection, IDisposable
         void OnGas(InputAction.CallbackContext context);
         void OnReverse(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnLandMine(InputAction.CallbackContext context);
     }
 }

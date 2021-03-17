@@ -3,13 +3,13 @@
 public class Bullet : MonoBehaviour
 {
     public float speed = 1;
-    public string targetLayerName = "Agent";
-    public string playerLayerName = "Player";
-    public string checkpointLayerName = "Checkpoint";
+    public int damage = 1;
+    public string enemyTag = "Agent";
+    public string playerTag = "Player";
+    public string[] exceptionTags = { "AgentCheckPoint", "Wheel" };
     public float destroyTime = 3;
+    public ParticleSystem bulletExplosion;
 
-    //private bool isHit = false; // Попадание случилось?
-    private int hitLayer = -1;
     private GameObject hitObject;
 
     private void Start()
@@ -26,7 +26,12 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        hitLayer = other.gameObject.layer;
+        foreach (string _name in exceptionTags)
+        {
+            if (other.tag == _name)
+                return;
+        }
+
         hitObject = other.gameObject;
     }
 
@@ -35,21 +40,35 @@ public class Bullet : MonoBehaviour
         if (hitObject == null)
             return;
 
-        if (hitLayer == LayerMask.NameToLayer(checkpointLayerName))
-            return;
-
-        if (hitLayer == LayerMask.NameToLayer(targetLayerName))
+        if (hitObject.tag == enemyTag)
         {
             Debug.Log("Попадание в агента");
-            hitObject.GetComponentInParent<AgentController>().AgentRespawn();
+            AgentController agent = hitObject.GetComponent<AgentController>();
+
+            if (!agent.finished)
+                agent.HitHandler(damage);
         }
 
-        if (hitLayer == LayerMask.NameToLayer(playerLayerName))
+        if (hitObject.tag == playerTag)
         {
             Debug.Log("Попадание в игрока");
-            hitObject.GetComponentInParent<PlayerController>().Respawn();
+            PlayerController player = hitObject.GetComponent<PlayerController>();
+
+            if (player.enabled)
+                player.HitHandler(damage);
         }
 
+        if (bulletExplosion != null)
+            BulletExplosion();
+        else
+            Destroy(gameObject);
+    }
+
+    private void BulletExplosion()
+    {
+        bulletExplosion.transform.parent = null;
+        bulletExplosion.Play();
+        Destroy(bulletExplosion.gameObject, bulletExplosion.main.duration);
         Destroy(gameObject);
     }
 }

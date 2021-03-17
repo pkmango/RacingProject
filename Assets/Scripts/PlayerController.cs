@@ -22,6 +22,10 @@ public class PlayerController : MonoBehaviour
     public GameObject explosion;
     private Vector3 distanceToGround; // Расстояние начала координат агента до земли
 
+    public int hp = 3; // Health Points
+    [HideInInspector] public int currentHp = 3;
+    public HealthBar healthBar;
+
     private float tiresFrictionDelta;
     private float currentRotationSpeed = 0f;
     private bool firstAcceleration = true;
@@ -46,7 +50,12 @@ public class PlayerController : MonoBehaviour
     public int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
     private Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
     public int currentLap = 1; // Текущий номер круга
+
     public UnityEvent lapIsOver; // Круг окончен
+
+    [System.Serializable]
+    public class HpChangedEvent : UnityEvent<int, int> { } // Создаем типа соыбтия которе может передавать 2 параметра
+    public HpChangedEvent hpIsChanged; // Кол-во hp изменилось
 
     private void Awake()
     {
@@ -74,6 +83,16 @@ public class PlayerController : MonoBehaviour
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
         distanceToGround = transform.position - hit.point;
+
+        // Создаем Healthbar
+        if (healthBar != null)
+            healthBar.CreateHealthbar(hp);
+        else
+            Debug.Log("Player: Healthbar not found");
+
+        currentHp = hp;
+
+        enabled = false;
     }
 
     void FixedUpdate()
@@ -181,15 +200,34 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
         {
             transform.position = hit.point + distanceToGround;
-            Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name);
+            //Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name);
         }
         else
         {
             transform.position = requiredPoint + distanceToGround;
-            Debug.Log("Пересечение не найдено!");
+            //Debug.Log("Пересечение не найдено!");
         }
         transform.rotation = Quaternion.LookRotation(currentAgentCheckPoint - previousAgentCheckPoint) * Quaternion.AngleAxis(-90, Vector3.up);
         gameObject.layer = LayerMask.NameToLayer("Agent"); // После респауна возрващаем слой агента
+
+        currentHp = hp;
+        healthBar.ChangeHP(hp, currentHp);
+        hpIsChanged?.Invoke(hp, currentHp);
+    }
+
+    public void HitHandler(int damage = 1)
+    {
+        currentHp -= damage;
+
+        if (currentHp > 0)
+        {
+            healthBar.ChangeHP(hp, currentHp, true);
+            hpIsChanged?.Invoke(hp, currentHp);
+        }
+        else
+        {
+            Respawn();
+        }
     }
 
     void PlayerRotation(float _rotationSpeed)
@@ -336,6 +374,9 @@ public class PlayerController : MonoBehaviour
         rb.drag = drag;
         currentLap = 1;
         ResetAgentCheckPoints();
+        currentHp = hp;
+        healthBar.ChangeHP(hp, currentHp);
+        hpIsChanged?.Invoke(hp, currentHp);
     }
 
     private void OnEnable()

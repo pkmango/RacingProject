@@ -17,8 +17,8 @@ public class GameController : MonoBehaviour
     public int numberOfLaps;  // Количество кругов
     public int currentLapNumber = 1; // Текущий номер круга
     public Text positionText; // Текстовое поле для отображения текущей позиции
-    //public Text checkPointNumberText; // Текстовое поле для отображения номера пройденного чекпоинта (временно)
-    //[HideInInspector] public int checkPointNumber; // Номер пройденного чекпоинта
+    public Text positionSuffixText; // Суффикс для обозначения позиции
+    private string[] positionSuffixes = {"", "st", "nd", "rd", "th", "th"}; // Набор суффиксов для отображения позиции
     public Coroutine lapTimerCor; // Корутина для периодического отображения времени круга
     public float speedRatio; // Коэффициент для более реалистичного отображения скорости
     public GameObject trafficLights; // Светофор перед стартом
@@ -27,6 +27,9 @@ public class GameController : MonoBehaviour
     public GameObject pauseGroup;
     public GameObject raceIsOverGroup;
     public PlaceCanvasData[] placeCanvasesData;
+
+    //public RectTransform onePlayerHP; // Элемента UI из которых строится healthbar игрока
+    //private List<RectTransform> playerHPs = new List<RectTransform>() ; // 
 
     private float timeDisplayFrequency = 0.1f; // Частота отображения времени круга
     private DateTime raceTime; // Таймер для подсчета общего времени гонки
@@ -39,14 +42,13 @@ public class GameController : MonoBehaviour
     void Start()
     {
         trafficLights.SetActive(false);
-        player.enabled = false;
+        //player.enabled = false;
         foreach (AgentController agent in agents)
         {
-            //agent.enabled = false;
             agent.Freeze();
         }
 
-        lapNumberText.text = "Lap: " + currentLapNumber + "/" + numberOfLaps;
+        lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
         SetRemaningDistances();
         PlacesCheck();
 
@@ -63,7 +65,7 @@ public class GameController : MonoBehaviour
 
         while (true)
         {
-            speedText.text = Mathf.Round(player.Speed * speedRatio) + " km/h";
+            speedText.text = Mathf.Round(player.Speed * speedRatio).ToString();
             PlacesCheck();
 
             yield return new WaitForSeconds(timeDisplayFrequency);
@@ -101,7 +103,10 @@ public class GameController : MonoBehaviour
                 Debug.Log("Агент " + agent.agentName + " финишировал на " + listOfFinishers.Count + " месте");
             }
         }
-        positionText.text = "Pos: " + playerPlace + "/" + (agents.Length + 1);
+
+        positionText.text = playerPlace.ToString();
+        if (positionSuffixes[playerPlace] != null)
+            positionSuffixText.text = positionSuffixes[playerPlace];
     }
 
     // Формируем список нефинишировавших агентов и добавляем его к списку финишировавших для вывода таблицы результатов
@@ -139,13 +144,21 @@ public class GameController : MonoBehaviour
             lapTimerCor = StartCoroutine(LapTimer());
 
             currentLapNumber++;
-            lapNumberText.text = "Lap: " + currentLapNumber + "/" + numberOfLaps;
+            lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
         }
     }
+
+    //public void OnHpIsChanged()
+    //{
+    //    Debug.Log("HpIsChanged");
+
+
+    //}
 
     public void OnPressStart()
     {
         startBtn.gameObject.SetActive(false);
+        speedText.transform.parent.gameObject.SetActive(true);
         trafficLights.SetActive(true);
         StartCoroutine(StartRace());
     }
@@ -223,8 +236,8 @@ public class GameController : MonoBehaviour
         mainCamera.SetStartPosition();
         startBtn.gameObject.SetActive(true);
         currentLapNumber = 1;
-        lapNumberText.text = "Lap: " + currentLapNumber + "/" + numberOfLaps;
-        speedText.text = "0 km/h";
+        lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
+        speedText.text = "0";
         lapTimeText.text = "00:00:0";
         PlacesCheck();
         raceIsOverGroup.SetActive(false);
