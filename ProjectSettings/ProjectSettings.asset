@@ -125,7 +125,8 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: 64577a4a1971ca64b8b48cab9184457e, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -246,15 +247,15 @@ PlayerSettings:
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: S:/Keystores/pk-games.keystore
+  AndroidKeyaliasName: pk-games
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
-  androidUseCustomKeystore: 0
+  androidUseCustomKeystore: 1
   m_AndroidBanners:
   - width: 320
     height: 180
