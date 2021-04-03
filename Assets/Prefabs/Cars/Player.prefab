@@ -42,6 +42,7 @@ Transform:
   - {fileID: 8329801452075983950}
   - {fileID: 1039695049838117172}
   - {fileID: 6279102483087949472}
+  - {fileID: 7490190973237288038}
   - {fileID: 3741414806592239170}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -135,8 +136,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.025, y: 0.014, z: 0.019}
-  m_Center: {x: -0.005, y: 0.0006, z: -0.000000001862645}
+  m_Size: {x: 0.025, y: 0.0049, z: 0.019}
+  m_Center: {x: -0.005, y: 0.0051, z: -0.000000001862645}
 --- !u!114 &2307986243952842961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477765a889d41584c891f45c940865e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAgent: 0
   playerName: Player_1
   forwardForce: 120
   backForce: -120
@@ -171,8 +173,15 @@ MonoBehaviour:
   dragMax: 2
   isCollision: 0
   minimapMarker: {fileID: 5708724051750723313}
+  leftBtnOn: 0
+  rightBtnOn: 0
+  gasOn: 0
+  reverseOn: 0
+  isSpinOut: 0
+  flipCheckDelay: 10
   agentCheckPoints: []
   currentCheckPointInd: 0
+  currentAgentCheckPoint: {x: 0, y: 0, z: 0}
   currentLap: 1
   lapIsOver:
     m_PersistentCalls:
@@ -217,7 +226,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
-  spawnPoint: {fileID: 6279102483087949472}
+  bulletSpawnPoint: {fileID: 6279102483087949472}
+  numberOfBullets: 10
+  mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
+  mineSpawnPoint: {fileID: 7490190973237288038}
+  numberOfMines: 10
+  mineBlockingObjectTags:
+  - Wall
+  - LandMine
+  ammoIsChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3888892109305619457
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,6 +648,36 @@ Transform:
   m_Father: {fileID: 3888892109305832223}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5534925722998414321
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7490190973237288038}
+  m_Layer: 0
+  m_Name: MineSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7490190973237288038
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5534925722998414321}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.024, y: -0.00793, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3888892109305832223}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5708724051750723313
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,7 +834,7 @@ PrefabInstance:
     - target: {fileID: 1058603277516302069, guid: 889ce563e22204e4d9846d05429e76f4,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1058603277516302069, guid: 889ce563e22204e4d9846d05429e76f4,
         type: 3}

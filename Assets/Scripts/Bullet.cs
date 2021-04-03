@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
     public int damage = 1;
     public string enemyTag = "Agent";
     public string playerTag = "Player";
-    public string[] exceptionTags = { "AgentCheckPoint", "Wheel" };
+    private string[] exceptionTags = { "AgentCheckPoint", "Wheel", "Stain" };
     public float destroyTime = 3;
     public ParticleSystem bulletExplosion;
 
@@ -31,7 +31,7 @@ public class Bullet : MonoBehaviour
             if (other.tag == _name)
                 return;
         }
-
+        
         hitObject = other.gameObject;
     }
 
@@ -40,22 +40,13 @@ public class Bullet : MonoBehaviour
         if (hitObject == null)
             return;
 
-        if (hitObject.tag == enemyTag)
+        if (hitObject.tag == enemyTag || hitObject.tag == playerTag)
         {
-            Debug.Log("Попадание в агента");
-            AgentController agent = hitObject.GetComponent<AgentController>();
+            PlayerController car = hitObject.GetComponent<PlayerController>();
+            Debug.Log("Попадание в " + car.playerName);
 
-            if (!agent.finished)
-                agent.HitHandler(damage);
-        }
-
-        if (hitObject.tag == playerTag)
-        {
-            Debug.Log("Попадание в игрока");
-            PlayerController player = hitObject.GetComponent<PlayerController>();
-
-            if (player.enabled)
-                player.HitHandler(damage);
+            if (car.enabled)
+                car.HitHandler(damage);
         }
 
         if (bulletExplosion != null)

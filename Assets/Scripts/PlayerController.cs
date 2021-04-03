@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public bool isAgent; // Это агент?
+    private AgentController agent;
+
     public string playerName = "Player_1";
     public float forwardForce;
     public float backForce;
@@ -28,6 +32,7 @@ public class PlayerController : MonoBehaviour
 
     private float tiresFrictionDelta;
     private float currentRotationSpeed = 0f;
+    [HideInInspector] public float turnSpeedRatio = 1f;
     private bool firstAcceleration = true;
     private bool moveForward = false;
 
@@ -35,20 +40,30 @@ public class PlayerController : MonoBehaviour
     public float dragMax = 1.5f;
     private float dragDelta;
 
-    private Rigidbody rb;
-    [SerializeField] private bool isCollision = false;
+    [HideInInspector] public Rigidbody rb;
+    private float mass;
+    public IEnumerator changeMassCor;
+    [HideInInspector] public bool isCollision = false;
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;
     public GameObject minimapMarker;
     public float Speed { get; private set; } // Абсолютная скорость игрока в горизонтальной плоскости
 
-    private ControlManager controls;
-    private bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
+    [HideInInspector] public ControlManager controls;
+    [HideInInspector] public bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
     private WeaponController weaponController;
+
+    [HideInInspector] public bool isSpinOut = false; // Происходит ли неконтролиуемое вращение
+    private float spinOutTimeRatio = 0.02f; // Коэффициент времени вращения, умножаем на скорость и получаем время вращения
+    public IEnumerator spinOutCor; // Корутина для SpinOut
+
+    private bool flipCheck = false; // Идет проверка на переворот
+    private Coroutine flipCor; // Корутина для проверки на переворот
+    public float flipCheckDelay = 2f; // Задержка для проверки на переворот
 
     public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
     public int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
-    private Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
+    [HideInInspector] public Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
     public int currentLap = 1; // Текущий номер круга
 
     public UnityEvent lapIsOver; // Круг окончен
@@ -62,7 +77,7 @@ public class PlayerController : MonoBehaviour
         controls = new ControlManager();
     }
 
-    void Start()
+    private void Start()
     {
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
@@ -72,13 +87,9 @@ public class PlayerController : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
-
         rb.drag = drag;
         dragDelta = dragMax - drag;
-
-        controls.Player.Respawn.performed += _ => Respawn();
-        controls.Player.Jump.performed += _ => Jump();
-        controls.Player.Fire.performed += _ => weaponController.Fire();
+        mass = rb.mass;
 
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
@@ -88,75 +99,94 @@ public class PlayerController : MonoBehaviour
         if (healthBar != null)
             healthBar.CreateHealthbar(hp);
         else
-            Debug.Log("Player: Healthbar not found");
+            Debug.Log(playerName + ": Healthbar not found");
 
         currentHp = hp;
 
-        enabled = false;
-    }
-
-    void FixedUpdate()
-    {
-        Speed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
-        
-        CheckButtons();
-
-        if (isCollision)
+        if (!isAgent)
         {
-            addedFlyTorque = false;
-            rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0f, rb.angularVelocity.z);
-
-            if (gasOn || reverseOn)
-            {
-                if (firstAcceleration)
-                {
-                    currentRotationSpeed = 0f;
-                    firstAcceleration = false;
-                }
-
-                if (gasOn)
-                {
-                    moveForward = true;
-                    rb.AddRelativeForce(forwardForce, 0f, 0f);
-                }
-                else
-                {
-                    moveForward = false;
-                    rb.AddRelativeForce(backForce, 0f, 0f);
-                } 
-            }
-            else
-            {
-                firstAcceleration = true;
-            }
-
-            if (rightBtnOn || leftBtnOn)
-            {
-                TurningWheels();
-
-                if (rightBtnOn)
-                    PlayerRotation(currentRotationSpeed);
-                else
-                    PlayerRotation(-currentRotationSpeed);
-            }
-            else
-            {
-                currentRotationSpeed = 0f;
-            }
-
-            if (Speed > 0.1f)
-                ChangeDrag();
+            controls.Player.Respawn.performed += _ => Respawn();
+            controls.Player.Jump.performed += _ => Jump();
+            controls.Player.Fire.performed += _ => weaponController.Fire();
+            controls.Player.LandMine.performed += _ => weaponController.SetMine();
+            enabled = false;
         }
         else
         {
-            if (!addedFlyTorque)
+            agent = GetComponent<AgentController>();
+        }
+        
+    }
+
+    private void FixedUpdate()
+    {
+        Speed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
+
+        if (!isSpinOut)
+        {
+            if (!isAgent)
+                CheckButtons();
+
+            if (isCollision)
             {
-                FlyBehavior();
-                addedFlyTorque = true;
+                addedFlyTorque = false;
+                rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0f, rb.angularVelocity.z);
+
+                if (gasOn || reverseOn)
+                {
+                    if (firstAcceleration)
+                    {
+                        currentRotationSpeed = 0f;
+                        firstAcceleration = false;
+                    }
+
+                    if (gasOn)
+                    {
+                        moveForward = true;
+                        rb.AddRelativeForce(forwardForce, 0f, 0f);
+                    }
+                    else
+                    {
+                        moveForward = false;
+                        rb.AddRelativeForce(backForce, 0f, 0f);
+                    }
+                }
+                else
+                {
+                    firstAcceleration = true;
+                }
+
+                if (rightBtnOn || leftBtnOn)
+                {
+                    TurningWheels();
+
+                    if (rightBtnOn)
+                        PlayerRotation(currentRotationSpeed * turnSpeedRatio);
+                    else
+                        PlayerRotation(-currentRotationSpeed * turnSpeedRatio);
+                }
+                else
+                {
+                    currentRotationSpeed = 0f;
+                }
+
+                if (Speed > 0.1f)
+                    ChangeDrag();
+            }
+            else
+            {
+                if (!addedFlyTorque)
+                {
+                    FlyBehavior();
+                    addedFlyTorque = true;
+                }
+                if (!flipCheck)
+                {
+                    flipCheck = true;
+                    flipCor = StartCoroutine(Flip());
+                }
             }
         }
-
-        //Debug.Log(VelocityAngle());
     }
 
     private void CheckButtons()
@@ -180,7 +210,7 @@ public class PlayerController : MonoBehaviour
     {
         if (explosion != null)
             Instantiate(explosion, transform.position, Quaternion.identity);
-
+        
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
@@ -197,6 +227,7 @@ public class PlayerController : MonoBehaviour
         requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
         transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
+
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
         {
             transform.position = hit.point + distanceToGround;
@@ -209,10 +240,24 @@ public class PlayerController : MonoBehaviour
         }
         transform.rotation = Quaternion.LookRotation(currentAgentCheckPoint - previousAgentCheckPoint) * Quaternion.AngleAxis(-90, Vector3.up);
         gameObject.layer = LayerMask.NameToLayer("Agent"); // После респауна возрващаем слой агента
+        ResetCoroutines();
 
         currentHp = hp;
         healthBar.ChangeHP(hp, currentHp);
         hpIsChanged?.Invoke(hp, currentHp);
+    }
+
+    // Задаем вращение при наезде на маляное пятно. Запускается из OilStain
+    public IEnumerator SpinOut(float force)
+    {
+        isSpinOut = true;
+
+        if (Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()) > 0)
+            force = -force;
+
+        rb.AddTorque(0f, force * Speed, 0f, ForceMode.Acceleration);
+        yield return new WaitForSeconds(spinOutTimeRatio * Speed);
+        isSpinOut = false;
     }
 
     public void HitHandler(int damage = 1)
@@ -230,17 +275,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void PlayerRotation(float _rotationSpeed)
+    private void PlayerRotation(float _rotationSpeed)
     {
         Vector3 newRotationAngle = rb.rotation.eulerAngles;
 
         if (gasOn)
         {
             newRotationAngle += new Vector3(0f, _rotationSpeed, 0f);
-        }else if (reverseOn)
+        }
+        else if (reverseOn)
         {
             newRotationAngle -= new Vector3(0f, _rotationSpeed, 0f);
-        }else if (rb.velocity.magnitude != 0f)
+        }
+        else if (rb.velocity.magnitude != 0f)
         {
             float speedPercent = rb.velocity.magnitude / (maxSpeed * 0.01f) / 100f;
 
@@ -253,7 +300,7 @@ public class PlayerController : MonoBehaviour
         rb.rotation = Quaternion.Euler(newRotationAngle);
     }
 
-    void ChangeDrag()
+    private void ChangeDrag()
     {
         float velocityAngle = Mathf.Abs(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
 
@@ -263,7 +310,7 @@ public class PlayerController : MonoBehaviour
             rb.drag = drag + (180 - velocityAngle) * dragDelta / 90f;
     }
 
-    void TurningWheels()
+    private void TurningWheels()
     {
         if (currentRotationSpeed < rotationSpeed)
         {
@@ -291,7 +338,7 @@ public class PlayerController : MonoBehaviour
         return velocityAngle;
     }
 
-    void FlyBehavior()
+    private void FlyBehavior()
     {
         rb.drag = drag;
 
@@ -306,12 +353,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnCollisionExit(Collision collision)
+    private void OnCollisionExit(Collision collision)
     {
         isCollision = false;
     }
 
-    void OnCollisionStay(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         int numberOfContacts = 0;
 
@@ -326,19 +373,32 @@ public class PlayerController : MonoBehaviour
                     isCollision = true;
                 }
             }
-        }  
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("AgentCheckPoint") && other.transform == agentCheckPoints[currentCheckPointInd])
         {
+            if (isAgent)
+            {
+                agent.AddReward(1f / agentCheckPoints.Length);
+            }
+
             currentCheckPointInd++;
+
             if (currentCheckPointInd == agentCheckPoints.Length)
             {
-                ResetAgentCheckPoints();
-                currentLap++;
-                lapIsOver?.Invoke();
+                if (isAgent && agent.training)
+                {
+                    agent.EndEpisode();
+                }
+                else
+                {
+                    ResetAgentCheckPoints();
+                    currentLap++;
+                    lapIsOver?.Invoke();
+                }
             }
             else
             {
@@ -348,7 +408,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Функция принимает словарь со значением дистанций для всех чекпоинтов, длину круга и возвращает оставшиюся до финиша дистанцию
-    public float GetRemainingDistance (Dictionary<Transform, float> checkpointDistances, float lapLength, int numberOfLaps)
+    public float GetRemainingDistance(Dictionary<Transform, float> checkpointDistances, float lapLength, int numberOfLaps)
     {
         float remainingDistance = 0;
         Transform currentCheckPoint = agentCheckPoints[currentCheckPointInd];
@@ -365,8 +425,37 @@ public class PlayerController : MonoBehaviour
         currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
     }
 
+    IEnumerator Flip()
+    {
+        // Начата проверка на переворот
+        yield return new WaitForSeconds(flipCheckDelay);
+        // Проверка закончена
+        flipCheck = false;
+        if (!isCollision)
+        {
+            Respawn();
+        }
+    }
+
+    public IEnumerator ChangeMass(float massMltiplier, float modificationTime, float newTurnSpeedRatio)
+    {
+        // Высчитываем процент воздействия в зависимости от текущей скорости. Чем выше скорость, тем сильнее воздействие
+        massMltiplier = massMltiplier * (Speed / maxSpeed);
+        modificationTime = modificationTime * (Speed / maxSpeed);
+
+        // Меняем массу и скорость поворота авто
+        rb.mass *= Mathf.Clamp(massMltiplier, 1f, massMltiplier);
+        turnSpeedRatio = newTurnSpeedRatio;
+
+        yield return new WaitForSeconds(modificationTime);
+        rb.mass = mass;
+        turnSpeedRatio = 1f;
+    }
+
     public void Restart()
     {
+        ResetCoroutines();
+
         transform.position = spawnPosition;
         transform.rotation = spawnRotation;
         rb.velocity = Vector3.zero;
@@ -377,6 +466,15 @@ public class PlayerController : MonoBehaviour
         currentHp = hp;
         healthBar.ChangeHP(hp, currentHp);
         hpIsChanged?.Invoke(hp, currentHp);
+    }
+
+    private void ResetCoroutines()
+    {
+        flipCheck = false;
+        isSpinOut = false;
+        rb.mass = mass;
+        turnSpeedRatio = 1f;
+        StopAllCoroutines();
     }
 
     private void OnEnable()

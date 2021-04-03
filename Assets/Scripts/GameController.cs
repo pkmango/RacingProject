@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public PlayerController player;
     public CameraController mainCamera;
     public AgentController[] agents;
+
     public Button startBtn;
     public Text lapTimeText; // Текстовое поле для отображения времени круга
     public Text speedText; // Текстовое поле для отображения скорости
@@ -19,6 +20,8 @@ public class GameController : MonoBehaviour
     public Text positionText; // Текстовое поле для отображения текущей позиции
     public Text positionSuffixText; // Суффикс для обозначения позиции
     private string[] positionSuffixes = {"", "st", "nd", "rd", "th", "th"}; // Набор суффиксов для отображения позиции
+    public Text numberOfBulletsText, numberOfMinesText;
+
     public Coroutine lapTimerCor; // Корутина для периодического отображения времени круга
     public float speedRatio; // Коэффициент для более реалистичного отображения скорости
     public GameObject trafficLights; // Светофор перед стартом
@@ -42,7 +45,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         trafficLights.SetActive(false);
-        //player.enabled = false;
+        pauseBtn.SetActive(false);
         foreach (AgentController agent in agents)
         {
             agent.Freeze();
@@ -89,18 +92,18 @@ public class GameController : MonoBehaviour
 
         foreach (AgentController agent in agents)
         {
-            float agentRemainingDistance = agent.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);
+            float agentRemainingDistance = agent.car.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);
 
             if (agentRemainingDistance < playerRemainingDistance)
                 playerPlace++;
             
-            if (agentRemainingDistance <= 0f && !agent.finished)
+            if (agentRemainingDistance <= 0f && agent.car.enabled)
             {
-                agent.finished = true;
+                //agent.finished = true;
                 agent.raceTime = raceTime;
-                listOfFinishers.Add(new RacerFinishData(agent.agentName, agent.raceTime.ToString("mm:ss:f")));
-                agent.enabled = false;
-                Debug.Log("Агент " + agent.agentName + " финишировал на " + listOfFinishers.Count + " месте");
+                listOfFinishers.Add(new RacerFinishData(agent.car.playerName, agent.raceTime.ToString("mm:ss:f")));
+                agent.car.enabled = false;
+                Debug.Log("Агент " + agent.car.playerName + " финишировал на " + listOfFinishers.Count + " месте");
             }
         }
 
@@ -118,13 +121,13 @@ public class GameController : MonoBehaviour
 
         foreach (AgentController agent in agents)
         {
-            if (!agent.finished)
+            if (agent.car.enabled)
             {
-                float agentRemainingDistance = agent.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);
+                float agentRemainingDistance = agent.car.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);
                 agent.raceTime = raceTime.AddSeconds(agentRemainingDistance / playerAverageSpeed);
-                unfinishedRacers.Add(new RacerFinishData(agent.agentName, agent.raceTime.ToString("mm:ss:f"), agentRemainingDistance));
-                agent.finished = true;
-                agent.enabled = false;
+                unfinishedRacers.Add(new RacerFinishData(agent.car.playerName, agent.raceTime.ToString("mm:ss:f"), agentRemainingDistance));
+                //agent.finished = true;
+                agent.car.enabled = false;
             }
         }
 
@@ -148,13 +151,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-    //public void OnHpIsChanged()
-    //{
-    //    Debug.Log("HpIsChanged");
-
-
-    //}
-
     public void OnPressStart()
     {
         startBtn.gameObject.SetActive(false);
@@ -168,13 +164,11 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(startDelay);
 
         trafficLights.SetActive(false);
+        pauseBtn.SetActive(true);
         player.enabled = true;
         foreach (AgentController agent in agents)
         {
-            //agent.EndEpisode();
-            agent.enabled = true;
-            //agent.EpisodeInterrupted();
-            //agent.Initialize();
+            agent.car.enabled = true;
             agent.UnFreeze();
         }
         raceTime = new DateTime();
@@ -183,6 +177,7 @@ public class GameController : MonoBehaviour
 
     void FinishRace()
     {
+        pauseBtn.SetActive(false);
         listOfFinishers.Add(new RacerFinishData(player.playerName, raceTime.ToString("mm:ss:f")));
         Debug.Log("Игрок финишировал на " + listOfFinishers.Count + " месте. Гонка завершена");
         StopCoroutine(lapTimerCor);
@@ -223,11 +218,14 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
+        Resume();
+        if (lapTimerCor != null)
+            StopCoroutine(lapTimerCor);
+
         listOfFinishers.Clear();
         foreach (AgentController agent in agents)
         {
-            agent.finished = false;
-            agent.enabled = true;
+            agent.car.enabled = true;
             agent.EndEpisode();
             agent.Freeze();
         }
@@ -241,6 +239,12 @@ public class GameController : MonoBehaviour
         lapTimeText.text = "00:00:0";
         PlacesCheck();
         raceIsOverGroup.SetActive(false);
+
+        LandMine[] allMines = FindObjectsOfType<LandMine>();
+        foreach (LandMine mine in allMines)
+        {
+            Destroy(mine.gameObject);
+        }
     }
 
     // Вычисление оставшихся дистанций пути для кадого agentCheckPoint и общей длины круга
@@ -258,6 +262,12 @@ public class GameController : MonoBehaviour
         }
         // Чтобы узнать полную длину круга добавляем оставшийся отрезок между первым и последним чекпоинтом
         lapLength = segmentLength + (agentCheckPoints[agentCheckPoints.Length - 1].position - agentCheckPoints[0].position).magnitude;
+    }
+
+    public void SetUIAmmoValue(int numberOfBullets, int numberOfMines)
+    {
+        numberOfBulletsText.text = numberOfBullets.ToString();
+        numberOfMinesText.text = numberOfMines.ToString();
     }
 
     public void Quit()
