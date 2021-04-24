@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public bool isTraining; // Включаем во время обучения агентов
+
     public PlayerController player;
     public CameraController mainCamera;
     public AgentController[] agents;
@@ -46,9 +48,13 @@ public class GameController : MonoBehaviour
     {
         trafficLights.SetActive(false);
         pauseBtn.SetActive(false);
-        foreach (AgentController agent in agents)
+
+        if (!isTraining)
         {
-            agent.Freeze();
+            foreach (AgentController agent in agents)
+            {
+                agent.Freeze();
+            }
         }
 
         lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
@@ -56,9 +62,12 @@ public class GameController : MonoBehaviour
         PlacesCheck();
 
         // Для тренировки агента
-        //startBtn.gameObject.SetActive(false);
-        //startDelay = 0;
-        //StartCoroutine(StartRace());
+        if (isTraining)
+        {
+            startBtn.gameObject.SetActive(false);
+            startDelay = 0;
+            StartCoroutine(StartRace());
+        }
     }
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
@@ -166,11 +175,16 @@ public class GameController : MonoBehaviour
         trafficLights.SetActive(false);
         pauseBtn.SetActive(true);
         player.enabled = true;
-        foreach (AgentController agent in agents)
+
+        if (!isTraining)
         {
-            agent.car.enabled = true;
-            agent.UnFreeze();
+            foreach (AgentController agent in agents)
+            {
+                agent.car.enabled = true;
+                agent.UnFreeze();
+            }
         }
+            
         raceTime = new DateTime();
         lapTimerCor = StartCoroutine(LapTimer());
     }

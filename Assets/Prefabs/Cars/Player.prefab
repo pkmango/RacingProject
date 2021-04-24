@@ -169,8 +169,10 @@ MonoBehaviour:
   hp: 3
   currentHp: 3
   healthBar: {fileID: 5960891648257723912}
+  turnSpeedRatio: 1
   drag: 0.2
   dragMax: 2
+  rb: {fileID: 0}
   isCollision: 0
   minimapMarker: {fileID: 5708724051750723313}
   leftBtnOn: 0
@@ -178,7 +180,7 @@ MonoBehaviour:
   gasOn: 0
   reverseOn: 0
   isSpinOut: 0
-  flipCheckDelay: 10
+  flipCheckDelay: 12
   agentCheckPoints: []
   currentCheckPointInd: 0
   currentAgentCheckPoint: {x: 0, y: 0, z: 0}
@@ -200,6 +202,7 @@ MonoBehaviour:
   hpIsChanged:
     m_PersistentCalls:
       m_Calls: []
+  forbiddenAreaDelay: 2
 --- !u!114 &8786587024857588012
 MonoBehaviour:
   m_ObjectHideFlags: 0

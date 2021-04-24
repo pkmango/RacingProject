@@ -44,8 +44,8 @@ public class PlayerController : MonoBehaviour
     private float mass;
     public IEnumerator changeMassCor;
     [HideInInspector] public bool isCollision = false;
-    private Vector3 spawnPosition;
-    private Quaternion spawnRotation;
+    [HideInInspector] public Vector3 spawnPosition;
+    [HideInInspector] public Quaternion spawnRotation;
     public GameObject minimapMarker;
     public float Speed { get; private set; } // Абсолютная скорость игрока в горизонтальной плоскости
 
@@ -71,6 +71,11 @@ public class PlayerController : MonoBehaviour
     [System.Serializable]
     public class HpChangedEvent : UnityEvent<int, int> { } // Создаем типа соыбтия которе может передавать 2 параметра
     public HpChangedEvent hpIsChanged; // Кол-во hp изменилось
+
+    private string forbiddenAreaTag = "ForbiddenArea";
+    private bool isForbiddenAreaTouch = false;
+    public float forbiddenAreaDelay = 2f;
+    private Coroutine forbiddenAreaTouchCor;
 
     private void Awake()
     {
@@ -121,6 +126,12 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Speed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
+
+        if (isAgent)
+        {
+            if (agent.isExternalForce)
+                return;
+        }
 
         if (!isSpinOut)
         {
@@ -250,6 +261,9 @@ public class PlayerController : MonoBehaviour
     // Задаем вращение при наезде на маляное пятно. Запускается из OilStain
     public IEnumerator SpinOut(float force)
     {
+        if (isAgent)
+            agent.AddReward(-0.05f);
+
         isSpinOut = true;
 
         if (Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()) > 0)
@@ -405,6 +419,18 @@ public class PlayerController : MonoBehaviour
                 currentAgentCheckPoint = agentCheckPoints[currentCheckPointInd].position;
             }
         }
+        
+        if (other.tag == forbiddenAreaTag && isForbiddenAreaTouch == false)
+        {
+            isForbiddenAreaTouch = true;
+            forbiddenAreaTouchCor = StartCoroutine(ForbiddenAreaTouch());
+        }
+    }
+
+    IEnumerator ForbiddenAreaTouch()
+    {
+        yield return new WaitForSeconds(forbiddenAreaDelay);
+        Respawn();
     }
 
     // Функция принимает словарь со значением дистанций для всех чекпоинтов, длину круга и возвращает оставшиюся до финиша дистанцию
@@ -439,6 +465,9 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator ChangeMass(float massMltiplier, float modificationTime, float newTurnSpeedRatio)
     {
+        if (isAgent)
+            agent.AddReward(-0.05f);
+
         // Высчитываем процент воздействия в зависимости от текущей скорости. Чем выше скорость, тем сильнее воздействие
         massMltiplier = massMltiplier * (Speed / maxSpeed);
         modificationTime = modificationTime * (Speed / maxSpeed);
@@ -470,6 +499,7 @@ public class PlayerController : MonoBehaviour
 
     private void ResetCoroutines()
     {
+        isForbiddenAreaTouch = false;
         flipCheck = false;
         isSpinOut = false;
         rb.mass = mass;

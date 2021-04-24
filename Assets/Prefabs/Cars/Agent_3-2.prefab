@@ -235,16 +235,20 @@ MonoBehaviour:
   hp: 3
   currentHp: 3
   healthBar: {fileID: 3655593773212086232}
+  turnSpeedRatio: 1
   drag: 0.2
   dragMax: 2
+  rb: {fileID: 0}
   isCollision: 0
+  spawnPosition: {x: 0, y: 0, z: 0}
+  spawnRotation: {x: 0, y: 0, z: 0, w: 0}
   minimapMarker: {fileID: 7020348817601928662}
   leftBtnOn: 0
   rightBtnOn: 0
   gasOn: 0
   reverseOn: 0
   isSpinOut: 0
-  flipCheckDelay: 2
+  flipCheckDelay: 5
   agentCheckPoints: []
   currentCheckPointInd: 0
   currentAgentCheckPoint: {x: 0, y: 0, z: 0}
@@ -255,6 +259,7 @@ MonoBehaviour:
   hpIsChanged:
     m_PersistentCalls:
       m_Calls: []
+  forbiddenAreaDelay: 2
 --- !u!114 &5779919052096657729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +280,10 @@ MonoBehaviour:
   training: 0
   startPositions: []
   heuristicAlowed: 0
+  isExternalForce: 0
+  externalForceTime: 1
+  externalForce: 0
+  externalForceDelta: 0
 --- !u!114 &7280116906709557474
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ using Unity.MLAgents.Policies;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 public class AgentController : Agent
 {
@@ -15,7 +16,16 @@ public class AgentController : Agent
     private float maxSpeedForNormalization = 69f; // Максимальная возможная скорость агента, нужно для нормализации
     public bool heuristicAlowed;
 
-    //[HideInInspector] public bool finished = false; // Агент финишировал? Статус используется в GameController
+    private bool firstTime = true; // Первый круг тренировки
+
+    // Настройки для случайной внешней силы
+    private Coroutine externalForceCor; // Корутина для случайной вшеншей силы
+    [HideInInspector] public bool isExternalForce = false; // Работает ли случайная внешняя сила?
+    public float externalForceTime = 1f; // Время действия случайной внешней силы
+    public float externalForce; // Значение случайной вшеншней силы
+    public float externalForceDelta; // Дельтра значений вшеншней силы 
+    private int externalForceChance = 1000; // Вероятность воздействия случайной внешней силы
+
     [HideInInspector] public DateTime raceTime = new DateTime(); // Общее время со старта гонки передается из GameController
 
     private void Awake()
@@ -25,19 +35,32 @@ public class AgentController : Agent
 
     public override void OnEpisodeBegin()
     {
+        isExternalForce = false;
+        if (externalForceCor != null)
+            StopCoroutine(externalForceCor);
+
         car.Restart();
 
-        if (training)
+        if (training && !firstTime)
         {
             int randomInd = Random.Range(0, startPositions.Length - 1);
+            Collider[] occupiedPlaces = Physics.OverlapSphere(startPositions[randomInd].position, 0.1f, LayerMask.GetMask("Agent"));
+            if (occupiedPlaces.Length > 0)
+            {
+                randomInd = randomInd == 0 ? Random.Range(1, startPositions.Length - 1) : 0;
+            }
             transform.position = startPositions[randomInd].position;
+        }
+        else
+        {
+            firstTime = false;
         }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         // Вычисляем угол между направлением скорости и поворотом авто
-        float velocityAngle = Mathf.Abs(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, car.VelocityAngle()));
+        float velocityAngle = Mathf.DeltaAngle(rb.rotation.eulerAngles.y, car.VelocityAngle());
         sensor.AddObservation(velocityAngle / 360);
 
         // Скалярное произведение показывает правильность направления движения
@@ -67,12 +90,30 @@ public class AgentController : Agent
         EndEpisode();
     }
 
+    IEnumerator ExternalForceAction()
+    {
+        isExternalForce = true;
+        float randomDelta = Random.Range(-externalForceDelta, externalForceDelta);
+        int[] signs = { -1, 1 };
+        float randomExternalForce = signs[Random.Range(0, 2)] * externalForce + randomDelta;
+        //Debug.Log(randomExternalForce);
+        rb.AddTorque(0f, randomExternalForce, 0f);
+        yield return new WaitForSeconds(externalForceTime);
+        isExternalForce = false;
+    }
+
     private void ActionHandler(ActionSegment<int> act)
     {
         AddReward(-0.0002f);
+
+        if (Random.Range(0, externalForceChance) == 1)
+        {
+            externalForceCor = StartCoroutine(ExternalForceAction());
+        }
+
         int rotateAction = act[0];
         int forwardAction = act[1];
-        //Debug.Log("Action");
+        
         if (rotateAction == 1) // Поворот налево
         {
             car.leftBtnOn = true;
@@ -110,7 +151,7 @@ public class AgentController : Agent
     {
         if (collision.gameObject.tag == "Wall")
         {
-            AddReward(-0.015f);
+            AddReward(-0.05f);
         }
     }
 
