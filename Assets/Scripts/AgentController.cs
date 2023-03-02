@@ -105,10 +105,12 @@ public class AgentController : Agent
     private void ActionHandler(ActionSegment<int> act)
     {
         AddReward(-0.0002f);
-
-        if (Random.Range(0, externalForceChance) == 1)
+        
+        if (training)
         {
-            externalForceCor = StartCoroutine(ExternalForceAction());
+            // Во время тренировки добавляем воздействие случайной внешней силы
+            if (Random.Range(0, externalForceChance) == 1)
+                externalForceCor = StartCoroutine(ExternalForceAction());
         }
 
         int rotateAction = act[0];
