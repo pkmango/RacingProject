@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 
     public PlayerController player;
     public CameraController mainCamera;
+    public string nextLevel = "Level_2";
     public AgentController[] agents;
 
     public Button startBtn;
