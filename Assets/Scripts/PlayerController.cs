@@ -80,6 +80,12 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         controls = new ControlManager();
+
+        // Создаем Healthbar
+        if (healthBar != null)
+            healthBar.CreateHealthbar(hp);
+        else
+            Debug.Log(playerName + ": Healthbar not found");
     }
 
     private void Start()
@@ -99,12 +105,6 @@ public class PlayerController : MonoBehaviour
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
         distanceToGround = transform.position - hit.point;
-
-        // Создаем Healthbar
-        if (healthBar != null)
-            healthBar.CreateHealthbar(hp);
-        else
-            Debug.Log(playerName + ": Healthbar not found");
 
         currentHp = hp;
 
@@ -485,8 +485,7 @@ public class PlayerController : MonoBehaviour
     {
         ResetCoroutines();
 
-        transform.position = spawnPosition;
-        transform.rotation = spawnRotation;
+        transform.SetPositionAndRotation(spawnPosition, spawnRotation); // Проверить
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.drag = drag;

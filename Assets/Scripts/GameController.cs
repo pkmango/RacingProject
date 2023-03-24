@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public PlayerController player;
     public CameraController mainCamera;
     public string nextLevel = "Level_2";
+    public SceneLoader sceneLoader; // Компонент для загрузки другой сцены
     public AgentController[] agents;
 
     public Button startBtn;
@@ -47,6 +48,8 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        
+
         trafficLights.SetActive(false);
         pauseBtn.SetActive(false);
 
@@ -68,6 +71,14 @@ public class GameController : MonoBehaviour
             startBtn.gameObject.SetActive(false);
             startDelay = 0;
             StartCoroutine(StartRace());
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            LoadScene(nextLevel);
         }
     }
 
@@ -302,5 +313,11 @@ public class GameController : MonoBehaviour
             time = racerTime;
             remainingDistance = racerRamainingDistance;
         }
+    }
+
+    private void LoadScene(string sceneName)
+    {
+        sceneLoader.gameObject.SetActive(true);
+        sceneLoader.LoadScene(sceneName);
     }
 }

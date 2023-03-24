@@ -23,7 +23,7 @@ public class HealthBar : MonoBehaviour
             hpSprites.Add(hpSprite);
         else
             Debug.Log("hpSprite not found");
-
+        //Debug.Log(hpSprites.Count);
         cam = Camera.main.transform;
         parent = transform.parent;
         relativePosition = transform.localPosition * 120f;
@@ -61,7 +61,8 @@ public class HealthBar : MonoBehaviour
         }
 
         int spentHp = hp - currentHp;
-
+        //Debug.Log(spentHp);
+        //Debug.Log(hp);
         for (int i = 0; i < spentHp; i++)
         {
             hpSprites[i].color = spentHpColor;
@@ -75,6 +76,7 @@ public class HealthBar : MonoBehaviour
 
     public void CreateHealthbar(int hp = 1)
     {
+        //Debug.Log("execute CreateHealthbar  " + hp);
         if (hp <= 1)
         {
             Debug.Log("hp <= 1");

@@ -16,7 +16,7 @@ public class AgentController : Agent
     private float maxSpeedForNormalization = 69f; // Максимальная возможная скорость агента, нужно для нормализации
     public bool heuristicAlowed;
 
-    private bool firstTime = true; // Первый круг тренировки
+    private bool firstTime = true; // Первый круг игры или тренировки
 
     // Настройки для случайной внешней силы
     private Coroutine externalForceCor; // Корутина для случайной вшеншей силы
@@ -38,18 +38,21 @@ public class AgentController : Agent
         isExternalForce = false;
         if (externalForceCor != null)
             StopCoroutine(externalForceCor);
-
-        car.Restart();
-
-        if (training && !firstTime)
+        
+        if (!firstTime)
         {
-            int randomInd = Random.Range(0, startPositions.Length - 1);
-            Collider[] occupiedPlaces = Physics.OverlapSphere(startPositions[randomInd].position, 0.1f, LayerMask.GetMask("Agent"));
-            if (occupiedPlaces.Length > 0)
+            car.Restart();
+
+            if (training)
             {
-                randomInd = randomInd == 0 ? Random.Range(1, startPositions.Length - 1) : 0;
+                int randomInd = Random.Range(0, startPositions.Length - 1);
+                Collider[] occupiedPlaces = Physics.OverlapSphere(startPositions[randomInd].position, 0.1f, LayerMask.GetMask("Agent"));
+                if (occupiedPlaces.Length > 0)
+                {
+                    randomInd = randomInd == 0 ? Random.Range(1, startPositions.Length - 1) : 0;
+                }
+                transform.position = startPositions[randomInd].position;
             }
-            transform.position = startPositions[randomInd].position;
         }
         else
         {
