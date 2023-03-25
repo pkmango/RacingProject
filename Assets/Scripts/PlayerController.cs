@@ -193,7 +193,6 @@ public class PlayerController : MonoBehaviour
                 }
                 if (!flipCheck)
                 {
-                    flipCheck = true;
                     flipCor = StartCoroutine(Flip());
                 }
             }
@@ -453,14 +452,25 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Flip()
     {
+        flipCheck = true;
+        float flipStartTime = Time.time;
+
         // Начата проверка на переворот
-        yield return new WaitForSeconds(flipCheckDelay);
+        while (Time.time - flipStartTime < flipCheckDelay)
+        {
+            if (isCollision)
+            {
+                flipCheck = false;
+                yield break;
+            }
+            else
+            {
+                yield return null;
+            }
+        }
         // Проверка закончена
         flipCheck = false;
-        if (!isCollision)
-        {
-            Respawn();
-        }
+        Respawn();
     }
 
     public IEnumerator ChangeMass(float massMltiplier, float modificationTime, float newTurnSpeedRatio)
