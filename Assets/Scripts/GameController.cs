@@ -74,11 +74,12 @@ public class GameController : MonoBehaviour
         }
     }
 
+    // For Debug
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.N))
         {
-            LoadScene(nextLevel);
+            LoadScene();
         }
     }
 
@@ -231,6 +232,7 @@ public class GameController : MonoBehaviour
     public void Pause()
     {
         Time.timeScale = 0f;
+        player.controls.Disable();
         pauseBtn.SetActive(false);
         pauseGroup.SetActive(true);
     }
@@ -238,6 +240,7 @@ public class GameController : MonoBehaviour
     public void Resume()
     {
         Time.timeScale = 1f;
+        player.controls.Enable();
         pauseBtn.SetActive(true);
         pauseGroup.SetActive(false);
     }
@@ -315,9 +318,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void LoadScene(string sceneName)
+    public void LoadScene()
     {
         sceneLoader.gameObject.SetActive(true);
-        sceneLoader.LoadScene(sceneName);
+        sceneLoader.LoadScene(nextLevel);
     }
 }
