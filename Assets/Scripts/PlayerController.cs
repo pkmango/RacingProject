@@ -495,7 +495,7 @@ public class PlayerController : MonoBehaviour
     {
         ResetCoroutines();
 
-        transform.SetPositionAndRotation(spawnPosition, spawnRotation); // Проверить
+        transform.SetPositionAndRotation(spawnPosition, spawnRotation);
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.drag = drag;

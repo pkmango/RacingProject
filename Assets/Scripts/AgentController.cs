@@ -15,7 +15,7 @@ public class AgentController : Agent
     private Rigidbody rb;
     private float maxSpeedForNormalization = 69f; // Максимальная возможная скорость агента, нужно для нормализации
     public bool heuristicAlowed;
-
+    
     private bool firstTime = true; // Первый круг игры или тренировки
 
     // Настройки для случайной внешней силы

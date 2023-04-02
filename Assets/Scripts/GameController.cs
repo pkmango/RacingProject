@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public PlayerController player;
     public CameraController mainCamera;
     public string nextLevel = "Level_2";
+    public string mainMenuName = "MainMenu";
     public SceneLoader sceneLoader; // Компонент для загрузки другой сцены
     public AgentController[] agents;
 
@@ -75,13 +76,13 @@ public class GameController : MonoBehaviour
     }
 
     // For Debug
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            LoadScene();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.N))
+    //    {
+    //        LoadScene();
+    //    }
+    //}
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
     public IEnumerator LapTimer()
@@ -297,6 +298,13 @@ public class GameController : MonoBehaviour
     {
         numberOfBulletsText.text = numberOfBullets.ToString();
         numberOfMinesText.text = numberOfMines.ToString();
+    }
+
+    public void LoadMainMenu()
+    {
+        Time.timeScale = 1f;
+        sceneLoader.gameObject.SetActive(true);
+        sceneLoader.LoadScene(mainMenuName);
     }
 
     public void Quit()
