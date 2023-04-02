@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
     public UnityEvent lapIsOver; // Круг окончен
 
     [System.Serializable]
-    public class HpChangedEvent : UnityEvent<int, int> { } // Создаем тип соыбтия которе может передавать 2 параметра
+    public class HpChangedEvent : UnityEvent<int, int> { } // Создаем тип события которе может передавать 2 параметра
     public HpChangedEvent hpIsChanged; // Кол-во hp изменилось
 
     private string forbiddenAreaTag = "ForbiddenArea";
