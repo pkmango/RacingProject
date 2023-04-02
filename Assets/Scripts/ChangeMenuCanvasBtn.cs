@@ -1,27 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class ChangeMenuCanvasBtn : MonoBehaviour, IPointerClickHandler
 {
-    // Создаем тип соыбтия которе может передавать 2 параметра
+    // Создаем тип события которе может передавать 2 объекта,
+    // тот что нужно показать, и тот что нужно скрыть
     [System.Serializable]
-    public class OnClickEvent : UnityEvent<GameObject, GameObject> { }
-    public GameObject showCanvas;
-    public GameObject hideCanvas;
-    public OnClickEvent onClick;
+    private class OnClickEvent : UnityEvent<GameObject, GameObject> { }
+    [SerializeField]
+    private GameObject showCanvas, hideCanvas;
+    [SerializeField]
+    private OnClickEvent onClick;
 
-    public virtual void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
 
-        Press();
-    }
-
-    private void Press()
-    {
         onClick?.Invoke(showCanvas, hideCanvas);
     }
 }

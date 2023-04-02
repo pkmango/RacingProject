@@ -1,32 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
     public SceneLoader sceneLoader; // Компонент для загрузки другой сцены
-    public GameObject mainCanvas;
-    public GameObject biomeSelectionCavas;
 
-
-
-    void Start()
+    public void LoadScene(string scene)
     {
-        
-    }
-
-    public void ShowBiomeSelection()
-    {
-        mainCanvas.SetActive(false);
-        biomeSelectionCavas.SetActive(true);
-    }
-
-    public void ShowMain()
-    {
-        mainCanvas.SetActive(true);
-        biomeSelectionCavas.SetActive(false);
+        sceneLoader.gameObject.SetActive(true);
+        sceneLoader.LoadScene(scene);
     }
 
     public void ShowTargetCanvas(GameObject target, GameObject current)
