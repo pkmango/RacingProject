@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    public float transitionTime = 2f;
+    public float transitionTime = 1f;
     public string sceneName = "MainMenu";
 
     private CanvasGroup canvasGroup;
