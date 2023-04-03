@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
     public float transitionTime = 1f;
     public string sceneName = "MainMenu";
+    public GameObject loadingText;
 
     private CanvasGroup canvasGroup;
 
@@ -33,6 +35,7 @@ public class SceneLoader : MonoBehaviour
 
         if (sceneChange)
         {
+            loadingText.SetActive(true);
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         }
         else
