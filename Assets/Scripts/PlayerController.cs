@@ -94,7 +94,10 @@ public class PlayerController : MonoBehaviour
         spawnRotation = transform.rotation;
         ResetAgentCheckPoints();
         minimapMarker.SetActive(true);
+
         weaponController = GetComponent<WeaponController>();
+        if (weaponController == null)
+            Debug.Log("Error. WeaponController required");
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -410,8 +413,10 @@ public class PlayerController : MonoBehaviour
                 {
                     ResetAgentCheckPoints();
                     currentLap++;
-                    lapIsOver?.Invoke();
+                    //lapIsOver?.Invoke();
                 }
+
+                lapIsOver?.Invoke();
             }
             else
             {
@@ -435,11 +440,9 @@ public class PlayerController : MonoBehaviour
     // Функция принимает словарь со значением дистанций для всех чекпоинтов, длину круга и возвращает оставшиюся до финиша дистанцию
     public float GetRemainingDistance(Dictionary<Transform, float> checkpointDistances, float lapLength, int numberOfLaps)
     {
-        float remainingDistance = 0;
         Transform currentCheckPoint = agentCheckPoints[currentCheckPointInd];
         float distanceToCheckpoint = (agentCheckPoints[currentCheckPointInd].position - transform.position).magnitude;
-
-        remainingDistance = (numberOfLaps - currentLap) * lapLength + checkpointDistances[currentCheckPoint] + distanceToCheckpoint;
+        float remainingDistance = (numberOfLaps - currentLap) * lapLength + checkpointDistances[currentCheckPoint] + distanceToCheckpoint;
 
         return remainingDistance;
     }

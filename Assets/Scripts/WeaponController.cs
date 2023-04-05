@@ -6,12 +6,12 @@ public class WeaponController : MonoBehaviour
     public GameObject bullet;
     public Transform bulletSpawnPoint;
     public int numberOfBullets;
-    private int currentNumberOfBullets;
+    [SerializeField] private int currentNumberOfBullets;
 
     public GameObject mine;
     public Transform mineSpawnPoint;
     public int numberOfMines;
-    private int currentNumberOfMines;
+    [SerializeField] private int currentNumberOfMines;
     public string[] mineBlockingObjectTags = { "Wall", "LandMine" };
 
     [System.Serializable]
@@ -47,7 +47,7 @@ public class WeaponController : MonoBehaviour
         }
         else
         {
-            Debug.Log("No bullets");
+            //Debug.Log("No bullets");
         }
         
     }
@@ -75,7 +75,7 @@ public class WeaponController : MonoBehaviour
         }
         else
         {
-            Debug.Log("No mines");
+            //Debug.Log("No mines");
         }
     }
 

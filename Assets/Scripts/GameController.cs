@@ -85,6 +85,7 @@ public class GameController : MonoBehaviour
     //}
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
+    // Также вызывает метод PlacesCheck(), который может завершить гонку
     public IEnumerator LapTimer()
     {
         DateTime lapTime = new DateTime();
@@ -102,6 +103,8 @@ public class GameController : MonoBehaviour
         }
     }
 
+
+    // Проверяет занимаемое место и оставшееся расстояние до финиша, если меньше 0, то завершает гонку
     private void PlacesCheck()
     {
         float playerRemainingDistance = player.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);

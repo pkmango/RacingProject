@@ -646,8 +646,9 @@ GameObject:
   - component: {fileID: 3292677334692359324}
   - component: {fileID: 1769842735526155583}
   - component: {fileID: 78313981414802123}
-  - component: {fileID: 2553928858254564877}
   - component: {fileID: 1761666886624009103}
+  - component: {fileID: 2553928858254564877}
+  - component: {fileID: 3933844758969298738}
   m_Layer: 10
   m_Name: Agent_4-1
   m_TagString: Agent
@@ -843,7 +844,18 @@ MonoBehaviour:
   currentLap: 1
   lapIsOver:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2553928858254564877}
+        m_MethodName: AmmoReload
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hpIsChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -919,30 +931,6 @@ MonoBehaviour:
   m_UseChildSensors: 1
   m_UseChildActuators: 1
   m_ObservableAttributeHandling: 0
---- !u!114 &2553928858254564877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6091006393800603352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e34cff343ecf4eb42af574608b48992f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
-  bulletSpawnPoint: {fileID: 7622647240945403158}
-  numberOfBullets: 10
-  mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
-  mineSpawnPoint: {fileID: 4812534683122326014}
-  numberOfMines: 10
-  mineBlockingObjectTags:
-  - Wall
-  - LandMine
-  ammoIsChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1761666886624009103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -957,6 +945,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DecisionPeriod: 5
   TakeActionsBetweenDecisions: 1
+--- !u!114 &2553928858254564877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6091006393800603352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e34cff343ecf4eb42af574608b48992f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
+  bulletSpawnPoint: {fileID: 7622647240945403158}
+  numberOfBullets: 5
+  currentNumberOfBullets: 0
+  mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
+  mineSpawnPoint: {fileID: 4812534683122326014}
+  numberOfMines: 5
+  currentNumberOfMines: 0
+  mineBlockingObjectTags:
+  - Wall
+  - LandMine
+  ammoIsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3933844758969298738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6091006393800603352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb33f21345871a439c348518cdddffb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interval: 0.25
+  detectionDistance: 100
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  targetTags:
+  - Player
+  weaponActivated: 1
 --- !u!1 &6352376563639481666
 GameObject:
   m_ObjectHideFlags: 0
