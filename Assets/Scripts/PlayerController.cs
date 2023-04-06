@@ -86,6 +86,10 @@ public class PlayerController : MonoBehaviour
             healthBar.CreateHealthbar(hp);
         else
             Debug.Log(playerName + ": Healthbar not found");
+
+        weaponController = GetComponent<WeaponController>();
+        if (weaponController == null)
+            Debug.Log("Error. WeaponController required");
     }
 
     private void Start()
@@ -95,9 +99,9 @@ public class PlayerController : MonoBehaviour
         ResetAgentCheckPoints();
         minimapMarker.SetActive(true);
 
-        weaponController = GetComponent<WeaponController>();
-        if (weaponController == null)
-            Debug.Log("Error. WeaponController required");
+        //weaponController = GetComponent<WeaponController>();
+        //if (weaponController == null)
+        //    Debug.Log("Error. WeaponController required");
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -522,10 +526,12 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         controls.Player.Enable();
+        weaponController.AutoMode(true);
     }
 
     private void OnDisable()
     {
         controls.Player.Disable();
+        weaponController.AutoMode(false);
     }
 }

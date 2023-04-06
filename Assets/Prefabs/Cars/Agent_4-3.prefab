@@ -583,16 +583,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
   bulletSpawnPoint: {fileID: 6459578729182940909}
-  numberOfBullets: 10
+  numberOfBullets: 3
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 8261170915848950277}
-  numberOfMines: 10
+  numberOfMines: 3
   mineBlockingObjectTags:
   - Wall
   - LandMine
   ammoIsChanged:
     m_PersistentCalls:
       m_Calls: []
+  autoModeOn: 1
+  interval: 0.2
+  detectionDistance: 100
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  targetTags:
+  - Player
 --- !u!114 &2890940791884943476
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -648,7 +648,6 @@ GameObject:
   - component: {fileID: 78313981414802123}
   - component: {fileID: 1761666886624009103}
   - component: {fileID: 2553928858254564877}
-  - component: {fileID: 3933844758969298738}
   m_Layer: 10
   m_Name: Agent_4-1
   m_TagString: Agent
@@ -959,38 +958,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
   bulletSpawnPoint: {fileID: 7622647240945403158}
-  numberOfBullets: 5
-  currentNumberOfBullets: 0
+  numberOfBullets: 3
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 4812534683122326014}
-  numberOfMines: 5
-  currentNumberOfMines: 0
+  numberOfMines: 3
   mineBlockingObjectTags:
   - Wall
   - LandMine
   ammoIsChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3933844758969298738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6091006393800603352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecb33f21345871a439c348518cdddffb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interval: 0.25
+  autoModeOn: 1
+  interval: 0.2
   detectionDistance: 100
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 1024
   targetTags:
   - Player
-  weaponActivated: 1
 --- !u!1 &6352376563639481666
 GameObject:
   m_ObjectHideFlags: 0
