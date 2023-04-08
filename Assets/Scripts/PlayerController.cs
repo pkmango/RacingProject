@@ -18,9 +18,6 @@ public class PlayerController : MonoBehaviour
     public float wheelTurningSpeed;
     public float flyTorque; // Крутящий момент в полете
     private bool addedFlyTorque = false; // Крутящий момент в полете добавлен?
-    //private PlacesForRespawn placesForRespawn; // Массив с вариантами смещения относительно центра при респауне
-    //[Range(0, 3)]
-    //public int respawnPlaceID; // Номер элемента массива placesForRespawn
     public LayerMask surfaceSearchMask;
     public GameObject explosion;
     private Vector3 distanceToGround; // Расстояние начала координат агента до земли
@@ -203,6 +200,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Метод возрвращает смещение относительно центра при респауне,
+    // это нужно чтобы машины не респавнились в одну точку
     private Vector3 GetPlaceForRespawn()
     {
         GameObject placesForRespawnObj = GameObject.FindWithTag("PlacesForRespawn");
@@ -260,7 +259,6 @@ public class PlayerController : MonoBehaviour
         PointOnLine respawnPoint = new PointOnLine(); // Точка ближайшая точка на прямой между текущим и предыдущим чекопоинтом
         Vector3 requiredPoint = respawnPoint.GetPointOnLine(previousAgentCheckPoint, currentAgentCheckPoint, transform.position); // Получаем ближайшую точку на прямой между чекпоинтами
         requiredPoint += GetPlaceForRespawn(); // Смещаем точку на свое заданное отклонение для респауна
-        //requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
         transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
 

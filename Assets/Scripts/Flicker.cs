@@ -29,6 +29,6 @@ public class Flicker : MonoBehaviour
     {
         alpha = Mathf.PingPong(Time.time, maxAlpha)* (1f - minAlpha) + minAlpha;
         loadingText.color = new Color(color.r, color.g, color.b, alpha);
-        Debug.Log("alpha = " + alpha + "  Time.time = " + Time.time);
+        //Debug.Log("alpha = " + alpha + "  Time.time = " + Time.time);
     }
 }
