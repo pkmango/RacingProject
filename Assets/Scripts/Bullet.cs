@@ -43,7 +43,7 @@ public class Bullet : MonoBehaviour
         if (hitObject.tag == enemyTag || hitObject.tag == playerTag)
         {
             PlayerController car = hitObject.GetComponent<PlayerController>();
-            Debug.Log("Попадание в " + car.playerName);
+            //Debug.Log("Попадание в " + car.playerName);
 
             if (car.enabled)
                 car.HitHandler(damage);

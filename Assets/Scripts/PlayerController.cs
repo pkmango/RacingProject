@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,9 +18,9 @@ public class PlayerController : MonoBehaviour
     public float wheelTurningSpeed;
     public float flyTorque; // Крутящий момент в полете
     private bool addedFlyTorque = false; // Крутящий момент в полете добавлен?
-    public PlacesForRespawn placesForRespawn; // Массив с вариантами смещения относительно центра при респауне
-    [Range(0, 3)]
-    public int respawnPlaceID; // Номер элемента массива placesForRespawn
+    //private PlacesForRespawn placesForRespawn; // Массив с вариантами смещения относительно центра при респауне
+    //[Range(0, 3)]
+    //public int respawnPlaceID; // Номер элемента массива placesForRespawn
     public LayerMask surfaceSearchMask;
     public GameObject explosion;
     private Vector3 distanceToGround; // Расстояние начала координат агента до земли
@@ -30,7 +29,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public int currentHp = 3;
     public HealthBar healthBar;
 
-    private float tiresFrictionDelta;
+    //private float tiresFrictionDelta;
     private float currentRotationSpeed = 0f;
     [HideInInspector] public float turnSpeedRatio = 1f;
     private bool firstAcceleration = true;
@@ -79,6 +78,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        
+
         controls = new ControlManager();
 
         // Создаем Healthbar
@@ -98,10 +99,6 @@ public class PlayerController : MonoBehaviour
         spawnRotation = transform.rotation;
         ResetAgentCheckPoints();
         minimapMarker.SetActive(true);
-
-        //weaponController = GetComponent<WeaponController>();
-        //if (weaponController == null)
-        //    Debug.Log("Error. WeaponController required");
 
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = Mathf.Infinity;
@@ -206,6 +203,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private Vector3 GetPlaceForRespawn()
+    {
+        GameObject placesForRespawnObj = GameObject.FindWithTag("PlacesForRespawn");
+
+        if (placesForRespawnObj == null)
+        {
+            Debug.Log("GameObject placesForRespawn not found");
+            return Vector3.zero;
+        }
+
+        PlacesForRespawn placesForRespawn = placesForRespawnObj.GetComponent<PlacesForRespawn>();
+
+        if (placesForRespawn == null)
+        {
+            Debug.Log("Component PlacesForRespawn not found");
+            return Vector3.zero;
+        }
+
+        return placesForRespawn.Place();
+    }
+
     private void CheckButtons()
     {
         rightBtnOn = controls.Player.Right.ReadValue<float>() > 0 ? true : false;
@@ -241,7 +259,8 @@ public class PlayerController : MonoBehaviour
         // Вычисляем новую позицию для машины
         PointOnLine respawnPoint = new PointOnLine(); // Точка ближайшая точка на прямой между текущим и предыдущим чекопоинтом
         Vector3 requiredPoint = respawnPoint.GetPointOnLine(previousAgentCheckPoint, currentAgentCheckPoint, transform.position); // Получаем ближайшую точку на прямой между чекпоинтами
-        requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
+        requiredPoint += GetPlaceForRespawn(); // Смещаем точку на свое заданное отклонение для респауна
+        //requiredPoint += placesForRespawn.placesForRespawn[respawnPlaceID]; // Смещаем точку на свое заданное отклонение для респауна
         transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
 

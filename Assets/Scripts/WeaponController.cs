@@ -7,12 +7,12 @@ public class WeaponController : MonoBehaviour
     public GameObject bullet;
     public Transform bulletSpawnPoint;
     public int numberOfBullets;
-    private int currentNumberOfBullets;
+    [SerializeField] private int currentNumberOfBullets;
     
     public GameObject mine;
     public Transform mineSpawnPoint;
     public int numberOfMines;
-    private int currentNumberOfMines;
+    [SerializeField] private int currentNumberOfMines;
     public string[] mineBlockingObjectTags = { "Wall", "LandMine" };
 
     [System.Serializable]

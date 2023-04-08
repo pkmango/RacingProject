@@ -12,7 +12,7 @@ public class LandMine : MonoBehaviour
         if (other.tag == enemyTag || other.tag == playerTag)
         {
             PlayerController car = other.GetComponent<PlayerController>();
-            Debug.Log(car.playerName + " подорвался на мине");
+            //Debug.Log(car.playerName + " подорвался на мине");
 
             if (car.enabled)
                 car.HitHandler(damage);

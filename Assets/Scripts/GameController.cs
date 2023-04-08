@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public bool isTraining; // Включаем во время обучения агентов
 
     public PlayerController player;
+    public PlayerData playerData;
     public CameraController mainCamera;
     public string nextLevel = "Level_2";
     public string mainMenuName = "MainMenu";
@@ -47,9 +48,18 @@ public class GameController : MonoBehaviour
     private float lapLength; // Длина круга
     private List<RacerFinishData> listOfFinishers = new List<RacerFinishData>(); // Список финишировавших
 
+    //private PlayerData playerData;
+
+    private void Awake()
+    {
+        //AddPlayer();
+    }
+
     void Start()
     {
-        
+        //playerData = gameObject.AddComponent<PlayerData>();
+        //int i = playerData.CarPrefabNumber;
+        //Debug.Log(playerData.CarPrefabNumber);
 
         trafficLights.SetActive(false);
         pauseBtn.SetActive(false);
@@ -75,14 +85,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // For Debug
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.N))
-    //    {
-    //        LoadScene();
-    //    }
-    //}
+    private void AddPlayer()
+    {
+        PlayerController p = playerData.playerCars[playerData.CarPrefabNumber].GetComponent<PlayerController>();
+        p.agentCheckPoints = agentCheckPoints;
+        Instantiate(p.gameObject, player.transform.position + new Vector3(0f, 5f, 0f), player.transform.rotation);
+    }
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
     // Также вызывает метод PlacesCheck(), который может завершить гонку

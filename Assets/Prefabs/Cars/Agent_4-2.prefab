@@ -625,7 +625,18 @@ MonoBehaviour:
   currentLap: 1
   lapIsOver:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4825155631385759540}
+        m_MethodName: AmmoReload
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hpIsChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -716,9 +727,11 @@ MonoBehaviour:
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
   bulletSpawnPoint: {fileID: 598434492183548975}
   numberOfBullets: 3
+  currentNumberOfBullets: 0
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 2544124167353551047}
   numberOfMines: 3
+  currentNumberOfMines: 0
   mineBlockingObjectTags:
   - Wall
   - LandMine
