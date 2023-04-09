@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -8,7 +7,6 @@ public class CameraController : MonoBehaviour
     public float speedRatio; // Передаточный коэффициент зависимости скорости камеры от скорости игрока
     public Vector3 zeroPosition; // Нулевая позиция камеры относительно игрока
 
-    //private Vector3 zeroPosition;
     private Rigidbody playerRB;
     private float angleRatio; // Угловой коэффициент, нужен для более сильного отклонения камеры когда игрок едет вниз
     private float angleRatioPercent = 0.1f; // Синус угла от скорости слишком большой, берем 10%
@@ -16,8 +14,7 @@ public class CameraController : MonoBehaviour
 
     void Awake()
     {
-        playerRB = player.GetComponent<Rigidbody>();
-        playerController = player.GetComponent<PlayerController>();
+        //SetPlayer(player);
     }
 
     void FixedUpdate()
@@ -30,13 +27,21 @@ public class CameraController : MonoBehaviour
                 (player.position.x + zeroPosition.x + (playerRB.velocity.x * newSpeedRatio),
                 transform.position.y,
                 player.position.z + zeroPosition.z + (playerRB.velocity.z * newSpeedRatio));
-
+            
             transform.position = Vector3.Lerp(transform.position, newPosition, deflectionSpeed);
         }
     }
 
     public void SetStartPosition()
     {
-        transform.position = playerController.gameObject.transform.position + zeroPosition;
+        transform.position = player.position + zeroPosition;
+        Debug.Log("Camera SetStartPosition");
+    }
+
+    public void SetPlayer(Transform p)
+    {
+        player = p;
+        playerRB = player.GetComponent<Rigidbody>();
+        playerController = player.GetComponent<PlayerController>();
     }
 }

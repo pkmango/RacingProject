@@ -52,15 +52,11 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        //AddPlayer();
+        AddPlayer();
     }
 
     void Start()
     {
-        //playerData = gameObject.AddComponent<PlayerData>();
-        //int i = playerData.CarPrefabNumber;
-        //Debug.Log(playerData.CarPrefabNumber);
-
         trafficLights.SetActive(false);
         pauseBtn.SetActive(false);
 
@@ -87,9 +83,22 @@ public class GameController : MonoBehaviour
 
     private void AddPlayer()
     {
-        PlayerController p = playerData.playerCars[playerData.CarPrefabNumber].GetComponent<PlayerController>();
-        p.agentCheckPoints = agentCheckPoints;
-        Instantiate(p.gameObject, player.transform.position + new Vector3(0f, 5f, 0f), player.transform.rotation);
+        if (playerData != null)
+        {
+            player.gameObject.SetActive(false); // Отключаем дефолтного игрока
+            GameObject playerObj = Instantiate(playerData.GetCar(), player.transform.position, player.transform.rotation);
+            player = playerObj.GetComponent<PlayerController>();
+            player.agentCheckPoints = agentCheckPoints;
+            player.lapIsOver.AddListener(OnLapIsOver);
+            player.weaponController.ammoIsChanged.AddListener(SetUIAmmoValue);
+        }
+        else
+        {
+            Debug.Log("PlayerData not found! Default player prefab used");
+            player.gameObject.SetActive(true);
+        }
+
+        mainCamera.SetPlayer(player.transform);
     }
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
@@ -116,8 +125,8 @@ public class GameController : MonoBehaviour
     private void PlacesCheck()
     {
         float playerRemainingDistance = player.GetRemainingDistance(checkpointDistances, lapLength, numberOfLaps);
-        //Debug.Log(playerRemainingDistance);
         int playerPlace = 1; // Место игрока в гонке
+
         if (playerRemainingDistance <= 0f)
         {
             FinishRace();

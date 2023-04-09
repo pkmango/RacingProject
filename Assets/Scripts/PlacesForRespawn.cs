@@ -10,7 +10,7 @@ public class PlacesForRespawn : MonoBehaviour
     public Vector3 Place()
     {
         Vector3 place = placesForRespawn[index];
-        Debug.Log(place);
+        
         if (index < placesForRespawn.Length - 1)
         {
             index++;

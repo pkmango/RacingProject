@@ -26,7 +26,9 @@ public class PlayerUIHealthBar : MonoBehaviour
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
         {
-            CreateHealthbar(playerObj.GetComponent<PlayerController>().hp);
+            PlayerController player = playerObj.GetComponent<PlayerController>();
+            CreateHealthbar(player.hp);
+            player.hpIsChanged.AddListener(OnHpIsChanged);
         }
         else
         {

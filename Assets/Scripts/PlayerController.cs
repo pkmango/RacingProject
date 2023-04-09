@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Rigidbody rb;
     private float mass;
     public IEnumerator changeMassCor;
-    [HideInInspector] public bool isCollision = false;
+    [HideInInspector] public bool isCollision = true;
     [HideInInspector] public Vector3 spawnPosition;
     [HideInInspector] public Quaternion spawnRotation;
     public GameObject minimapMarker;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public ControlManager controls;
     [HideInInspector] public bool leftBtnOn, rightBtnOn, gasOn, reverseOn; // Нажата ли кнопка?
-    private WeaponController weaponController;
+    [HideInInspector] public WeaponController weaponController;
 
     [HideInInspector] public bool isSpinOut = false; // Происходит ли неконтролиуемое вращение
     private float spinOutTimeRatio = 0.02f; // Коэффициент времени вращения, умножаем на скорость и получаем время вращения
@@ -75,7 +75,14 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        
+        spawnPosition = transform.position;
+        spawnRotation = transform.rotation;
+
+        rb = GetComponent<Rigidbody>();
+        rb.maxAngularVelocity = Mathf.Infinity;
+        rb.drag = drag;
+        dragDelta = dragMax - drag;
+        mass = rb.mass;
 
         controls = new ControlManager();
 
@@ -92,16 +99,16 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        spawnPosition = transform.position;
-        spawnRotation = transform.rotation;
+        //spawnPosition = transform.position;
+        //spawnRotation = transform.rotation;
         ResetAgentCheckPoints();
         minimapMarker.SetActive(true);
 
-        rb = GetComponent<Rigidbody>();
-        rb.maxAngularVelocity = Mathf.Infinity;
-        rb.drag = drag;
-        dragDelta = dragMax - drag;
-        mass = rb.mass;
+        //rb = GetComponent<Rigidbody>();
+        //rb.maxAngularVelocity = Mathf.Infinity;
+        //rb.drag = drag;
+        //dragDelta = dragMax - drag;
+        //mass = rb.mass;
 
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
@@ -454,6 +461,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ForbiddenAreaTouch()
     {
+        Debug.Log("ForbiddenAreaTouch");
+
         yield return new WaitForSeconds(forbiddenAreaDelay);
         Respawn();
     }
@@ -478,7 +487,7 @@ public class PlayerController : MonoBehaviour
     {
         flipCheck = true;
         float flipStartTime = Time.time;
-
+        
         // Начата проверка на переворот
         while (Time.time - flipStartTime < flipCheckDelay)
         {
@@ -494,6 +503,7 @@ public class PlayerController : MonoBehaviour
         }
         // Проверка закончена
         flipCheck = false;
+        Debug.Log(name + " flip!");
         Respawn();
     }
 
@@ -518,7 +528,7 @@ public class PlayerController : MonoBehaviour
     public void Restart()
     {
         ResetCoroutines();
-
+        //Debug.Log(name + " Restart");
         transform.SetPositionAndRotation(spawnPosition, spawnRotation);
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;

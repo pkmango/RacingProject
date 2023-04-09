@@ -11,6 +11,8 @@ public class PlayerData : MonoBehaviour
     const string CarPrefabNumberKey = "CarPrefabNumber";
     const string CarColorNumberKey = "CarColorNumber";
 
+    public GameObject GetCar() => playerCars[CarPrefabNumber];
+
     public int CarPrefabNumber
     {
         get

@@ -85,11 +85,13 @@ public class AgentController : Agent
     public void Freeze()
     {
         GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.HeuristicOnly;
+        car.enabled = false;
     }
 
     public void UnFreeze()
     {
         GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.InferenceOnly;
+        car.enabled = true;
         EndEpisode();
     }
 
