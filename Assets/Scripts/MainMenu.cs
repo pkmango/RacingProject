@@ -1,8 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    public SceneLoader sceneLoader; // Компонент для загрузки другой сцены
+    [SerializeField]
+    private SceneLoader sceneLoader; // Компонент для загрузки другой сцены
+    [SerializeField]
+    private PlayerData playerData;
+    [SerializeField]
+    private Text moneyUITxt;
+
+    private void Awake()
+    {
+        moneyUITxt.text = playerData.Money.ToString("N0") + " $";
+    }
 
     public void LoadScene(string scene)
     {

@@ -27982,7 +27982,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 213, y: 2}
+  m_AnchoredPosition: {x: 213, y: 3}
   m_SizeDelta: {x: 734, y: 91}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1357950794
@@ -28006,11 +28006,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 45698c29e0cfaa14c8a020f598896aad, type: 3}
-    m_FontSize: 85
+    m_FontSize: 88
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 7
-    m_MaxSize: 85
+    m_MaxSize: 88
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 0
@@ -35424,6 +35424,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneLoader: {fileID: 1378259909}
+  playerData: {fileID: 1861979558384990692, guid: 647523be52fd4a04996c96e08f94af15,
+    type: 3}
+  moneyUITxt: {fileID: 1793762493}
 --- !u!4 &1673215764
 Transform:
   m_ObjectHideFlags: 0
