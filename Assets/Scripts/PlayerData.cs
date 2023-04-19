@@ -23,6 +23,7 @@ public class PlayerData : MonoBehaviour
         set
         {
             PlayerPrefs.SetString(NameKey, value);
+            Debug.Log("Назначено имя: " + value);
         }
     }
     public int CarPrefabNumber
