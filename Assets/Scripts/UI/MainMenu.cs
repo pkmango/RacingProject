@@ -8,11 +8,19 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private PlayerData playerData;
     [SerializeField]
-    private Text moneyUITxt;
+    private Text[] moneyUITxt;
 
     private void Awake()
     {
-        moneyUITxt.text = playerData.Money.ToString("N0") + " $";
+        SetMoneyUI();
+    }
+
+    private void SetMoneyUI()
+    {
+        foreach(Text moneyTxt in moneyUITxt)
+        {
+            moneyTxt.text = playerData.Money.ToString("N0") + " $";
+        }
     }
 
     public void LoadScene(string scene)
