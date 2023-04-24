@@ -8,9 +8,9 @@ public class BuyingCar : MonoBehaviour
     [SerializeField]
     private GameObject playerCar;
     [SerializeField]
-    private Text carName;
+    private Text carName, carPrice;
     [SerializeField]
-    private Text carPrice;
+    private Material currentCarColor;
 
     private ShopCar currentCar;
     private int nextIndex = 0; // Индекс следющего элемента массива авто после нажатия на стрелку
@@ -18,6 +18,14 @@ public class BuyingCar : MonoBehaviour
     private void OnEnable()
     {
         ShowNextCar(playerCar);
+    }
+
+    public void ChangeCarColor(Material newColor)
+    {
+        if(newColor != currentCarColor)
+            currentCarColor = newColor;
+
+        currentCar.GetComponent<Renderer>().material = currentCarColor;
     }
 
     public void LeftArrowCick()
@@ -36,10 +44,11 @@ public class BuyingCar : MonoBehaviour
         ShowNextCar(currentCar.gameObject);
     }
 
-    private void ShowNextCar(GameObject objectToTide)
+    private void ShowNextCar(GameObject objectToHide)
     {
-        objectToTide.SetActive(false); // Пряем текущий авто, при первом запуске это машина игрока
+        objectToHide.SetActive(false); // Прячем текущий авто, при первом запуске это машина игрока
         currentCar = carList[nextIndex];
+        ChangeCarColor(currentCarColor);
         currentCar.gameObject.SetActive(true);
         carName.text = currentCar.carName;
         carPrice.text = currentCar.carPrice.ToString("N0") + " $";
@@ -47,7 +56,7 @@ public class BuyingCar : MonoBehaviour
 
     private void OnDisable()
     {
-        nextIndex = 0;
+        //nextIndex = 0;
         
         if (currentCar != null)
             currentCar.gameObject.SetActive(false);

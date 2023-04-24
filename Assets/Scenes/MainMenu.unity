@@ -1663,6 +1663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 121571261}
   - component: {fileID: 121571262}
+  - component: {fileID: 121571263}
   m_Layer: 5
   m_Name: GrayBtn
   m_TagString: Untagged
@@ -1735,8 +1736,46 @@ MonoBehaviour:
   m_Group: {fileID: 1990200694}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 121571263}
+        m_MethodName: ColorToggleClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
+--- !u!114 &121571263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121571260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347de1398ca86ee458522c100a6cf858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {fileID: 2100000, guid: 2a6c8fdceeee488418663a46854ab545, type: 2}
+  colorToggleOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1651387426}
+        m_MethodName: ChangeCarColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &155351237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10737,6 +10776,7 @@ GameObject:
   m_Component:
   - component: {fileID: 502639107}
   - component: {fileID: 502639108}
+  - component: {fileID: 502639109}
   m_Layer: 5
   m_Name: GreenBtn
   m_TagString: Untagged
@@ -10809,8 +10849,46 @@ MonoBehaviour:
   m_Group: {fileID: 1990200694}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 502639109}
+        m_MethodName: ColorToggleClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
+--- !u!114 &502639109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502639106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347de1398ca86ee458522c100a6cf858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {fileID: 2100000, guid: 7035d7f8757dc2946904e38b831bf42b, type: 2}
+  colorToggleOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1651387426}
+        m_MethodName: ChangeCarColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &503382160
 GameObject:
   m_ObjectHideFlags: 0
@@ -12298,6 +12376,7 @@ GameObject:
   m_Component:
   - component: {fileID: 535407516}
   - component: {fileID: 535407517}
+  - component: {fileID: 535407518}
   m_Layer: 5
   m_Name: RedBtn
   m_TagString: Untagged
@@ -12370,8 +12449,46 @@ MonoBehaviour:
   m_Group: {fileID: 1990200694}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 535407518}
+        m_MethodName: ColorToggleClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
+--- !u!114 &535407518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535407515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347de1398ca86ee458522c100a6cf858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {fileID: 2100000, guid: 7f915564e02d7624aaa88d7674e83075, type: 2}
+  colorToggleOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1651387426}
+        m_MethodName: ChangeCarColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &545661105
 GameObject:
   m_ObjectHideFlags: 0
@@ -17697,6 +17814,7 @@ GameObject:
   m_Component:
   - component: {fileID: 649482534}
   - component: {fileID: 649482535}
+  - component: {fileID: 649482536}
   m_Layer: 5
   m_Name: VioletBtn
   m_TagString: Untagged
@@ -17769,8 +17887,46 @@ MonoBehaviour:
   m_Group: {fileID: 1990200694}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 649482536}
+        m_MethodName: ColorToggleClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
+--- !u!114 &649482536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649482533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347de1398ca86ee458522c100a6cf858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {fileID: 2100000, guid: fcf59a39d922f5b408fb9de922c1ee34, type: 2}
+  colorToggleOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1651387426}
+        m_MethodName: ChangeCarColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!43 &653594231
 Mesh:
   m_ObjectHideFlags: 0
@@ -20233,6 +20389,7 @@ GameObject:
   m_Component:
   - component: {fileID: 806366114}
   - component: {fileID: 806366115}
+  - component: {fileID: 806366116}
   m_Layer: 5
   m_Name: BlueBtn
   m_TagString: Untagged
@@ -20305,8 +20462,46 @@ MonoBehaviour:
   m_Group: {fileID: 1990200694}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 806366116}
+        m_MethodName: ColorToggleClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
+--- !u!114 &806366116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806366113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347de1398ca86ee458522c100a6cf858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {fileID: 2100000, guid: fc6f26659e5567247a111d9247465c13, type: 2}
+  colorToggleOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1651387426}
+        m_MethodName: ChangeCarColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &818108011
 GameObject:
   m_ObjectHideFlags: 0
@@ -25488,6 +25683,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1032444810}
   - component: {fileID: 1032444811}
+  - component: {fileID: 1032444812}
   m_Layer: 5
   m_Name: YellowBtn
   m_TagString: Untagged
@@ -25560,8 +25756,46 @@ MonoBehaviour:
   m_Group: {fileID: 1990200694}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1032444812}
+        m_MethodName: ColorToggleClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
+--- !u!114 &1032444812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032444809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347de1398ca86ee458522c100a6cf858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {fileID: 2100000, guid: 4add69fc6d74a5946ae4c9a81ed429ef, type: 2}
+  colorToggleOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1651387426}
+        m_MethodName: ChangeCarColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!43 &1092083961
 Mesh:
   m_ObjectHideFlags: 0
@@ -37624,6 +37858,7 @@ MonoBehaviour:
   playerCar: {fileID: 770886138}
   carName: {fileID: 1602860865}
   carPrice: {fileID: 166500192}
+  currentCarColor: {fileID: 2100000, guid: 7f915564e02d7624aaa88d7674e83075, type: 2}
 --- !u!43 &1665491926
 Mesh:
   m_ObjectHideFlags: 0
