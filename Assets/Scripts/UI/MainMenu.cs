@@ -35,6 +35,11 @@ public class MainMenu : MonoBehaviour
         current.SetActive(false);
     }
 
+    public void ClearPlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+
     public void Options()
     {
 

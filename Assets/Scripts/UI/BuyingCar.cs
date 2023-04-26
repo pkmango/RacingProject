@@ -1,67 +1,84 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class BuyingCar : MonoBehaviour
 {
     [SerializeField]
-    private ShopCar[] carList; // Массив с доступными для покупки авто
-    [SerializeField]
-    private GameObject playerCar;
+    private GarageCar garageCar;
     [SerializeField]
     private Text carName, carPrice;
     [SerializeField]
-    private Material currentCarColor;
+    private Material defaultColor; // Должен совпадать с цветом включенного по умолчанию Toogle
 
+    private Material currentColor;
     private ShopCar currentCar;
     private int nextIndex = 0; // Индекс следющего элемента массива авто после нажатия на стрелку
+    private PlayerData playerData;
+
+    private void Awake()
+    {
+        playerData = garageCar.playerData;
+    }
 
     private void OnEnable()
     {
-        ShowNextCar(playerCar);
+        nextIndex = 0;
+        currentColor = defaultColor;
+
+        garageCar.playerCar?.gameObject.SetActive(false);
+
+        ShowNextCar();
     }
 
     public void ChangeCarColor(Material newColor)
     {
-        if(newColor != currentCarColor)
-            currentCarColor = newColor;
+        if(newColor != currentColor)
+            currentColor = newColor;
 
-        currentCar.GetComponent<Renderer>().material = currentCarColor;
+        currentCar.GetComponent<Renderer>().material = currentColor;
     }
 
     public void LeftArrowCick()
     {
         if (--nextIndex < 0)
-            nextIndex = carList.Length - 1;
+            nextIndex = garageCar.cars.Length - 1;
 
-        ShowNextCar(currentCar.gameObject);
+        ShowNextCar();
     }
 
     public void RightArrowClick()
     {
-        if (++nextIndex > carList.Length - 1)
+        if (++nextIndex > garageCar.cars.Length - 1)
             nextIndex = 0;
 
-        ShowNextCar(currentCar.gameObject);
+        ShowNextCar();
     }
 
-    private void ShowNextCar(GameObject objectToHide)
+    private void ShowNextCar()
     {
-        objectToHide.SetActive(false); // Прячем текущий авто, при первом запуске это машина игрока
-        currentCar = carList[nextIndex];
-        ChangeCarColor(currentCarColor);
+        currentCar?.gameObject.SetActive(false);
+
+        currentCar = garageCar.cars[nextIndex];
+        ChangeCarColor(currentColor);
         currentCar.gameObject.SetActive(true);
         carName.text = currentCar.carName;
         carPrice.text = currentCar.carPrice.ToString("N0") + " $";
     }
 
+    public void BuyCar()
+    {
+        playerData.CarPrefabNumber = nextIndex;
+
+        int colorIndex = Array.IndexOf(playerData.carMaterials, currentColor); // Если меньше нуля - цвет не найден
+        if (colorIndex >= 0)
+            playerData.CarColorNumber = colorIndex;
+        else
+            Debug.Log("Цвет " + currentColor + " не найден в массиве  playerData.carMaterials");
+    }
+
     private void OnDisable()
     {
-        //nextIndex = 0;
-        
-        if (currentCar != null)
-            currentCar.gameObject.SetActive(false);
-
-        if (playerCar != null)
-            playerCar.SetActive(true);
+        garageCar.SetPlayerCar();
     }
 }

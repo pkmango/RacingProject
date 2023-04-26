@@ -4,6 +4,7 @@
 public class PlayerData : MonoBehaviour
 {
     public GameObject[] playerCars;
+    public Material[] carMaterials;
 
     const string NameKey = "Name";
     const string CarPrefabNumberKey = "CarPrefabNumber";
@@ -13,6 +14,7 @@ public class PlayerData : MonoBehaviour
     const string CurrentScoreKey = "CurrentScore";
 
     public GameObject GetCar() => playerCars[CarPrefabNumber];
+    public Material GetCarMaterial() => carMaterials[CarColorNumber];
 
     public string Name
     {
