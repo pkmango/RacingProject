@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour
         SetMoneyUI();
     }
 
-    private void SetMoneyUI()
+    public void SetMoneyUI()
     {
         foreach(Text moneyTxt in moneyUITxt)
         {
@@ -38,6 +38,12 @@ public class MainMenu : MonoBehaviour
     public void ClearPlayerPrefs()
     {
         PlayerPrefs.DeleteAll();
+    }
+
+    public void Add100K()
+    {
+        playerData.Money += 100000;
+        SetMoneyUI();
     }
 
     public void Options()

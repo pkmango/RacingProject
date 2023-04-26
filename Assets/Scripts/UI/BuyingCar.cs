@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class BuyingCar : MonoBehaviour
@@ -10,7 +11,11 @@ public class BuyingCar : MonoBehaviour
     private Text carName, carPrice;
     [SerializeField]
     private Material defaultColor; // Должен совпадать с цветом включенного по умолчанию Toogle
-
+    [SerializeField]
+    private Button buyBtn;
+    [SerializeField]
+    private Text buyBtnTxt;
+    public UnityEvent moneyHasChanged;
     private Material currentColor;
     private ShopCar currentCar;
     private int nextIndex = 0; // Индекс следющего элемента массива авто после нажатия на стрелку
@@ -64,11 +69,24 @@ public class BuyingCar : MonoBehaviour
         currentCar.gameObject.SetActive(true);
         carName.text = currentCar.carName;
         carPrice.text = currentCar.carPrice.ToString("N0") + " $";
+
+        if (playerData.Money < currentCar.carPrice)
+        {
+            buyBtn.interactable = false;
+            buyBtnTxt.color = Color.grey;
+        }
+        else
+        {
+            buyBtn.interactable = true;
+            buyBtnTxt.color = Color.white;
+        }
     }
 
     public void BuyCar()
     {
         playerData.CarPrefabNumber = nextIndex;
+        playerData.Money -= currentCar.carPrice;
+        moneyHasChanged?.Invoke();
 
         int colorIndex = Array.IndexOf(playerData.carMaterials, currentColor); // Если меньше нуля - цвет не найден
         if (colorIndex >= 0)
