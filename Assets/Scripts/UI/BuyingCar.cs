@@ -42,6 +42,9 @@ public class BuyingCar : MonoBehaviour
             currentColor = newColor;
 
         currentCar.GetComponent<Renderer>().material = currentColor;
+
+        // Проверка условий для покупки и установка режима отображения кнопки "Buy"
+        SetBuyButton(!PlyerCarComparison() || playerData.Money > currentCar.carPrice);
     }
 
     public void LeftArrowCick()
@@ -65,20 +68,42 @@ public class BuyingCar : MonoBehaviour
         currentCar?.gameObject.SetActive(false);
 
         currentCar = garageCar.cars[nextIndex];
-        ChangeCarColor(currentColor);
         currentCar.gameObject.SetActive(true);
         carName.text = currentCar.carName;
-        carPrice.text = currentCar.carPrice.ToString("N0") + " $";
 
-        if (playerData.Money < currentCar.carPrice)
+        ChangeCarColor(currentColor);
+    }
+
+
+    // Сравнение с машиной игрока и установка отображения цены
+    private bool PlyerCarComparison()
+    {
+        // Узнаем равны ли отображаемая машина и машина игрока
+        bool equality = playerData.CarPrefabNumber == nextIndex && currentColor == playerData.GetCarMaterial();
+
+        if (equality)
         {
-            buyBtn.interactable = false;
-            buyBtnTxt.color = Color.grey;
+            carPrice.text = "0 $";
         }
         else
         {
+            carPrice.text = currentCar.carPrice.ToString("N0") + " $";
+        }
+        
+        return equality;
+    }
+
+    private void SetBuyButton(bool activate)
+    {
+        if (activate)
+        {
             buyBtn.interactable = true;
             buyBtnTxt.color = Color.white;
+        }
+        else
+        {
+            buyBtn.interactable = false;
+            buyBtnTxt.color = Color.grey;
         }
     }
 
