@@ -7,7 +7,7 @@ public class GarageCar : MonoBehaviour
     public ShopCar playerCar;
     public PlayerData playerData;
 
-    private void Awake() // Проблема
+    private void Awake() 
     {
         SetPlayerCar();
     }
