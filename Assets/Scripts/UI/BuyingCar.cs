@@ -16,6 +16,9 @@ public class BuyingCar : MonoBehaviour
     [SerializeField]
     private Text buyBtnTxt;
     public UnityEvent moneyHasChanged;
+    [SerializeField]
+    private GameObject vfx;
+
     private Material currentColor;
     private ShopCar currentCar;
     private int nextIndex = 0; // Индекс следющего элемента массива авто после нажатия на стрелку
@@ -44,7 +47,7 @@ public class BuyingCar : MonoBehaviour
         currentCar.GetComponent<Renderer>().material = currentColor;
 
         // Проверка условий для покупки и установка режима отображения кнопки "Buy"
-        SetBuyButton(!PlyerCarComparison() || playerData.Money > currentCar.carPrice);
+        SetBuyButton(!PlyerCarComparison() && playerData.Money >= currentCar.carPrice);
     }
 
     public void LeftArrowCick()
@@ -109,6 +112,9 @@ public class BuyingCar : MonoBehaviour
 
     public void BuyCar()
     {
+        if (playerData.Money < currentCar.carPrice) // Избыточно?
+            return;
+
         playerData.CarPrefabNumber = nextIndex;
         playerData.Money -= currentCar.carPrice;
         moneyHasChanged?.Invoke();
@@ -118,6 +124,10 @@ public class BuyingCar : MonoBehaviour
             playerData.CarColorNumber = colorIndex;
         else
             Debug.Log("Цвет " + currentColor + " не найден в массиве  playerData.carMaterials");
+
+        Instantiate(vfx);
+        SetBuyButton(false);
+        carPrice.text = "0 $";
     }
 
     private void OnDisable()
