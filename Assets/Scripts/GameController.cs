@@ -48,7 +48,8 @@ public class GameController : MonoBehaviour
     private float lapLength; // Длина круга
     private List<RacerFinishData> listOfFinishers = new List<RacerFinishData>(); // Список финишировавших
 
-    //private PlayerData playerData;
+    [SerializeField]
+    private Material reserveAgentColor;
 
     private void Awake()
     {
@@ -65,6 +66,11 @@ public class GameController : MonoBehaviour
             foreach (AgentController agent in agents)
             {
                 agent.Freeze();
+
+                Renderer agentRenderer = agent.GetComponent<Renderer>();
+                // Если используемый агентом цвет такой же как у игрока, заменяем его на резервный
+                if (agentRenderer.sharedMaterial == playerData.GetCarMaterial())
+                    agentRenderer.material = reserveAgentColor;
             }
         }
 

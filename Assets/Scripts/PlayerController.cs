@@ -99,16 +99,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        //spawnPosition = transform.position;
-        //spawnRotation = transform.rotation;
         ResetAgentCheckPoints();
         minimapMarker.SetActive(true);
-
-        //rb = GetComponent<Rigidbody>();
-        //rb.maxAngularVelocity = Mathf.Infinity;
-        //rb.drag = drag;
-        //dragDelta = dragMax - drag;
-        //mass = rb.mass;
 
         // Вычисляем расстояние от центра координат машины до земли
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask);
