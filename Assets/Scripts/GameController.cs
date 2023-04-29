@@ -87,6 +87,7 @@ public class GameController : MonoBehaviour
         {
             player.gameObject.SetActive(false); // Отключаем дефолтного игрока
             GameObject playerObj = Instantiate(playerData.GetCar(), player.transform.position, player.transform.rotation);
+            playerObj.GetComponent<Renderer>().material = playerData.GetCarMaterial(); // Цвет машины
             player = playerObj.GetComponent<PlayerController>();
             player.agentCheckPoints = agentCheckPoints;
             player.lapIsOver.AddListener(OnLapIsOver);
