@@ -793,8 +793,6 @@ MonoBehaviour:
   maxSpeed: 40
   wheelTurningSpeed: 0.5
   flyTorque: 800
-  placesForRespawn: {fileID: 0}
-  respawnPlaceID: 0
   surfaceSearchMask:
     serializedVersion: 2
     m_Bits: 1025
@@ -814,6 +812,7 @@ MonoBehaviour:
   rightBtnOn: 0
   gasOn: 0
   reverseOn: 0
+  weaponController: {fileID: 0}
   isSpinOut: 0
   flipCheckDelay: 5
   agentCheckPoints:
@@ -959,9 +958,11 @@ MonoBehaviour:
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
   bulletSpawnPoint: {fileID: 7622647240945403158}
   numberOfBullets: 3
+  currentNumberOfBullets: 0
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 4812534683122326014}
   numberOfMines: 3
+  currentNumberOfMines: 0
   mineBlockingObjectTags:
   - Wall
   - LandMine

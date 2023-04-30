@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
         if (healthBar != null)
             healthBar.CreateHealthbar(hp);
         else
-            Debug.Log(playerName + ": Healthbar not found");
+            Debug.Log(name + ": Healthbar not found");
 
         weaponController = GetComponent<WeaponController>();
         if (weaponController == null)

@@ -36,9 +36,10 @@ public class GameController : MonoBehaviour
     public GameObject pauseGroup;
     public GameObject raceIsOverGroup;
     public PlaceCanvasData[] placeCanvasesData;
-
-    //public RectTransform onePlayerHP; // Элемента UI из которых строится healthbar игрока
-    //private List<RectTransform> playerHPs = new List<RectTransform>() ; // 
+    [SerializeField]
+    private int[] rewards = {10000, 7000, 4000, 0};
+    [SerializeField]
+    private int[] points = { 400, 200, 100, 0 };
 
     private float timeDisplayFrequency = 0.1f; // Частота отображения времени круга
     private DateTime raceTime; // Таймер для подсчета общего времени гонки
@@ -49,7 +50,7 @@ public class GameController : MonoBehaviour
     private List<RacerFinishData> listOfFinishers = new List<RacerFinishData>(); // Список финишировавших
 
     [SerializeField]
-    private Material reserveAgentColor;
+    private Material reserveAgentColor; // Если используемый агентом цвет такой же как у игрока, заменяем его на резервный
 
     private void Awake()
     {
@@ -67,10 +68,13 @@ public class GameController : MonoBehaviour
             {
                 agent.Freeze();
 
-                Renderer agentRenderer = agent.GetComponent<Renderer>();
                 // Если используемый агентом цвет такой же как у игрока, заменяем его на резервный
+                Renderer agentRenderer = agent.GetComponent<Renderer>();
                 if (agentRenderer.sharedMaterial == playerData.GetCarMaterial())
+                {
                     agentRenderer.material = reserveAgentColor;
+                    agent.car.minimapMarker.GetComponent<SpriteRenderer>().color = Color.blue;
+                }
             }
         }
 
@@ -98,6 +102,7 @@ public class GameController : MonoBehaviour
             player.agentCheckPoints = agentCheckPoints;
             player.lapIsOver.AddListener(OnLapIsOver);
             player.weaponController.ammoIsChanged.AddListener(SetUIAmmoValue);
+            player.playerName = playerData.Name;
         }
         else
         {
@@ -235,6 +240,9 @@ public class GameController : MonoBehaviour
         pauseBtn.SetActive(false);
         listOfFinishers.Add(new RacerFinishData(player.playerName, raceTime.ToString("mm:ss:f")));
         Debug.Log("Игрок финишировал на " + listOfFinishers.Count + " месте. Гонка завершена");
+        playerData.Money += rewards[listOfFinishers.Count - 1];
+        playerData.TotalScore += points[listOfFinishers.Count - 1];
+        playerData.CurrentScore += points[listOfFinishers.Count - 1];
         StopCoroutine(lapTimerCor);
         AddingUnfinishedRacers();
         player.enabled = false;
@@ -246,6 +254,7 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         raceIsOverGroup.SetActive(true);
+
         if (placeCanvasesData.Length != listOfFinishers.Count)
         {
             Debug.Log("Ошибка. Список финишировавших не полный");
