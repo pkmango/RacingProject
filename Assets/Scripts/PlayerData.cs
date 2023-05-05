@@ -12,6 +12,11 @@ public class PlayerData : MonoBehaviour
     const string MoneyKey = "Money";
     const string TotalScoreKey = "TotalScore";
     const string CurrentScoreKey = "CurrentScore";
+    const string NitrousUpgradeLvlKey = "NitrousUpgradeLvl";
+    const string EngineUpgradeLvlKey = "EngineUpgradeLvl";
+    const string ArmorUpgradeLvlKey = "ArmorUpgradeLvl";
+    const string AmmoUpgradeLvlKey = "AmmoUpgradeLvl";
+    const string MinesUpgradeLvlKey = "MinesUpgradeLvl";
 
     public GameObject GetCar() => playerCars[CarPrefabNumber];
     public Material GetCarMaterial() => carMaterials[CarColorNumber];
@@ -89,6 +94,66 @@ public class PlayerData : MonoBehaviour
         set
         {
             PlayerPrefs.SetInt(CurrentScoreKey, value);
+        }
+    }
+
+    public int NitrousUpgradeLvl
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(NitrousUpgradeLvlKey);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(NitrousUpgradeLvlKey, value);
+        }
+    }
+
+    public int EngineUpgradeLvl
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(EngineUpgradeLvlKey);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(EngineUpgradeLvlKey, value);
+        }
+    }
+
+    public int ArmorUpgradeLvl
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(ArmorUpgradeLvlKey);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(ArmorUpgradeLvlKey, value);
+        }
+    }
+
+    public int AmmoUpgradeLvl
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(AmmoUpgradeLvlKey);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(AmmoUpgradeLvlKey, value);
+        }
+    }
+
+    public int MinesUpgradeLvl
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(MinesUpgradeLvlKey);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(MinesUpgradeLvlKey, value);
         }
     }
 }
