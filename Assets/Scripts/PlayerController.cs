@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public int currentHp = 3;
     public HealthBar healthBar;
 
-    //private float tiresFrictionDelta;
     private float currentRotationSpeed = 0f;
     [HideInInspector] public float turnSpeedRatio = 1f;
     private bool firstAcceleration = true;
@@ -57,21 +56,35 @@ public class PlayerController : MonoBehaviour
     private Coroutine flipCor; // Корутина для проверки на переворот
     public float flipCheckDelay = 2f; // Задержка для проверки на переворот
 
-    public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
-    public int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
-    [HideInInspector] public Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
-    public int currentLap = 1; // Текущий номер круга
+    private const string ForbiddenAreaTag = "ForbiddenArea"; // Этим тэгом помечаются объекты при пересечении которых игрок считается в запретной зоне
+    private bool isForbiddenAreaTouch = false;
+    public float forbiddenAreaDelay = 2f; // Задержка (секунд) для уничтожения авто пересекающего запретную зону
+    private Coroutine forbiddenAreaTouchCor;
 
+    [Header("Upgrade Levels")]
+    [SerializeField, Range(1, 3)]
+    private int nitrousLvl = 1;
+    [SerializeField, Range(1, 3)]
+    private int engineLvl = 1;
+    [SerializeField, Range(1, 3)]
+    private int armorLvl = 1;
+    [SerializeField, Range(1, 3)]
+    private int ammoLvl = 1;
+    [SerializeField, Range(1, 3)]
+    private int minesLvl = 1;
+
+    [Space()]
+    public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
+    [HideInInspector] public int currentCheckPointInd = 0; // Текущий индекс массива для агентских чекпоинтов
+    [HideInInspector] public Vector3 currentAgentCheckPoint; // Текущий агентский чекпоинт (следующий который нужно пересечь)
+    [HideInInspector] public int currentLap = 1; // Текущий номер круга
+
+    [Space()]
     public UnityEvent lapIsOver; // Круг окончен
 
     [System.Serializable]
     public class HpChangedEvent : UnityEvent<int, int> { } // Создаем тип события которе может передавать 2 параметра
     public HpChangedEvent hpIsChanged; // Кол-во hp изменилось
-
-    private string forbiddenAreaTag = "ForbiddenArea";
-    private bool isForbiddenAreaTouch = false;
-    public float forbiddenAreaDelay = 2f;
-    private Coroutine forbiddenAreaTouchCor;
 
     private void Awake()
     {
@@ -444,7 +457,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (other.tag == forbiddenAreaTag && isForbiddenAreaTouch == false)
+        if (other.tag == ForbiddenAreaTag && isForbiddenAreaTouch == false)
         {
             isForbiddenAreaTouch = true;
             forbiddenAreaTouchCor = StartCoroutine(ForbiddenAreaTouch());
@@ -505,8 +518,8 @@ public class PlayerController : MonoBehaviour
             agent.AddReward(-0.05f);
 
         // Высчитываем процент воздействия в зависимости от текущей скорости. Чем выше скорость, тем сильнее воздействие
-        massMltiplier = massMltiplier * (Speed / maxSpeed);
-        modificationTime = modificationTime * (Speed / maxSpeed);
+        massMltiplier *= (Speed / maxSpeed);
+        modificationTime *= (Speed / maxSpeed);
 
         // Меняем массу и скорость поворота авто
         rb.mass *= Mathf.Clamp(massMltiplier, 1f, massMltiplier);
@@ -515,6 +528,11 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(modificationTime);
         rb.mass = mass;
         turnSpeedRatio = 1f;
+    }
+
+    private void Upgrade()
+    {
+        
     }
 
     public void Restart()

@@ -7,19 +7,19 @@ public class WeaponController : MonoBehaviour
     public GameObject bullet;
     public Transform bulletSpawnPoint;
     public int numberOfBullets;
-    [SerializeField] private int currentNumberOfBullets;
+    private int currentNumberOfBullets;
     
     public GameObject mine;
     public Transform mineSpawnPoint;
     public int numberOfMines;
-    [SerializeField] private int currentNumberOfMines;
+    private int currentNumberOfMines;
     public string[] mineBlockingObjectTags = { "Wall", "LandMine" };
 
     [System.Serializable]
     public class AmmoChangeEvent: UnityEvent<int, int> { } // Создаем типа соыбтия которе может передавать 2 параметра
     public AmmoChangeEvent ammoIsChanged;
 
-    private float checkRadius = 0.45f;
+    private const float MineCheckRadius = 0.45f; // Радиус проверки перед постановкой мины
 
     // Переменные для реализации автоматической стрельбы
     public bool autoModeOn = false;
@@ -68,8 +68,8 @@ public class WeaponController : MonoBehaviour
     {
         if (currentNumberOfMines > 0)
         {
-            // Проверям не ли стены или другой мины в точке респауна
-            Collider[] сolliders = Physics.OverlapSphere(mineSpawnPoint.position, checkRadius);
+            // Проверям нет ли стены или другой мины в точке респауна
+            Collider[] сolliders = Physics.OverlapSphere(mineSpawnPoint.position, MineCheckRadius);
             foreach (var сollider in сolliders)
             {
                 foreach (string _tag in mineBlockingObjectTags)
