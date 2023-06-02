@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField]
-    private PlayerData playerData;
+    public PlayerData playerData;
     [SerializeField]
     private Text equipText, equipPrice, buyBtnTxt;
     [SerializeField]
@@ -22,10 +22,19 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
     private int ammoUpPrice = 10000;
     [SerializeField, Min(0)]
     private int minesUpPrice = 10000;
+    private int currentUpPrice;
 
     private Button currentBtn; // Текущая выделенная кнопка
+    private UpgradeType currentUpgradeType; // Текущий выделленный типа апгрейда
     private bool allowedToBuy = true; // Если денег на покупку не хватает, меняем на false
     private Image buyBtnImg;
+
+    [System.Serializable]
+    private class OnClickEvent : UnityEvent<UpgradeType> { }
+    [SerializeField]
+    private OnClickEvent newUpgradeLvl; // Событие срабатывает покупке нового апгрейда
+    [SerializeField]
+    private UnityEvent moneyHasChanged; // Событие срабатывает при изменении количества денег
 
     private void Awake()
     {
@@ -57,53 +66,52 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
         buyBtn.gameObject.SetActive(true);
         equipPrice.gameObject.SetActive(true);
         currentBtn = selectedBtn;
+        currentUpgradeType = upgradeType;
 
         switch (upgradeType)
         {
             case UpgradeType.NOS:
-                equipText.text = "Nitrous";
-                equipPrice.text = nitrousUpPrice.ToString("N0") + " $";
-                PurchasePossibilityCheck(nitrousUpPrice);
+                SetTextAndPrice("Nitrous", nitrousUpPrice);
                 break;
             case UpgradeType.Engine:
-                equipText.text = "Engine";
-                equipPrice.text = engineUpPrice.ToString("N0") + " $";
-                PurchasePossibilityCheck(engineUpPrice);
+                SetTextAndPrice("Engine", engineUpPrice);
                 break;
             case UpgradeType.Armor:
-                equipText.text = "Armor";
-                equipPrice.text = armorUpPrice.ToString("N0") + " $";
-                PurchasePossibilityCheck(armorUpPrice);
+                SetTextAndPrice("Armor", armorUpPrice);
                 break;
             case UpgradeType.Ammo:
-                equipText.text = "Ammo";
-                equipPrice.text = ammoUpPrice.ToString("N0") + " $";
-                PurchasePossibilityCheck(ammoUpPrice);
+                SetTextAndPrice("Ammo", ammoUpPrice);
                 break;
             case UpgradeType.Mines:
-                equipText.text = "Mines";
-                equipPrice.text = minesUpPrice.ToString("N0") + " $";
-                PurchasePossibilityCheck(minesUpPrice);
+                SetTextAndPrice("Mines", minesUpPrice);
                 break;
             default:
                 Debug.Log("No handler found for " + upgradeType);
                 break;
         }
 
-        void PurchasePossibilityCheck(int price)
+        void SetTextAndPrice(string txt, int upPrice)
         {
-            if (playerData.Money < price)
-            {
-                allowedToBuy = false;
-                buyBtnImg.color = Color.grey;
-                buyBtnTxt.color = Color.grey;
-            }
-            else
-            {
-                allowedToBuy = true;
-                buyBtnImg.color = Color.white;
-                buyBtnTxt.color = Color.white;
-            }
+            equipText.text = txt;
+            equipPrice.text = upPrice.ToString("N0") + " $";
+            currentUpPrice = upPrice;
+            PurchasePossibilityCheck(upPrice);
+        }
+    }
+
+    private void PurchasePossibilityCheck(int price)
+    {
+        if (playerData.Money >= price && playerData.GetUpgradeLvl(currentUpgradeType) < 3)
+        {
+            allowedToBuy = true;
+            buyBtnImg.color = Color.white;
+            buyBtnTxt.color = Color.white;
+        }
+        else
+        {
+            allowedToBuy = false;
+            buyBtnImg.color = Color.grey;
+            buyBtnTxt.color = Color.grey;
         }
     }
 
@@ -111,7 +119,13 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
     {
         if (allowedToBuy)
         {
-            Debug.Log("Покупка совершена!");
+            int newLvl = playerData.GetUpgradeLvl(currentUpgradeType) + 1;
+
+            playerData.SetUpgradeLvl(currentUpgradeType, newLvl);
+            newUpgradeLvl?.Invoke(currentUpgradeType);
+            playerData.Money -= currentUpPrice;
+            moneyHasChanged?.Invoke();
+            PurchasePossibilityCheck(currentUpPrice);
         }
         
         currentBtn.Select();

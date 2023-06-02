@@ -21,6 +21,46 @@ public class PlayerData : MonoBehaviour
     public GameObject GetCar() => playerCars[CarPrefabNumber];
     public Material GetCarMaterial() => carMaterials[CarColorNumber];
 
+    public int GetUpgradeLvl(UpgradeType upgradeType)
+    {
+        switch (upgradeType)
+        {
+            case UpgradeType.NOS: return NitrousUpgradeLvl;
+            case UpgradeType.Engine: return EngineUpgradeLvl;
+            case UpgradeType.Armor: return ArmorUpgradeLvl;
+            case UpgradeType.Ammo: return AmmoUpgradeLvl;
+            case UpgradeType.Mines: return MinesUpgradeLvl;
+            default:
+                Debug.Log("GetUpgradeLvl: Upgrade type not found");
+                return 0;
+        }
+    }
+
+    public void SetUpgradeLvl(UpgradeType upgradeType, int lvlNumber)
+    {
+        switch (upgradeType)
+        {
+            case UpgradeType.NOS:
+                NitrousUpgradeLvl = lvlNumber;
+                break;
+            case UpgradeType.Engine:
+                EngineUpgradeLvl = lvlNumber;
+                break;
+            case UpgradeType.Armor:
+                ArmorUpgradeLvl = lvlNumber;
+                break;
+            case UpgradeType.Ammo:
+                AmmoUpgradeLvl = lvlNumber;
+                break;
+            case UpgradeType.Mines:
+                MinesUpgradeLvl = lvlNumber;
+                break;
+            default:
+                Debug.Log("SetUpgradeLvl: Upgrade type not found");
+                break;
+        }
+    }
+
     public string Name
     {
         get
