@@ -81,6 +81,14 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""NOS"",
+                    ""type"": ""Button"",
+                    ""id"": ""0fc3ce7e-44e4-4551-bb8d-e0b1a6487b76"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -171,6 +179,17 @@ public class @ControlManager : IInputActionCollection, IDisposable
                     ""action"": ""LandMine"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""33026779-f4b0-43f4-9c1c-920afc791ee8"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NOS"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -187,6 +206,7 @@ public class @ControlManager : IInputActionCollection, IDisposable
         m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_LandMine = m_Player.FindAction("LandMine", throwIfNotFound: true);
+        m_Player_NOS = m_Player.FindAction("NOS", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -244,6 +264,7 @@ public class @ControlManager : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Reverse;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_LandMine;
+    private readonly InputAction m_Player_NOS;
     public struct PlayerActions
     {
         private @ControlManager m_Wrapper;
@@ -256,6 +277,7 @@ public class @ControlManager : IInputActionCollection, IDisposable
         public InputAction @Reverse => m_Wrapper.m_Player_Reverse;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @LandMine => m_Wrapper.m_Player_LandMine;
+        public InputAction @NOS => m_Wrapper.m_Player_NOS;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -289,6 +311,9 @@ public class @ControlManager : IInputActionCollection, IDisposable
                 @LandMine.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLandMine;
                 @LandMine.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLandMine;
                 @LandMine.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLandMine;
+                @NOS.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNOS;
+                @NOS.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNOS;
+                @NOS.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNOS;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -317,6 +342,9 @@ public class @ControlManager : IInputActionCollection, IDisposable
                 @LandMine.started += instance.OnLandMine;
                 @LandMine.performed += instance.OnLandMine;
                 @LandMine.canceled += instance.OnLandMine;
+                @NOS.started += instance.OnNOS;
+                @NOS.performed += instance.OnNOS;
+                @NOS.canceled += instance.OnNOS;
             }
         }
     }
@@ -331,5 +359,6 @@ public class @ControlManager : IInputActionCollection, IDisposable
         void OnReverse(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnLandMine(InputAction.CallbackContext context);
+        void OnNOS(InputAction.CallbackContext context);
     }
 }

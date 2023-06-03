@@ -4865,11 +4865,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1.5
   damage: 1
-  targetLayerName: Agent
-  playerLayerName: Player
-  exceptionLayerNames:
-  - Checkpoint
+  enemyTag: Agent
+  playerTag: Player
+  exceptionTags:
+  - AgentCheckPoint
   - Wheel
+  - Stain
+  - LandMine
   destroyTime: 2.5
   bulletExplosion: {fileID: 8151883739471878645}
 --- !u!54 &4309192562341783892
@@ -4897,6 +4899,26 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
       objectReference: {fileID: 0}
@@ -4909,6 +4931,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
         type: 3}
@@ -4927,16 +4954,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
         type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
-        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -4949,21 +4966,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3872548439400260419, guid: 8945a1cadaf264d4f82c9255500862d1,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6034912565027445427, guid: 8945a1cadaf264d4f82c9255500862d1,
         type: 3}

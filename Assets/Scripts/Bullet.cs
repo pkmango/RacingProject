@@ -6,8 +6,10 @@ public class Bullet : MonoBehaviour
     public int damage = 1;
     public string enemyTag = "Agent";
     public string playerTag = "Player";
+    [SerializeField]
     private string[] exceptionTags = { "AgentCheckPoint", "Wheel", "Stain" };
-    public float destroyTime = 3;
+    [SerializeField]
+    private float destroyTime = 3;
     public ParticleSystem bulletExplosion;
 
     private GameObject hitObject;
@@ -43,7 +45,6 @@ public class Bullet : MonoBehaviour
         if (hitObject.tag == enemyTag || hitObject.tag == playerTag)
         {
             PlayerController car = hitObject.GetComponent<PlayerController>();
-            //Debug.Log("Попадание в " + car.playerName);
 
             if (car.enabled)
                 car.HitHandler(damage);

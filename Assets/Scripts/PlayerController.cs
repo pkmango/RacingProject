@@ -125,6 +125,7 @@ public class PlayerController : MonoBehaviour
         {
             controls.Player.Respawn.performed += _ => Respawn();
             controls.Player.Jump.performed += _ => Jump();
+            controls.Player.NOS.performed += _ => Nitrous();
             controls.Player.Fire.performed += _ => weaponController.Fire();
             controls.Player.LandMine.performed += _ => weaponController.SetMine();
             enabled = false;
@@ -250,6 +251,11 @@ public class PlayerController : MonoBehaviour
             rb.drag = drag;
             rb.AddForce(0f, jumpForce, 0f);
         }
+    }
+
+    private void Nitrous()
+    {
+        Debug.Log("Nitrous активирован");
     }
 
     public void Respawn()
