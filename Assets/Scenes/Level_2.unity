@@ -9693,6 +9693,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 399441889}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &399441898 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2060424639393673709, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
+    type: 3}
+  m_PrefabInstance: {fileID: 399441889}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &402258902
 Mesh:
   m_ObjectHideFlags: 0
@@ -25332,6 +25338,7 @@ MonoBehaviour:
   pauseBtn: {fileID: 399441895}
   pauseGroup: {fileID: 399441894}
   raceIsOverGroup: {fileID: 399441897}
+  nitrousReadyImg: {fileID: 399441898}
   placeCanvasesData:
   - {fileID: 399441893}
   - {fileID: 399441892}

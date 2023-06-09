@@ -93,6 +93,7 @@ public class WeaponController : MonoBehaviour
 
     public void AmmoReload()
     {
+        Debug.LogFormat("AmmoReload");
         currentNumberOfBullets = numberOfBullets;
         currentNumberOfMines = numberOfMines;
         ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);

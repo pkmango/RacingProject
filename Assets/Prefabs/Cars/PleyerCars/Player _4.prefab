@@ -139,6 +139,7 @@ Transform:
   - {fileID: 6279102483087949472}
   - {fileID: 7490190973237288038}
   - {fileID: 3741414806592239170}
+  - {fileID: 1464730874772379501}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -251,6 +252,10 @@ MonoBehaviour:
   backForce: -120
   rotationSpeed: 4
   jumpForce: 1200
+  nitrousForce: 20
+  nitrousTime: 1.3
+  nitrousVFX: {fileID: 9145939259637812010}
+  nitrousReady: 1
   wheelTag: Wheel
   maxSpeed: 40
   wheelTurningSpeed: 0.5
@@ -277,6 +282,12 @@ MonoBehaviour:
   weaponController: {fileID: 0}
   isSpinOut: 0
   flipCheckDelay: 12
+  forbiddenAreaDelay: 2
+  nitrousLvl: 1
+  engineLvl: 1
+  armorLvl: 1
+  ammoLvl: 1
+  minesLvl: 1
   agentCheckPoints: []
   currentCheckPointInd: 0
   currentAgentCheckPoint: {x: 0, y: 0, z: 0}
@@ -295,10 +306,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  pressNitrous:
+    m_PersistentCalls:
+      m_Calls: []
   hpIsChanged:
     m_PersistentCalls:
       m_Calls: []
-  forbiddenAreaDelay: 2
 --- !u!114 &8786587024857588012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,11 +340,9 @@ MonoBehaviour:
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
   bulletSpawnPoint: {fileID: 6279102483087949472}
   numberOfBullets: 3
-  currentNumberOfBullets: 0
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 7490190973237288038}
   numberOfMines: 3
-  currentNumberOfMines: 0
   mineBlockingObjectTags:
   - Wall
   - LandMine
@@ -910,3 +921,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a81bee64f9eebbc4eb949fc9de538414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &5424968409929310268
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3888892109305832223}
+    m_Modifications:
+    - target: {fileID: 5960541895854796020, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_Name
+      value: NitrousVFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.02014
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00547
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cd0fca52dd8fd004490b68109d8c989d, type: 3}
+--- !u!4 &1464730874772379501 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6852958003811301201, guid: cd0fca52dd8fd004490b68109d8c989d,
+    type: 3}
+  m_PrefabInstance: {fileID: 5424968409929310268}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &9145939259637812010 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3865701781863377686, guid: cd0fca52dd8fd004490b68109d8c989d,
+    type: 3}
+  m_PrefabInstance: {fileID: 5424968409929310268}
+  m_PrefabAsset: {fileID: 0}

@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour
     public GameObject pauseBtn;
     public GameObject pauseGroup;
     public GameObject raceIsOverGroup;
+    public GameObject nitrousReadyImg;
     public PlaceCanvasData[] placeCanvasesData;
     [SerializeField]
     private int[] rewards = {10000, 7000, 4000, 0};
@@ -101,6 +102,7 @@ public class GameController : MonoBehaviour
             player = playerObj.GetComponent<PlayerController>();
             player.agentCheckPoints = agentCheckPoints;
             player.lapIsOver.AddListener(OnLapIsOver);
+            player.pressNitrous.AddListener(NitroButtonDeactivation);
             player.weaponController.ammoIsChanged.AddListener(SetUIAmmoValue);
             player.playerName = playerData.Name;
         }
@@ -203,7 +205,15 @@ public class GameController : MonoBehaviour
 
             currentLapNumber++;
             lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
+
+            nitrousReadyImg.SetActive(true);
+            //player.nitrousReady = true;
         }
+    }
+
+    public void NitroButtonDeactivation()
+    {
+        nitrousReadyImg.SetActive(false);
     }
 
     public void OnPressStart()
@@ -305,6 +315,7 @@ public class GameController : MonoBehaviour
         lapTimeText.text = "00:00:0";
         PlacesCheck();
         raceIsOverGroup.SetActive(false);
+        nitrousReadyImg.SetActive(true);
 
         LandMine[] allMines = FindObjectsOfType<LandMine>();
         foreach (LandMine mine in allMines)

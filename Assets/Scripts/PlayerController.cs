@@ -10,13 +10,20 @@ public class PlayerController : MonoBehaviour
 
     public string playerName = "Player_1";
     public float forwardForce;
+    private float currentForwardForce;
     public float backForce;
     public float rotationSpeed;
     public float jumpForce;
+    [SerializeField, Min(0)] private float nitrousForce = 50;
+    [SerializeField, Min(0)] private float nitrousTime = 2;
+    [SerializeField] private ParticleSystem nitrousVFX;
+    private Coroutine nitrousActionCor; // Корутина для Нитро
+    private bool isNitrousOn = false;
+    [HideInInspector] public bool nitrousReady = true; // Включаем нитро в начале круга
     public string wheelTag = "Wheel";
     public float maxSpeed;
     public float wheelTurningSpeed;
-    public float flyTorque; // Крутящий момент в полете
+    [HideInInspector] public float flyTorque; // Крутящий момент в полете
     private bool addedFlyTorque = false; // Крутящий момент в полете добавлен?
     public LayerMask surfaceSearchMask;
     public GameObject explosion;
@@ -81,6 +88,7 @@ public class PlayerController : MonoBehaviour
 
     [Space()]
     public UnityEvent lapIsOver; // Круг окончен
+    public UnityEvent pressNitrous; // Прожатие Нитро
 
     [System.Serializable]
     public class HpChangedEvent : UnityEvent<int, int> { } // Создаем тип события которе может передавать 2 параметра
@@ -88,6 +96,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        currentForwardForce = forwardForce;
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
 
@@ -168,7 +177,7 @@ public class PlayerController : MonoBehaviour
                     if (gasOn)
                     {
                         moveForward = true;
-                        rb.AddRelativeForce(forwardForce, 0f, 0f);
+                        rb.AddRelativeForce(currentForwardForce, 0f, 0f);
                     }
                     else
                     {
@@ -255,7 +264,30 @@ public class PlayerController : MonoBehaviour
 
     private void Nitrous()
     {
-        Debug.Log("Nitrous активирован");
+        if (enabled && isCollision && !isNitrousOn && nitrousReady)
+        {
+            Debug.Log("Nitrous активирован");
+            isNitrousOn = true;
+            nitrousReady = false;
+            pressNitrous?.Invoke();
+            currentForwardForce += nitrousForce;
+            nitrousVFX?.Play();
+            nitrousActionCor = StartCoroutine(NitrousAction());
+        }
+    }
+
+    private IEnumerator NitrousAction()
+    {
+        yield return new WaitForSeconds(nitrousTime);
+
+        NitrousStop();
+    }
+
+    private void NitrousStop()
+    {
+        currentForwardForce = forwardForce;
+        isNitrousOn = false;
+        nitrousVFX?.Stop();
     }
 
     public void Respawn()
@@ -265,6 +297,13 @@ public class PlayerController : MonoBehaviour
         
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        
+        // Если включено нитро, то отключаем
+        if (nitrousActionCor != null)
+        {
+            StopCoroutine(nitrousActionCor);
+            NitrousStop();
+        }
 
         // Ищем предыдущий чекпоинт
         Vector3 previousAgentCheckPoint;
@@ -452,10 +491,10 @@ public class PlayerController : MonoBehaviour
                 {
                     ResetAgentCheckPoints();
                     currentLap++;
-                    //lapIsOver?.Invoke();
                 }
 
                 lapIsOver?.Invoke();
+                nitrousReady = true;
             }
             else
             {
@@ -544,7 +583,6 @@ public class PlayerController : MonoBehaviour
     public void Restart()
     {
         ResetCoroutines();
-        //Debug.Log(name + " Restart");
         transform.SetPositionAndRotation(spawnPosition, spawnRotation);
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;

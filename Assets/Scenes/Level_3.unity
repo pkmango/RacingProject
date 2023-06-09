@@ -25607,6 +25607,7 @@ MonoBehaviour:
   pauseBtn: {fileID: 1850514179}
   pauseGroup: {fileID: 1850514178}
   raceIsOverGroup: {fileID: 1850514180}
+  nitrousReadyImg: {fileID: 1850514181}
   placeCanvasesData:
   - {fileID: 1850514177}
   - {fileID: 1850514176}
@@ -40152,6 +40153,12 @@ GameObject:
 --- !u!1 &1850514180 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7977235970404192528, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850514173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1850514181 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2060424639393673709, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
     type: 3}
   m_PrefabInstance: {fileID: 1850514173}
   m_PrefabAsset: {fileID: 0}
