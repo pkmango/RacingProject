@@ -9,13 +9,14 @@ public class PlayerController : MonoBehaviour
     private AgentController agent;
 
     public string playerName = "Player_1";
+    private PlayerData playerData;
     public float forwardForce;
     private float currentForwardForce;
     public float backForce;
     public float rotationSpeed;
     public float jumpForce;
-    [SerializeField, Min(0)] private float nitrousForce = 50;
-    [SerializeField, Min(0)] private float nitrousTime = 2;
+    [SerializeField, Min(0)] private float nitrousForce = 20f;
+    [SerializeField, Min(0)] private float nitrousTime = 1.3f;
     [SerializeField] private ParticleSystem nitrousVFX;
     private Coroutine nitrousActionCor; // Корутина для Нитро
     private bool isNitrousOn = false;
@@ -68,17 +69,17 @@ public class PlayerController : MonoBehaviour
     public float forbiddenAreaDelay = 2f; // Задержка (секунд) для уничтожения авто пересекающего запретную зону
     private Coroutine forbiddenAreaTouchCor;
 
-    [Header("Upgrade Levels")]
-    [SerializeField, Range(1, 3)]
-    private int nitrousLvl = 1;
-    [SerializeField, Range(1, 3)]
-    private int engineLvl = 1;
-    [SerializeField, Range(1, 3)]
-    private int armorLvl = 1;
-    [SerializeField, Range(1, 3)]
-    private int ammoLvl = 1;
-    [SerializeField, Range(1, 3)]
-    private int minesLvl = 1;
+    [Header("Upgrade Levels for Agents")]
+    [SerializeField, Range(0, 3)]
+    private int nitrousLvl = 0;
+    [SerializeField, Range(0, 3)]
+    private int engineLvl = 0;
+    [SerializeField, Range(0, 3)]
+    private int armorLvl = 0;
+    [SerializeField, Range(0, 3)]
+    private int ammoLvl = 0;
+    [SerializeField, Range(0, 3)]
+    private int minesLvl = 0;
 
     [Space()]
     public Transform[] agentCheckPoints; // Агентские чекпоинты используем для определения оставшейся дистанции
@@ -96,6 +97,14 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        playerData = gameObject.AddComponent<PlayerData>();
+
+        weaponController = GetComponent<WeaponController>();
+        if (weaponController == null)
+            Debug.Log("Error. WeaponController required");
+
+        Upgrade();
+
         currentForwardForce = forwardForce;
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
@@ -114,9 +123,6 @@ public class PlayerController : MonoBehaviour
         else
             Debug.Log(name + ": Healthbar not found");
 
-        weaponController = GetComponent<WeaponController>();
-        if (weaponController == null)
-            Debug.Log("Error. WeaponController required");
     }
 
     private void Start()
@@ -577,7 +583,20 @@ public class PlayerController : MonoBehaviour
 
     private void Upgrade()
     {
-        
+        if (!isAgent)
+        {
+            nitrousLvl = playerData.NitrousUpgradeLvl;
+            engineLvl = playerData.EngineUpgradeLvl;
+            armorLvl = playerData.ArmorUpgradeLvl;
+            ammoLvl = playerData.AmmoUpgradeLvl;
+            minesLvl = playerData.MinesUpgradeLvl;
+        }
+
+        nitrousForce += UpgradeRatio.nitrous * nitrousLvl;
+        forwardForce += UpgradeRatio.engine * engineLvl;
+        hp += UpgradeRatio.armor * armorLvl;
+        weaponController.numberOfBullets += UpgradeRatio.ammo * ammoLvl;
+        weaponController.numberOfMines += UpgradeRatio.mines * minesLvl;
     }
 
     public void Restart()

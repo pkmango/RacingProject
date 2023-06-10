@@ -760,6 +760,10 @@ MonoBehaviour:
   backForce: -100
   rotationSpeed: 4
   jumpForce: 1200
+  nitrousForce: 20
+  nitrousTime: 1.3
+  nitrousVFX: {fileID: 0}
+  nitrousReady: 1
   wheelTag: Wheel
   maxSpeed: 40
   wheelTurningSpeed: 0.5
@@ -786,6 +790,12 @@ MonoBehaviour:
   weaponController: {fileID: 0}
   isSpinOut: 0
   flipCheckDelay: 5
+  forbiddenAreaDelay: 2
+  nitrousLvl: 0
+  engineLvl: 0
+  armorLvl: 0
+  ammoLvl: 0
+  minesLvl: 0
   agentCheckPoints:
   - {fileID: 0}
   - {fileID: 0}
@@ -825,10 +835,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  pressNitrous:
+    m_PersistentCalls:
+      m_Calls: []
   hpIsChanged:
     m_PersistentCalls:
       m_Calls: []
-  forbiddenAreaDelay: 2
 --- !u!114 &3292677334692359324
 MonoBehaviour:
   m_ObjectHideFlags: 0

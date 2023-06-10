@@ -157,8 +157,8 @@ MonoBehaviour:
   backForce: -120
   rotationSpeed: 4
   jumpForce: 1200
-  nitrousForce: 50
-  nitrousTime: 2
+  nitrousForce: 20
+  nitrousTime: 1.3
   nitrousVFX: {fileID: 2761150808999908786}
   nitrousReady: 1
   wheelTag: Wheel
@@ -188,11 +188,11 @@ MonoBehaviour:
   isSpinOut: 0
   flipCheckDelay: 12
   forbiddenAreaDelay: 2
-  nitrousLvl: 1
-  engineLvl: 1
-  armorLvl: 1
-  ammoLvl: 1
-  minesLvl: 1
+  nitrousLvl: 0
+  engineLvl: 0
+  armorLvl: 0
+  ammoLvl: 0
+  minesLvl: 0
   agentCheckPoints: []
   currentCheckPointInd: 0
   currentAgentCheckPoint: {x: 0, y: 0, z: 0}
@@ -244,10 +244,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 8948915864511842001, guid: 083e436b96613634d99a70ec0510d189, type: 3}
   bulletSpawnPoint: {fileID: 6279102483087949472}
-  numberOfBullets: 5
+  numberOfBullets: 3
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 7490190973237288038}
-  numberOfMines: 5
+  numberOfMines: 3
   mineBlockingObjectTags:
   - Wall
   - LandMine
