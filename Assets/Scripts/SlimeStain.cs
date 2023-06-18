@@ -4,7 +4,7 @@ public class SlimeStain : MonoBehaviour
 {
     [Range(0.3f, 0.8f)]
     public float turnSpeedRatio = 0.5f;
-    public float massMltiplier = 10f;
+    public float penaltyDrag = 1f;
     public float modificationTime;
 
     private string playerTag = "Player";
@@ -18,8 +18,7 @@ public class SlimeStain : MonoBehaviour
 
             if (car.enabled && car.isCollision && car.turnSpeedRatio == 1f)
             {
-                car.changeMassCor = car.ChangeMass(massMltiplier, modificationTime, turnSpeedRatio);
-                StartCoroutine(car.changeMassCor);
+                StartCoroutine(car.SlimePenalty(penaltyDrag, modificationTime, turnSpeedRatio));
             }
         }
     }

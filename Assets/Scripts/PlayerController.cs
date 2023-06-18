@@ -42,10 +42,11 @@ public class PlayerController : MonoBehaviour
     public float drag = 0.5f;
     public float dragMax = 1.5f;
     private float dragDelta;
+    private float penaltyDrag = 0f;
 
     [HideInInspector] public Rigidbody rb;
-    private float mass;
-    public IEnumerator changeMassCor;
+    //private float mass;
+    //public IEnumerator changeMassCor;
     [HideInInspector] public bool isCollision = true;
     [HideInInspector] public Vector3 spawnPosition;
     [HideInInspector] public Quaternion spawnRotation;
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
         rb.maxAngularVelocity = Mathf.Infinity;
         rb.drag = drag;
         dragDelta = dragMax - drag;
-        mass = rb.mass;
+        //mass = rb.mass;
 
         controls = new ControlManager();
 
@@ -272,7 +273,7 @@ public class PlayerController : MonoBehaviour
     {
         if (enabled && isCollision && !isNitrousOn && nitrousReady)
         {
-            Debug.Log("Nitrous активирован");
+            //Debug.Log("Nitrous активирован");
             isNitrousOn = true;
             nitrousReady = false;
             pressNitrous?.Invoke();
@@ -405,9 +406,9 @@ public class PlayerController : MonoBehaviour
         float velocityAngle = Mathf.Abs(Mathf.DeltaAngle(rb.rotation.eulerAngles.y, VelocityAngle()));
 
         if (velocityAngle <= 90)
-            rb.drag = drag + velocityAngle * dragDelta / 90f;
+            rb.drag = drag + velocityAngle * dragDelta / 90f + penaltyDrag;
         else
-            rb.drag = drag + (180 - velocityAngle) * dragDelta / 90f;
+            rb.drag = drag + (180 - velocityAngle) * dragDelta / 90f + penaltyDrag;
     }
 
     private void TurningWheels()
@@ -563,21 +564,21 @@ public class PlayerController : MonoBehaviour
         Respawn();
     }
 
-    public IEnumerator ChangeMass(float massMltiplier, float modificationTime, float newTurnSpeedRatio)
+    public IEnumerator SlimePenalty(float newPenaltyDrag, float modificationTime, float newTurnSpeedRatio)
     {
         if (isAgent)
             agent.AddReward(-0.05f);
 
-        // Высчитываем процент воздействия в зависимости от текущей скорости. Чем выше скорость, тем сильнее воздействие
-        massMltiplier *= (Speed / maxSpeed);
+        // Время воздействия в зависимости от текущей скорости. Чем выше скорость, тем дольше воздействие
         modificationTime *= (Speed / maxSpeed);
 
-        // Меняем массу и скорость поворота авто
-        rb.mass *= Mathf.Clamp(massMltiplier, 1f, massMltiplier);
+        // Меняем rb.drag и скорость поворота авто
         turnSpeedRatio = newTurnSpeedRatio;
+        penaltyDrag = newPenaltyDrag;
 
         yield return new WaitForSeconds(modificationTime);
-        rb.mass = mass;
+
+        penaltyDrag = 0f;
         turnSpeedRatio = 1f;
     }
 
@@ -618,8 +619,9 @@ public class PlayerController : MonoBehaviour
         isForbiddenAreaTouch = false;
         flipCheck = false;
         isSpinOut = false;
-        rb.mass = mass;
+        //rb.mass = mass;
         turnSpeedRatio = 1f;
+        penaltyDrag = 0f;
         StopAllCoroutines();
     }
 
