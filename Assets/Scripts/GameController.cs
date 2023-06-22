@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -52,10 +53,14 @@ public class GameController : MonoBehaviour
 
     [SerializeField]
     private Material reserveAgentColor; // Если используемый агентом цвет такой же как у игрока, заменяем его на резервный
+    [SerializeField]
+    private List<Transform> startPositions;
+    private List<Transform> dutyPositionsList;
 
     private void Awake()
     {
-        AddPlayer();
+        if(!isTraining)
+            AddPlayer();
     }
 
     void Start()
@@ -78,18 +83,39 @@ public class GameController : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            startBtn.gameObject.SetActive(false);
+            startDelay = 0;
+            StartCoroutine(StartRace());
+
+            foreach (AgentController agent in agents)
+            {
+                agent.NewEpisode += StartPositionForTraining;
+            }
+
+            if (startPositions != null)
+                dutyPositionsList = new List<Transform>(startPositions);
+            else
+                Debug.Log("startPositions is null");
+        }
 
         lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
         SetRemaningDistances();
         PlacesCheck();
 
         // Для тренировки агента
-        if (isTraining)
-        {
-            startBtn.gameObject.SetActive(false);
-            startDelay = 0;
-            StartCoroutine(StartRace());
-        }
+        //if (isTraining)
+        //{
+        //    startBtn.gameObject.SetActive(false);
+        //    startDelay = 0;
+        //    StartCoroutine(StartRace());
+
+        //    foreach (AgentController agent in agents)
+        //    {
+        //        agent.NewEpisode += StartPositionForTraining;
+        //    }
+        //}
     }
 
     private void AddPlayer()
@@ -339,6 +365,40 @@ public class GameController : MonoBehaviour
         }
         // Чтобы узнать полную длину круга добавляем оставшийся отрезок между первым и последним чекпоинтом
         lapLength = segmentLength + (agentCheckPoints[agentCheckPoints.Length - 1].position - agentCheckPoints[0].position).magnitude;
+    }
+
+    public Transform StartPositionForTraining()
+    {
+        if (dutyPositionsList == null)
+            return null;
+
+        int randomInd = Random.Range(0, dutyPositionsList.Count);
+        Transform dutyPosition = dutyPositionsList[randomInd];
+        dutyPositionsList.Remove(dutyPosition);
+        
+        if (dutyPositionsList.Count == 0)
+        {
+            dutyPositionsList.AddRange(startPositions);
+        }
+
+        return dutyPosition;
+
+        //void CompleteDutyPositionsList()
+        //{
+        //    foreach (Transform s in startPositions)
+        //    {
+        //        int j = Random.Range(0, dutyPositionsList.Count + 1);
+        //        if (j == dutyPositionsList.Count)
+        //        {
+        //            dutyPositionsList.Add(s);
+        //        }
+        //        else
+        //        {
+        //            dutyPositionsList.Add(dutyPositionsList[j]);
+        //            dutyPositionsList[j] = s;
+        //        }
+        //    }
+        //}
     }
 
     public void SetUIAmmoValue(int numberOfBullets, int numberOfMines)

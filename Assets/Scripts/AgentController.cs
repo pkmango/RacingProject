@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Collections;
+using UnityEngine.Events;
 
 public class AgentController : Agent
 {
@@ -28,9 +29,16 @@ public class AgentController : Agent
 
     [HideInInspector] public DateTime raceTime = new DateTime(); // Общее время со старта гонки передается из GameController
 
+    public delegate Transform EpisodeDlg();
+    public event EpisodeDlg NewEpisode;
+
+    private Vector3 startPosition;
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        startPosition = transform.position;
     }
 
     public override void OnEpisodeBegin()
@@ -45,13 +53,16 @@ public class AgentController : Agent
 
             if (training)
             {
-                int randomInd = Random.Range(0, startPositions.Length - 1);
-                Collider[] occupiedPlaces = Physics.OverlapSphere(startPositions[randomInd].position, 0.1f, LayerMask.GetMask("Agent"));
-                if (occupiedPlaces.Length > 0)
+                Vector3? newStartPosition = NewEpisode?.Invoke().position;
+
+                if(newStartPosition != null)
                 {
-                    randomInd = randomInd == 0 ? Random.Range(1, startPositions.Length - 1) : 0;
+                    transform.position = (Vector3)newStartPosition;
                 }
-                transform.position = startPositions[randomInd].position;
+                else
+                {
+                    transform.position = startPosition;
+                }
             }
         }
         else
