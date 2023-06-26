@@ -323,20 +323,21 @@ public class PlayerController : MonoBehaviour
         PointOnLine respawnPoint = new PointOnLine(); // Точка ближайшая точка на прямой между текущим и предыдущим чекопоинтом
         Vector3 requiredPoint = respawnPoint.GetPointOnLine(previousAgentCheckPoint, currentAgentCheckPoint, transform.position); // Получаем ближайшую точку на прямой между чекпоинтами
         requiredPoint += GetPlaceForRespawn(); // Смещаем точку на свое заданное отклонение для респауна
-        transform.position = requiredPoint + 20 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
+        transform.position = requiredPoint + 100 * Vector3.up; // Максимально поднимаем точку над трассой чтобы пустить вниз луч и нащупать поверхность
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); // Меняем слой чтобы агент не обнаружил сам себя
 
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, surfaceSearchMask)) // Пускаем вниз луч, ищем поверхность
         {
             transform.position = hit.point + distanceToGround;
-            //Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name);
+            //Debug.Log("Найдено пересечение в точке: " + hit.point + " " + hit.collider.name + "   transform.position = " + transform.position);
         }
         else
         {
             transform.position = requiredPoint + distanceToGround;
             //Debug.Log("Пересечение не найдено!");
         }
-        transform.rotation = Quaternion.LookRotation(currentAgentCheckPoint - previousAgentCheckPoint) * Quaternion.AngleAxis(-90, Vector3.up);
+        Vector3 directionOnTarget = Vector3.ProjectOnPlane(currentAgentCheckPoint - previousAgentCheckPoint, Vector3.up); // Вычисляем направление на следующий чекпоинт спроецированное на поверхность
+        transform.rotation = Quaternion.LookRotation(directionOnTarget) * Quaternion.AngleAxis(-90, Vector3.up);
         gameObject.layer = LayerMask.NameToLayer("Agent"); // После респауна возрващаем слой агента
         ResetCoroutines();
 
