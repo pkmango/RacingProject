@@ -3039,6 +3039,10 @@ PrefabInstance:
       value: Road_Intersection_D
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -3051,6 +3055,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.7071068
       objectReference: {fileID: 0}
@@ -3061,14 +3069,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b296d935b89065c40908341d9004426e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
