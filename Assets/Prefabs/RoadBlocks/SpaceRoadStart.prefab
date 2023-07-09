@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 6861788249410364690}
   - component: {fileID: 7243695761556047652}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: StartLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -450,12 +450,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2781452950806525258}
   m_Layer: 0
-  m_Name: RoadLines
+  m_Name: RoadLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2781452950806525258
 Transform:
   m_ObjectHideFlags: 0
@@ -854,7 +854,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e01dc95e5760e9144811ccf442c28648, type: 2}
+  - {fileID: 2100000, guid: 9456133210815844994cc34ad6077442, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
