@@ -136,13 +136,13 @@ public class AgentController : Agent
         {
             car.leftBtnOn = true;
             car.rightBtnOn = false;
-            //AddReward(-0.0001f);
+            AddReward(-0.0001f);
         }
         else if (rotateAction == 2) // Поворот направо
         {
             car.leftBtnOn = false;
             car.rightBtnOn = true;
-            //AddReward(-0.0001f);
+            AddReward(-0.0001f);
         }
         else
         {
@@ -159,7 +159,7 @@ public class AgentController : Agent
         {
             car.gasOn = false;
             car.reverseOn = true;
-            //AddReward(-0.0001f);
+            AddReward(-0.0001f);
         }
         else
         {
