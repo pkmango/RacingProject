@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 369b9ebe3a62b904dbc19bd332b44086, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.008591343, g: 0.052028403, b: 0.15366799, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7280,7 +7280,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh290186
+  m_Name: pb_Mesh368054
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -10361,7 +10361,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 95f5d0ec207ebbf498408f5a229bd8a9,
+      objectReference: {fileID: 5022602860645237092, guid: e67421d8aa897be4d994d05bccafa95e,
         type: 3}
     - target: {fileID: 2553928858254564877, guid: 8ef7b00c40593de4b94ce90056aed0b5,
         type: 3}
@@ -15759,7 +15759,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 95f5d0ec207ebbf498408f5a229bd8a9,
+      objectReference: {fileID: 5022602860645237092, guid: e67421d8aa897be4d994d05bccafa95e,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a270d279de5606047986345d9f869489, type: 3}
@@ -16991,7 +16991,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 95f5d0ec207ebbf498408f5a229bd8a9,
+      objectReference: {fileID: 5022602860645237092, guid: e67421d8aa897be4d994d05bccafa95e,
         type: 3}
     - target: {fileID: 7272055476910161187, guid: ce997e9618a8f5443ac9166119e714d1,
         type: 3}
@@ -23004,7 +23004,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1830249615
 MonoBehaviour:
   m_ObjectHideFlags: 0

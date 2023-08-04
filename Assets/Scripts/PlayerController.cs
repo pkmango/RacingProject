@@ -485,7 +485,7 @@ public class PlayerController : MonoBehaviour
             if (isAgent)
             {
                 //agent.AddReward(1f / agentCheckPoints.Length);
-                agent.AddReward(0.06f);
+                agent.AddReward(0.05f);
             }
 
             currentCheckPointInd++;

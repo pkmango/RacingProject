@@ -120,7 +120,7 @@ public class AgentController : Agent
 
     private void ActionHandler(ActionSegment<int> act)
     {
-        AddReward(-0.0002f);
+        AddReward(-0.0001f);
         
         if (training)
         {
