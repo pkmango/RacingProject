@@ -154,6 +154,7 @@ public class AgentController : Agent
         {
             car.gasOn = true;
             car.reverseOn = false;
+            AddReward(0.0001f);
         }
         else if (forwardAction == 2) // Газуем назад
         {
