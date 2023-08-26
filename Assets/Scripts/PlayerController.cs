@@ -458,6 +458,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         isCollision = false;
+        weaponController.groundCollision = false;
     }
 
     private void OnCollisionStay(Collision collision)
@@ -473,6 +474,7 @@ public class PlayerController : MonoBehaviour
                 if (numberOfContacts > 1)
                 {
                     isCollision = true;
+                    weaponController.groundCollision = true;
                 }
             }
         }

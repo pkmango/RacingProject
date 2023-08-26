@@ -15,6 +15,8 @@ public class WeaponController : MonoBehaviour
     private int currentNumberOfMines;
     public string[] mineBlockingObjectTags = { "Wall", "LandMine" };
 
+    [HideInInspector] public bool groundCollision = true; // true если есть касание земли, используется при проверке на возможность постановки мины
+
     [System.Serializable]
     public class AmmoChangeEvent: UnityEvent<int, int> { } // Создаем типа соыбтия которе может передавать 2 параметра
     public AmmoChangeEvent ammoIsChanged;
@@ -66,28 +68,31 @@ public class WeaponController : MonoBehaviour
 
     public void SetMine()
     {
-        if (currentNumberOfMines > 0)
+        if (groundCollision)
         {
-            // Проверям нет ли стены или другой мины в точке респауна
-            Collider[] сolliders = Physics.OverlapSphere(mineSpawnPoint.position, MineCheckRadius);
-            foreach (var сollider in сolliders)
+            if (currentNumberOfMines > 0)
             {
-                foreach (string _tag in mineBlockingObjectTags)
+                // Проверям нет ли стены или другой мины в точке респауна
+                Collider[] сolliders = Physics.OverlapSphere(mineSpawnPoint.position, MineCheckRadius);
+                foreach (var сollider in сolliders)
                 {
-                    if (сollider.tag == _tag)
+                    foreach (string _tag in mineBlockingObjectTags)
                     {
-                        return;
+                        if (сollider.tag == _tag)
+                        {
+                            return;
+                        }
                     }
                 }
-            }
 
-            currentNumberOfMines--;
-            ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
-            Instantiate(mine, mineSpawnPoint.position, transform.rotation);
-        }
-        else
-        {
-            //Debug.Log("No mines");
+                currentNumberOfMines--;
+                ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
+                Instantiate(mine, mineSpawnPoint.position, transform.rotation);
+            }
+            else
+            {
+                //Debug.Log("No mines");
+            }
         }
     }
 
