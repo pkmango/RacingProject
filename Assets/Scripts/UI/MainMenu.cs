@@ -46,6 +46,12 @@ public class MainMenu : MonoBehaviour
         SetMoneyUI();
     }
 
+    public void Add100pts()
+    {
+        playerData.CurrentScore += 100;
+        playerData.TotalScore += 100;
+    }
+
     public void Options()
     {
 
