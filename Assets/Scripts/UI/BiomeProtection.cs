@@ -16,9 +16,6 @@ public class BiomeProtection : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log(playerData.CurrentScore);
-        Debug.Log(playerData.TotalScore);
-
         if (playerData.CurrentScore < scoresToUnlock)
         {
             image.raycastTarget = false;

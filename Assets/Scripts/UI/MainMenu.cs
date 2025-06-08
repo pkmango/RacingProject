@@ -9,10 +9,13 @@ public class MainMenu : MonoBehaviour
     private PlayerData playerData;
     [SerializeField]
     private Text[] moneyUITxt;
+    [SerializeField]
+    private Text score;
 
     private void Awake()
     {
         SetMoneyUI();
+        score.text = playerData.CurrentScore.ToString();
     }
 
     public void SetMoneyUI()
