@@ -13,7 +13,7 @@ public class EquipmentBtn : MonoBehaviour, IPointerClickHandler
     [System.Serializable]
     private class OnClickEvent : UnityEvent<UpgradeType, Button> { }
     [SerializeField]
-    private OnClickEvent onClick;
+    private OnClickEvent onClick; // Добавление метода срабатывающего при событии осуществляем в редакторе 
 
     private void Awake()
     {

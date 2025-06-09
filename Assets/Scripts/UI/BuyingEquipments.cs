@@ -25,7 +25,7 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
     private int currentUpPrice;
 
     private Button currentBtn; // Текущая выделенная кнопка
-    private UpgradeType currentUpgradeType; // Текущий выделленный типа апгрейда
+    private UpgradeType currentUpgradeType; // Текущий выделленный тип апгрейда
     private bool allowedToBuy = true; // Если денег на покупку не хватает, меняем на false
     private Image buyBtnImg;
 
@@ -61,6 +61,7 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
         buyBtn.gameObject.SetActive(false);
     }
 
+    // Метод добавляется через редактор в EquipmentBtn в качестве слушателя на событие клика по иконке эквипмента
     public void ShowEquipDescription(UpgradeType upgradeType, Button selectedBtn)
     {
         buyBtn.gameObject.SetActive(true);
