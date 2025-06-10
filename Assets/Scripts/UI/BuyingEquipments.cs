@@ -87,7 +87,7 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
                 SetTextAndPrice("Mines", minesUpPrice);
                 break;
             default:
-                Debug.Log("No handler found for " + upgradeType);
+                UnityEngine.Debug.Log("No handler found for " + upgradeType);
                 break;
         }
 
@@ -128,7 +128,7 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
             moneyHasChanged?.Invoke();
             PurchasePossibilityCheck(currentUpPrice);
         }
-        
+
         currentBtn.Select();
     }
 }
