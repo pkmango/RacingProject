@@ -605,13 +605,13 @@ public class PlayerController : MonoBehaviour
 
         if (!isAgent)
         {
-            Debug.Log("nitrousLvl = " + nitrousLvl + "  |  nitrousForce = " + nitrousForce);
-            Debug.Log("engineLvl = " + engineLvl + "  |  forwardForce = " + forwardForce);
-            Debug.Log("armorLvl = " + armorLvl + "  |  hp = " + hp);
-            Debug.Log("ammoLvl = " + ammoLvl + "  |  numberOfBullets = " + weaponController.numberOfBullets);
-            Debug.Log("minesLvl = " + minesLvl + "  |  numberOfMines = " + weaponController.numberOfMines);
+            //Debug.Log("nitrousLvl = " + nitrousLvl + "  |  nitrousForce = " + nitrousForce);
+            Debug.Log($"nitrousLvl = {nitrousLvl}     nitrousForce = {nitrousForce}");
+            Debug.Log($"engineLvl = {engineLvl}     forwardForce = {forwardForce}");
+            Debug.Log($"armorLvl = {armorLvl}     hp = {hp}");
+            Debug.Log($"ammoLvl = {ammoLvl}     numberOfBullets = {weaponController.numberOfBullets}");
+            Debug.Log($"minesLvl = {minesLvl}     numberOfMines = {weaponController.numberOfMines}");
         }
-            
     }
 
     public void Restart()

@@ -112,6 +112,12 @@ public class BuyingCar : MonoBehaviour
 
     public void BuyCar()
     {
+        //При покупке новой машины нужно сбросить все апгрейды на 0
+        foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
+        {
+            playerData.SetUpgradeLvl(upgradeType, 0);
+        }
+
         if (playerData.Money < currentCar.carPrice) // Избыточно?
             return;
 
@@ -123,11 +129,13 @@ public class BuyingCar : MonoBehaviour
         if (colorIndex >= 0)
             playerData.CarColorNumber = colorIndex;
         else
-            Debug.Log("Цвет " + currentColor + " не найден в массиве  playerData.carMaterials");
+            Debug.Log($"Цвет {currentColor} не найден в массиве  playerData.carMaterials");
 
         Instantiate(vfx);
         SetBuyButton(false);
         carPrice.text = "0 $";
+
+
     }
 
     private void OnDisable()

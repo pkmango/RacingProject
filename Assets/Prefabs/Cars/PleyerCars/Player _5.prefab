@@ -343,12 +343,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAgent: 0
   playerName: Player_1
-  forwardForce: 120
+  forwardForce: 135
   backForce: -120
   rotationSpeed: 4
   jumpForce: 1200
-  nitrousForce: 20
-  nitrousTime: 1.3
+  nitrousForce: 25
+  nitrousTime: 1.43
   nitrousVFX: {fileID: 8823217899472237027}
   nitrousReady: 1
   wheelTag: Wheel
@@ -441,6 +441,7 @@ MonoBehaviour:
   mineBlockingObjectTags:
   - Wall
   - LandMine
+  groundCollision: 1
   ammoIsChanged:
     m_PersistentCalls:
       m_Calls: []

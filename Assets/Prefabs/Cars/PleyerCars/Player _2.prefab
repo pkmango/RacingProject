@@ -153,9 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAgent: 0
   playerName: Player_1
-  playerData: {fileID: 1861979558384990692, guid: 647523be52fd4a04996c96e08f94af15,
-    type: 3}
-  forwardForce: 120
+  forwardForce: 125
   backForce: -120
   rotationSpeed: 4
   jumpForce: 1200
@@ -171,7 +169,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1025
   explosion: {fileID: 100012, guid: 384371afbb4354cc9a3fc68eab303756, type: 3}
-  hp: 3
+  hp: 4
   currentHp: 3
   healthBar: {fileID: 5960891648257723912}
   turnSpeedRatio: 1
@@ -253,6 +251,7 @@ MonoBehaviour:
   mineBlockingObjectTags:
   - Wall
   - LandMine
+  groundCollision: 1
   ammoIsChanged:
     m_PersistentCalls:
       m_Calls: []

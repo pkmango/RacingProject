@@ -248,11 +248,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAgent: 0
   playerName: Player_1
-  forwardForce: 120
+  forwardForce: 130
   backForce: -120
   rotationSpeed: 4
   jumpForce: 1200
-  nitrousForce: 20
+  nitrousForce: 23
   nitrousTime: 1.3
   nitrousVFX: {fileID: 9145939259637812010}
   nitrousReady: 1
@@ -264,7 +264,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1025
   explosion: {fileID: 100012, guid: 384371afbb4354cc9a3fc68eab303756, type: 3}
-  hp: 3
+  hp: 4
   currentHp: 3
   healthBar: {fileID: 5960891648257723912}
   turnSpeedRatio: 1
@@ -346,6 +346,7 @@ MonoBehaviour:
   mineBlockingObjectTags:
   - Wall
   - LandMine
+  groundCollision: 1
   ammoIsChanged:
     m_PersistentCalls:
       m_Calls: []
