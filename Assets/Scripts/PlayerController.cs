@@ -513,7 +513,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (other.tag == ForbiddenAreaTag && isForbiddenAreaTouch == false)
+        if (other.CompareTag(ForbiddenAreaTag) && isForbiddenAreaTouch == false)
         {
             isForbiddenAreaTouch = true;
             forbiddenAreaTouchCor = StartCoroutine(ForbiddenAreaTouch());
@@ -522,7 +522,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ForbiddenAreaTouch()
     {
-        Debug.Log("ForbiddenAreaTouch");
+        Debug.Log($"{playerName} ForbiddenAreaTouch");
 
         yield return new WaitForSeconds(forbiddenAreaDelay);
         Respawn();
@@ -605,12 +605,11 @@ public class PlayerController : MonoBehaviour
 
         if (!isAgent)
         {
-            //Debug.Log("nitrousLvl = " + nitrousLvl + "  |  nitrousForce = " + nitrousForce);
-            Debug.Log($"nitrousLvl = {nitrousLvl}     nitrousForce = {nitrousForce}");
-            Debug.Log($"engineLvl = {engineLvl}     forwardForce = {forwardForce}");
-            Debug.Log($"armorLvl = {armorLvl}     hp = {hp}");
-            Debug.Log($"ammoLvl = {ammoLvl}     numberOfBullets = {weaponController.numberOfBullets}");
-            Debug.Log($"minesLvl = {minesLvl}     numberOfMines = {weaponController.numberOfMines}");
+            Debug.Log($"engineLvl = {engineLvl}  forwardForce = {forwardForce}" +
+                $"    nitrousLvl = {nitrousLvl}  nitrousForce = {nitrousForce}" +
+                $"    armorLvl = {armorLvl}  hp = {hp}" +
+                $"    ammoLvl = {ammoLvl}  numberOfBullets = {weaponController.numberOfBullets}" +
+                $"    minesLvl = {minesLvl}  numberOfMines = {weaponController.numberOfMines}");
         }
     }
 

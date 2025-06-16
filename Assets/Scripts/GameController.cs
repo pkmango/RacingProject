@@ -54,8 +54,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private Material reserveAgentColor; // Если используемый агентом цвет такой же как у игрока, заменяем его на резервный
     [SerializeField]
-    private List<Transform> startPositions;
-    private List<Transform> dutyPositionsList;
+    private List<Transform> startPositions; // It's for training
+    private List<Transform> dutyPositionsList; // It's for training
 
     private void Awake()
     {
