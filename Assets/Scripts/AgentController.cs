@@ -23,8 +23,8 @@ public class AgentController : Agent
     private Coroutine externalForceCor; // Корутина для случайной вшеншей силы
     [HideInInspector] public bool isExternalForce = false; // Работает ли случайная внешняя сила?
     public float externalForceTime = 1f; // Время действия случайной внешней силы
-    public float externalForce; // Значение случайной вшеншней силы
-    public float externalForceDelta; // Дельтра значений вшеншней силы 
+    public float externalForce; // Значение случайной внешней силы
+    public float externalForceDelta; // Дельтра значений внешней силы 
     private int externalForceChance = 1000; // Вероятность воздействия случайной внешней силы
 
     [HideInInspector] public DateTime raceTime = new DateTime(); // Общее время со старта гонки передается из GameController
