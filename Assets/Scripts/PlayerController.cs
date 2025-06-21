@@ -70,6 +70,9 @@ public class PlayerController : MonoBehaviour
     public float forbiddenAreaDelay = 2f; // Задержка (секунд) для уничтожения авто пересекающего запретную зону
     private Coroutine forbiddenAreaTouchCor;
 
+    private const string HotZoneTag = "HotZone"; // Для зоны с при въезде в которую происходит мгновенное уничтожение
+    private bool isHotZoneTouch = false;
+
     [Header("Upgrade Levels for Agents")]
     [SerializeField, Range(0, 3)]
     private int nitrousLvl = 0;
@@ -340,7 +343,7 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(directionOnTarget) * Quaternion.AngleAxis(-90, Vector3.up);
         gameObject.layer = LayerMask.NameToLayer("Agent"); // После респауна возрващаем слой агента
         ResetCoroutines();
-
+        
         currentHp = hp;
         healthBar.ChangeHP(hp, currentHp);
         hpIsChanged?.Invoke(hp, currentHp);
@@ -518,6 +521,20 @@ public class PlayerController : MonoBehaviour
             isForbiddenAreaTouch = true;
             forbiddenAreaTouchCor = StartCoroutine(ForbiddenAreaTouch());
         }
+
+        // Добавляем горячие зоны с моментальным уничтожением
+        if (other.CompareTag(HotZoneTag) && isHotZoneTouch == false)
+        {
+            Debug.Log("HotZone!");
+            isHotZoneTouch = true;
+            StartCoroutine(HotZoneTouch());
+        }
+    }
+
+    IEnumerator HotZoneTouch()
+    {
+        yield return new WaitForFixedUpdate(); // Чтобы исключить несколько одновременных срабатываний, нужно дождаться следующего FixedUpdate
+        Respawn();
     }
 
     IEnumerator ForbiddenAreaTouch()
@@ -630,6 +647,7 @@ public class PlayerController : MonoBehaviour
     private void ResetCoroutines()
     {
         isForbiddenAreaTouch = false;
+        isHotZoneTouch = false;
         flipCheck = false;
         isSpinOut = false;
         //rb.mass = mass;
