@@ -40314,6 +40314,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6887301316692509903, guid: 8ef7b00c40593de4b94ce90056aed0b5,
         type: 3}
+      propertyPath: forwardForce
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 6887301316692509903, guid: 8ef7b00c40593de4b94ce90056aed0b5,
+        type: 3}
+      propertyPath: nitrousForce
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 6887301316692509903, guid: 8ef7b00c40593de4b94ce90056aed0b5,
+        type: 3}
       propertyPath: placesForRespawn
       value: 
       objectReference: {fileID: 0}
@@ -65755,6 +65765,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4473087862171047414, guid: a270d279de5606047986345d9f869489,
         type: 3}
+      propertyPath: forwardForce
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 4473087862171047414, guid: a270d279de5606047986345d9f869489,
+        type: 3}
+      propertyPath: nitrousForce
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 4473087862171047414, guid: a270d279de5606047986345d9f869489,
+        type: 3}
       propertyPath: respawnPlaceID
       value: 1
       objectReference: {fileID: 0}
@@ -74400,6 +74420,16 @@ PrefabInstance:
         type: 3}
       propertyPath: nitrousLvl
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8068341569385549620, guid: ce997e9618a8f5443ac9166119e714d1,
+        type: 3}
+      propertyPath: forwardForce
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 8068341569385549620, guid: ce997e9618a8f5443ac9166119e714d1,
+        type: 3}
+      propertyPath: nitrousForce
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 8068341569385549620, guid: ce997e9618a8f5443ac9166119e714d1,
         type: 3}
