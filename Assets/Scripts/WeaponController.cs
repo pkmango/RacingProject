@@ -8,6 +8,7 @@ public class WeaponController : MonoBehaviour
     public Transform bulletSpawnPoint;
     public int numberOfBullets;
     private int currentNumberOfBullets;
+    private float bulletSpeedRatio = 0.0125f; // Понижающий коэффициент для передачи влияния скорости авто на скорость пули
     
     public GameObject mine;
     public Transform mineSpawnPoint;
@@ -57,13 +58,9 @@ public class WeaponController : MonoBehaviour
         {
             currentNumberOfBullets--;
             ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
-            Instantiate(bullet, bulletSpawnPoint.position, transform.rotation);
+            Bullet newBullet = Instantiate(bullet, bulletSpawnPoint.position, transform.rotation).GetComponent<Bullet>();
+            newBullet.speed += GetComponent<PlayerController>().Speed * bulletSpeedRatio;
         }
-        else
-        {
-            //Debug.Log("No bullets");
-        }
-        
     }
 
     public void SetMine()

@@ -4710,7 +4710,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4765,9 +4764,9 @@ GameObject:
   - component: {fileID: 5782117302471255766}
   - component: {fileID: 5532465192478897152}
   - component: {fileID: 6943749551000890214}
+  - component: {fileID: 4309192562341783892}
   - component: {fileID: 736635811523031267}
   - component: {fileID: 4182187208485819631}
-  - component: {fileID: 4309192562341783892}
   m_Layer: 0
   m_Name: Bullet_1
   m_TagString: Untagged
@@ -4838,6 +4837,22 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!54 &4309192562341783892
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8948915864511842001}
+  serializedVersion: 2
+  m_Mass: 0.01
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!65 &736635811523031267
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4874,22 +4889,6 @@ MonoBehaviour:
   - LandMine
   destroyTime: 2.5
   bulletExplosion: {fileID: 8151883739471878645}
---- !u!54 &4309192562341783892
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8948915864511842001}
-  serializedVersion: 2
-  m_Mass: 0.01
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &2190459059843672995
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4966,6 +4965,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989626699798372093, guid: 8945a1cadaf264d4f82c9255500862d1,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6034912565027445427, guid: 8945a1cadaf264d4f82c9255500862d1,
         type: 3}

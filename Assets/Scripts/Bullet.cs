@@ -17,6 +17,7 @@ public class Bullet : MonoBehaviour
     private void Start()
     {
         Destroy(gameObject, destroyTime);
+        Debug.Log($"bullet.speed = {speed}");
     }
 
     private void FixedUpdate()
