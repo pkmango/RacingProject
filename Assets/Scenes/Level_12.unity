@@ -53910,6 +53910,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3046750261387391913, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1252414557}
+    - target: {fileID: 3046750261387391913, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Restart
+      objectReference: {fileID: 0}
     - target: {fileID: 6065001611417800932, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

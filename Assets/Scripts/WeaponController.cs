@@ -86,10 +86,6 @@ public class WeaponController : MonoBehaviour
                 ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
                 Instantiate(mine, mineSpawnPoint.position, transform.rotation);
             }
-            else
-            {
-                //Debug.Log("No mines");
-            }
         }
     }
 

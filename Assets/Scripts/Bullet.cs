@@ -17,7 +17,6 @@ public class Bullet : MonoBehaviour
     private void Start()
     {
         Destroy(gameObject, destroyTime);
-        Debug.Log($"bullet.speed = {speed}");
     }
 
     private void FixedUpdate()
@@ -31,7 +30,7 @@ public class Bullet : MonoBehaviour
     {
         foreach (string _name in exceptionTags)
         {
-            if (other.tag == _name)
+            if (other.CompareTag(_name))
                 return;
         }
         
@@ -43,7 +42,7 @@ public class Bullet : MonoBehaviour
         if (hitObject == null)
             return;
 
-        if (hitObject.tag == enemyTag || hitObject.tag == playerTag)
+        if (hitObject.CompareTag(enemyTag) || hitObject.CompareTag(playerTag))
         {
             PlayerController car = hitObject.GetComponent<PlayerController>();
 

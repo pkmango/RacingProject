@@ -642,6 +642,7 @@ public class PlayerController : MonoBehaviour
         currentHp = hp;
         healthBar.ChangeHP(hp, currentHp);
         hpIsChanged?.Invoke(hp, currentHp);
+        weaponController.AmmoReload();
     }
 
     private void ResetCoroutines()
@@ -658,13 +659,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        controls.Player.Enable();
+        controls.Enable();
         weaponController.AutoMode(true);
     }
 
     private void OnDisable()
     {
-        controls.Player.Disable();
-        weaponController.AutoMode(false);
+        controls.Disable();
+        weaponController.AutoMode(false);     
     }
 }

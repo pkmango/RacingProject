@@ -262,7 +262,7 @@ public class GameController : MonoBehaviour
         {
             foreach (AgentController agent in agents)
             {
-                agent.car.enabled = true;
+                //agent.car.enabled = true;
                 agent.UnFreeze();
             }
         }
@@ -320,7 +320,7 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        Resume();
+        Time.timeScale = 1f;
         if (lapTimerCor != null)
             StopCoroutine(lapTimerCor);
 
@@ -333,8 +333,11 @@ public class GameController : MonoBehaviour
         }
 
         player.Restart();
+        player.enabled = false;
         mainCamera.SetStartPosition();
+        pauseGroup.SetActive(false);
         startBtn.gameObject.SetActive(true);
+        pauseBtn.SetActive(false);
         currentLapNumber = 1;
         lapNumberText.text = currentLapNumber + "/" + numberOfLaps;
         speedText.text = "0";

@@ -32125,6 +32125,26 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 257865601}
+    - target: {fileID: 232819915433133139, guid: d554e954498a402479a78a60c533eb40,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.9782229
+      objectReference: {fileID: 0}
+    - target: {fileID: 232819915433133139, guid: d554e954498a402479a78a60c533eb40,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.9844416
+      objectReference: {fileID: 0}
+    - target: {fileID: 232819915433133139, guid: d554e954498a402479a78a60c533eb40,
+        type: 3}
+      propertyPath: m_Center.x
+      value: -0.0021478247
+      objectReference: {fileID: 0}
+    - target: {fileID: 232819915433133139, guid: d554e954498a402479a78a60c533eb40,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0.0012603225
+      objectReference: {fileID: 0}
     - target: {fileID: 273013954277891171, guid: d554e954498a402479a78a60c533eb40,
         type: 3}
       propertyPath: m_Mesh
@@ -85212,6 +85232,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3046750261387391913, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1252414557}
+    - target: {fileID: 3046750261387391913, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Restart
+      objectReference: {fileID: 0}
     - target: {fileID: 6065001611417800932, guid: 462a6a5f4ed1d5148a24fb4ba749ec56,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
