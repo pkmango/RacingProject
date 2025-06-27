@@ -11,11 +11,31 @@ public class MainMenu : MonoBehaviour
     private Text[] moneyUITxt;
     [SerializeField]
     private Text score;
+    [SerializeField]
+    private GameObject intro; // Приветственный интерфейс который показываем только 1 раз при запуске игры
+    [SerializeField]
+    private GameObject mainMenu; // Интерфейс главного меню
+
+    private static bool isFirstLoad = true; // Флаг для первой загрузки сцены
 
     private void Awake()
     {
         SetMoneyUI();
         score.text = playerData.CurrentScore.ToString();
+
+        FirstLoad(); // Интро отображаем только при первой загрузке
+    }
+
+    private void FirstLoad()
+    {
+        if (isFirstLoad)
+        {
+            isFirstLoad = false;
+        }
+        else
+        {
+            ShowTargetCanvas(mainMenu, intro);
+        }
     }
 
     public void SetMoneyUI()

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
@@ -36,7 +35,7 @@ public class SceneLoader : MonoBehaviour
         if (sceneChange)
         {
             loadingText.SetActive(true);
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+            SceneManager.LoadSceneAsync(sceneName);
         }
         else
         {
