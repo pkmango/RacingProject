@@ -70,17 +70,20 @@ public class GameController : MonoBehaviour
 
         if (!isTraining)
         {
-            foreach (AgentController agent in agents)
+            for (var i = 0; i < agents.Length; i++)
             {
-                agent.Freeze();
+                agents[i].Freeze();
 
                 // Если используемый агентом цвет такой же как у игрока, заменяем его на резервный
-                Renderer agentRenderer = agent.GetComponent<Renderer>();
+                Renderer agentRenderer = agents[i].GetComponent<Renderer>();
                 if (agentRenderer.sharedMaterial == playerData.GetCarMaterial())
                 {
                     agentRenderer.material = reserveAgentColor;
-                    agent.car.minimapMarker.GetComponent<SpriteRenderer>().color = Color.blue;
+                    agents[i].car.minimapMarker.GetComponent<SpriteRenderer>().color = Color.blue;
                 }
+
+                // Присваиваем имена агентам
+                agents[i].car.playerName = AgentNames.Names[i];
             }
         }
         else
