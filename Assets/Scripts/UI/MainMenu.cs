@@ -4,17 +4,21 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField]
-    private SceneLoader sceneLoader; // Компонент для загрузки другой сцены
+    [Tooltip("Компонент для загрузки другой сцены")]
+    private SceneLoader sceneLoader;
     [SerializeField]
     private PlayerData playerData;
     [SerializeField]
+    [Tooltip("Массив в который добавляем все UI тесктовые поля с отображением денежного баланса игрока")]
     private Text[] moneyUITxt;
     [SerializeField]
     private Text score;
     [SerializeField]
-    private GameObject intro; // Приветственный интерфейс который показываем только 1 раз при запуске игры
+    [Tooltip("Приветственный интерфейс, который показываем только 1 раз при запуске игры")]
+    private GameObject intro;
     [SerializeField]
-    private GameObject mainMenu; // Интерфейс главного меню
+    [Tooltip("Интерфейс главного меню")]
+    private GameObject mainMenu;
 
     private static bool isFirstLoad = true; // Флаг для первой загрузки сцены
 
