@@ -800,6 +800,55 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &82180083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 82180085}
+  - component: {fileID: 82180084}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &82180084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82180083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0c7049c635a2474ba38b144e485c8c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: ecaf03404a35b3447b3b2f7de6a738c3, type: 2}
+  musicGroup: {fileID: -3759034844507771851, guid: ecaf03404a35b3447b3b2f7de6a738c3,
+    type: 2}
+  sfxGroup: {fileID: -3526116532956834448, guid: ecaf03404a35b3447b3b2f7de6a738c3,
+    type: 2}
+  library: {fileID: 11400000, guid: d9f74e25e4e669641a87275525dea5eb, type: 2}
+--- !u!4 &82180085
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82180083}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &83519685
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42300,6 +42349,7 @@ MonoBehaviour:
   score: {fileID: 801373817}
   intro: {fileID: 1759353575}
   mainMenu: {fileID: 897115637}
+  musicName: MainTheme
 --- !u!4 &1673215764
 Transform:
   m_ObjectHideFlags: 0

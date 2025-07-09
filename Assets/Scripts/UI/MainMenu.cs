@@ -19,15 +19,28 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     [Tooltip("Интерфейс главного меню")]
     private GameObject mainMenu;
+    [SerializeField]
+    [Tooltip("Название трека из AudioLibrary, звучащего в главном меню")]
+    private string musicName = "Assign a name from AudioLibrary!";
 
     private static bool isFirstLoad = true; // Флаг для первой загрузки сцены
 
-    private void Awake()
+    //private void Awake()
+    //{
+    //    SetMoneyUI();
+    //    score.text = playerData.CurrentScore.ToString();
+
+    //    FirstLoad(); // Интро отображаем только при первой загрузке
+    //}
+
+    private void Start()
     {
         SetMoneyUI();
         score.text = playerData.CurrentScore.ToString();
 
         FirstLoad(); // Интро отображаем только при первой загрузке
+
+        AudioManager.Instance.PlayMusic(musicName);
     }
 
     private void FirstLoad()

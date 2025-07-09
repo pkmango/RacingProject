@@ -8,8 +8,6 @@ public class AudioLibrary : ScriptableObject
     {
         public string name;
         public AudioClip clip;
-        [Range(0, 1)] public float volume = 1;
-        public bool loop;
     }
 
     public Sound[] SFX;
