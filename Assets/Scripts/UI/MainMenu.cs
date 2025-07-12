@@ -21,7 +21,10 @@ public class MainMenu : MonoBehaviour
     private GameObject mainMenu;
     [SerializeField]
     [Tooltip("Название трека из AudioLibrary, звучащего в главном меню")]
-    private string musicName = "Assign a name from AudioLibrary!";
+    private SoundType musicName;
+    [SerializeField]
+    [Tooltip("Название звука из AudioLibrary, при клике")]
+    private SoundType clickSFX = SoundType.Click;
 
     private static bool isFirstLoad = true; // Флаг для первой загрузки сцены
 
@@ -65,12 +68,14 @@ public class MainMenu : MonoBehaviour
 
     public void LoadScene(string scene)
     {
+        AudioManager.Instance.StartCoroutine(AudioManager.Instance.FadeOutAndStopMusic());
         sceneLoader.gameObject.SetActive(true);
         sceneLoader.LoadScene(scene);
     }
 
     public void ShowTargetCanvas(GameObject target, GameObject current)
     {
+        AudioManager.Instance.PlaySFX(clickSFX);
         target.SetActive(true);
         current.SetActive(false);
     }
@@ -94,11 +99,12 @@ public class MainMenu : MonoBehaviour
 
     public void Options()
     {
-
+        AudioManager.Instance.PlaySFX(clickSFX);
     }
 
     public void Quit()
     {
+        AudioManager.Instance.PlaySFX(clickSFX);
         Application.Quit();
     }
 }

@@ -15,6 +15,9 @@ public class ColorToggleHandler : MonoBehaviour
     private Toggle thisToggle;
     private bool defaultState;
 
+    // При использовании Toggle Group будут повторные срабатывания OnValueChanged без реальной смены значения thisToggle.isOn, чтобы это исправить добавляем currentState
+    private bool currentState;
+
     private void Awake()
     {
         thisToggle = GetComponent<Toggle>();
@@ -25,13 +28,17 @@ public class ColorToggleHandler : MonoBehaviour
     {
         // При каждой активации canvas сбрасываем состояние переключателя к начальному
         thisToggle.isOn = defaultState;
+        currentState = defaultState;
     }
 
     public void ColorToggleClick(bool toggleState)
     {
-        if (toggleState)
+
+        if (toggleState && !currentState)
         {
             toggleOn?.Invoke(color);
         }
+
+        currentState = toggleState;
     }
 }

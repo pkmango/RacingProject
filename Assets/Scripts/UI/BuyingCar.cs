@@ -24,6 +24,10 @@ public class BuyingCar : MonoBehaviour
     private int nextIndex = 0; // Индекс следющего элемента массива авто после нажатия на стрелку
     private PlayerData playerData;
 
+    [SerializeField]
+    [Tooltip("Название звука из AudioLibrary, при клике")]
+    private SoundType clickSFX = SoundType.Click;
+
     private void Awake()
     {
         playerData = garageCar.playerData;
@@ -42,7 +46,10 @@ public class BuyingCar : MonoBehaviour
     public void ChangeCarColor(Material newColor)
     {
         if(newColor != currentColor)
+        {
+            AudioManager.Instance.PlaySFX(clickSFX);
             currentColor = newColor;
+        }
 
         currentCar.GetComponent<Renderer>().material = currentColor;
 
