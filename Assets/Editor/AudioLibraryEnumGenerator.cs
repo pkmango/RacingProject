@@ -3,6 +3,8 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using System.Text;
+using System.Linq;
+using System;
 
 [CustomEditor(typeof(AudioLibrary))]
 public class AudioLibraryEnumGenerator : Editor
@@ -21,40 +23,35 @@ public class AudioLibraryEnumGenerator : Editor
 
     private void GenerateEnumFile(AudioLibrary library)
     {
+        string path = "Assets/Scripts/Audio/SoundType.cs";
         StringBuilder enumBuilder = new StringBuilder();
+
+        // header
         enumBuilder.AppendLine("// Автогенерируемый enum");
         enumBuilder.AppendLine("public enum SoundType");
         enumBuilder.AppendLine("{");
-
-        NamesAppender(library.Music, enumBuilder);
-        NamesAppender(library.SFX, enumBuilder);
-
+        //body
+        enumBuilder.Append(NamesAppender(library.Music));
+        enumBuilder.AppendLine(",");
+        enumBuilder.AppendLine(NamesAppender(library.SFX));
+        //footer
         enumBuilder.AppendLine("}");
 
-        string path = "Assets/Scripts/Audio/SoundType.cs";
         File.WriteAllText(path, enumBuilder.ToString());
         AssetDatabase.Refresh();
 
         Debug.Log($"Enum SoundType сгенерирован в {path}");
     }
 
-    private void NamesAppender(AudioLibrary.Sound[] sounds, StringBuilder enumBuilder)
+    private string NamesAppender(AudioLibrary.Sound[] sounds)
     {
-        foreach (var sound in sounds)
-        {
-            if (sound != null)
-            {
-                // Заменяем пробелы и спецсимволы
-                string enumName = sound.name.Replace(" ", "_")
-                                         .Replace("-", "_")
-                                         .Replace(".", "_");
-                enumBuilder.AppendLine($"    {enumName},");
-            }
-            else
-            {
-                Debug.LogWarning("Обнаружен пустой слот в AudioLibrary!");
-            }
-        }
+        var validNames = sounds
+            .Where(sound => sound != null)
+            .Select(sound => $"    {sound.name.Replace(" ", "_").Replace("-", "_").Replace(".", "_")}");
+
+        string enumBody = string.Join($",{Environment.NewLine}", validNames);
+
+        return enumBody;
     }
 }
 #endif

@@ -7,5 +7,5 @@ public enum SoundType
     LaserShot,
     LevelUp,
     Mine,
-    TrafficLigts1,
+    TrafficLigts1
 }
