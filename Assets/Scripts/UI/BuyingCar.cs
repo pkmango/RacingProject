@@ -27,6 +27,8 @@ public class BuyingCar : MonoBehaviour
     [SerializeField]
     [Tooltip("Название звука из AudioLibrary, при клике")]
     private SoundType clickSFX = SoundType.Click;
+    [Tooltip("Название звука из AudioLibrary, при покупке")]
+    private SoundType buySFX = SoundType.Buy;
 
     private void Awake()
     {
@@ -141,7 +143,7 @@ public class BuyingCar : MonoBehaviour
         Instantiate(vfx);
         SetBuyButton(false);
         carPrice.text = "0 $";
-
+        AudioManager.Instance.PlaySFX(buySFX);
 
     }
 

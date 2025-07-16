@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System;
+using System.Text.RegularExpressions;
 
 [CustomEditor(typeof(AudioLibrary))]
 public class AudioLibraryEnumGenerator : Editor
@@ -31,13 +32,12 @@ public class AudioLibraryEnumGenerator : Editor
         enumBuilder.AppendLine("public enum SoundType");
         enumBuilder.AppendLine("{");
         //body
-        enumBuilder.Append(NamesAppender(library.Music));
-        enumBuilder.AppendLine(",");
-        enumBuilder.AppendLine(NamesAppender(library.SFX));
+        var allSounds = library.Music.Concat(library.SFX).ToArray();
+        enumBuilder.AppendLine(NamesAppender(allSounds));
         //footer
         enumBuilder.AppendLine("}");
 
-        File.WriteAllText(path, enumBuilder.ToString());
+        File.WriteAllText(path, enumBuilder.ToString(), Encoding.UTF8);
         AssetDatabase.Refresh();
 
         Debug.Log($"Enum SoundType сгенерирован в {path}");
@@ -45,13 +45,34 @@ public class AudioLibraryEnumGenerator : Editor
 
     private string NamesAppender(AudioLibrary.Sound[] sounds)
     {
-        var validNames = sounds
-            .Where(sound => sound != null)
-            .Select(sound => $"    {sound.name.Replace(" ", "_").Replace("-", "_").Replace(".", "_")}");
+        var processedNames = sounds
+            .Where(s => s != null)
+            .Select(s => SanitizeName(s.name))
+            .GroupBy(name => name)
+            .SelectMany(g => g.Count() == 1
+                ? new[] { $"    {g.Key}" }
+                : g.Select((name, i) => $"    {name}_{i + 1}"))
+            .ToList();
 
-        string enumBody = string.Join($",{Environment.NewLine}", validNames);
+        return string.Join($",{Environment.NewLine}", processedNames);
+    }
 
-        return enumBody;
+    private string SanitizeName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "Unknown";
+
+        // Удаляем все не-ASCII символы и заменяем спецсимволы
+        name = Regex.Replace(name, @"[^\p{L}\p{Nd}_]", "_")
+            .Replace("__", "_")
+            .Trim('_'); ;
+
+        if (name.Any(c => c > 127))
+        {
+            Debug.LogWarning($"Non-ASCII имя: {name}");
+        }
+
+        return name;
     }
 }
 #endif

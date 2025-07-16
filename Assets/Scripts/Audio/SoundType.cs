@@ -1,4 +1,4 @@
-// Автогенерируемый enum
+﻿// Автогенерируемый enum
 public enum SoundType
 {
     MainTheme,
@@ -7,5 +7,6 @@ public enum SoundType
     LaserShot,
     LevelUp,
     Mine,
-    TrafficLigts1
+    TrafficLigts1,
+    Buy
 }
