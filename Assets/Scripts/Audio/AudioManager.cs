@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    //public static AudioManager Instance;
 
     [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private AudioMixerGroup musicGroup, sfxGroup;
@@ -28,15 +29,15 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        //if (Instance == null)
+        //{
+        //    Instance = this;
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        //else
+        //{
+        //    Destroy(gameObject);
+        //}
 
         // Создаем словари для оптимизации доступа к звукам и 
         // возможности безопасно получать значение через TryGetValue()
@@ -77,6 +78,12 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // Создаем метод-обертку чтобы иметь возможность подписываться на событие с 1 параметром через инспектор
+    public void PlaySFXWrapper(SoundType soundType)
+    {
+        PlaySFX(soundType); // position будет = default
+    }
+
     public void PlayMusic(SoundType soundType)
     {
         string musicName = soundType.ToString();
@@ -93,7 +100,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public IEnumerator FadeOutAndStopMusic()
+    private IEnumerator FadeOutAndStopMusic()
     {
         audioMixer.GetFloat(musicVolumeParam, out float startVolume);
 
@@ -111,16 +118,23 @@ public class AudioManager : MonoBehaviour
         audioMixer.SetFloat(musicVolumeParam, Mathf.Log10(startVolume) * 20);
     }
 
-    public void ToggleSFX(bool sfxEnabled)
+    public void StartFadeOut()
     {
-        sfxMuted = !sfxEnabled;
-        ToggleAudio(sfxEnabled, sfxGroup, sfxVolumeParam, ref sfxVolumeBeforeMute);
+        StartCoroutine(FadeOutAndStopMusic());
+    }
+
+    public void ToggleSFX(AudioToggle.ToggleEventData data)
+    {
+        sfxMuted = !data.isOn;
+        ToggleAudio(data.isOn, sfxGroup, sfxVolumeParam, ref sfxVolumeBeforeMute);
+        Debug.Log($"ToggleSFX {data.isOn}");
     }
 
     public void ToggleMusic(bool musicEnabled)
     {
         musicMuted = !musicEnabled;
         ToggleAudio(musicEnabled, musicGroup, musicVolumeParam, ref musicVolumeBeforeMute);
+        Debug.Log($"ToggleMusic {musicEnabled}");
     }
 
     private void ToggleAudio(bool isEnabled, AudioMixerGroup audioMixerGroup, string volumeParam, ref float audioVolumeBeforeMute)

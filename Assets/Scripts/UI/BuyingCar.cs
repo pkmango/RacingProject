@@ -27,8 +27,13 @@ public class BuyingCar : MonoBehaviour
     [SerializeField]
     [Tooltip("Название звука из AudioLibrary, при клике")]
     private SoundType clickSFX = SoundType.Click;
+    [SerializeField]
     [Tooltip("Название звука из AudioLibrary, при покупке")]
     private SoundType buySFX = SoundType.Buy;
+    [System.Serializable] // Unity не сериализует дженерик-классы, поэтому нужно создавать наследника с атрибутом [Serializable]
+    public class AudioEvent : UnityEvent<SoundType> { }
+    [Tooltip("На это событие нужно подписать метод из AudioManager")]
+    public AudioEvent onPlayAudio;
 
     private void Awake()
     {
@@ -49,14 +54,15 @@ public class BuyingCar : MonoBehaviour
     {
         if(newColor != currentColor)
         {
-            AudioManager.Instance.PlaySFX(clickSFX);
+            //AudioManager.Instance.PlaySFX(clickSFX);
+            onPlayAudio?.Invoke(clickSFX);
             currentColor = newColor;
         }
 
         currentCar.GetComponent<Renderer>().material = currentColor;
 
         // Проверка условий для покупки и установка режима отображения кнопки "Buy"
-        SetBuyButton(!PlyerCarComparison() && playerData.Money >= currentCar.carPrice);
+        SetBuyButton(!PlayerCarComparison() && playerData.Money >= currentCar.carPrice);
     }
 
     public void LeftArrowCick()
@@ -88,7 +94,7 @@ public class BuyingCar : MonoBehaviour
 
 
     // Сравнение с машиной игрока и установка отображения цены
-    private bool PlyerCarComparison()
+    private bool PlayerCarComparison()
     {
         // Узнаем равны ли отображаемая машина и машина игрока
         bool equality = playerData.CarPrefabNumber == nextIndex && currentColor == playerData.GetCarMaterial();
@@ -143,8 +149,8 @@ public class BuyingCar : MonoBehaviour
         Instantiate(vfx);
         SetBuyButton(false);
         carPrice.text = "0 $";
-        AudioManager.Instance.PlaySFX(buySFX);
-
+        //AudioManager.Instance.PlaySFX(buySFX);
+        onPlayAudio?.Invoke(buySFX);
     }
 
     private void OnDisable()

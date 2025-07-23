@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -25,6 +26,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     [Tooltip("Название звука из AudioLibrary, при клике")]
     private SoundType clickSFX = SoundType.Click;
+    [System.Serializable]
+    public class AudioEvent : UnityEvent<SoundType> { }
+    [Tooltip("На эти события нужно подписать методы из AudioManager")]
+    public AudioEvent onPlayMusic, onPlaySfx;
+    [Tooltip("На это событие нужно подписать метод из AudioManager")]
+    public UnityEvent onLoadScene;
 
     private static bool isFirstLoad = true; // Флаг для первой загрузки сцены
 
@@ -43,7 +50,8 @@ public class MainMenu : MonoBehaviour
 
         FirstLoad(); // Интро отображаем только при первой загрузке
 
-        AudioManager.Instance.PlayMusic(musicName);
+        //AudioManager.Instance.PlayMusic(musicName);
+        onPlayMusic?.Invoke(musicName);
     }
 
     private void FirstLoad()
@@ -68,14 +76,16 @@ public class MainMenu : MonoBehaviour
 
     public void LoadScene(string scene)
     {
-        AudioManager.Instance.StartCoroutine(AudioManager.Instance.FadeOutAndStopMusic());
+        //AudioManager.Instance.StartCoroutine(AudioManager.Instance.FadeOutAndStopMusic());
+        onLoadScene?.Invoke();
         sceneLoader.gameObject.SetActive(true);
         sceneLoader.LoadScene(scene);
     }
 
     public void ShowTargetCanvas(GameObject target, GameObject current)
     {
-        AudioManager.Instance.PlaySFX(clickSFX);
+        //AudioManager.Instance.PlaySFX(clickSFX);
+        onPlaySfx?.Invoke(clickSFX);
         target.SetActive(true);
         current.SetActive(false);
     }
@@ -87,7 +97,7 @@ public class MainMenu : MonoBehaviour
 
     public void Add100K()
     {
-        playerData.Money += 100000;
+        playerData.Money += 200000;
         SetMoneyUI();
     }
 
@@ -99,12 +109,14 @@ public class MainMenu : MonoBehaviour
 
     public void Options()
     {
-        AudioManager.Instance.PlaySFX(clickSFX);
+        //AudioManager.Instance.PlaySFX(clickSFX);
+        onPlaySfx?.Invoke(clickSFX);
     }
 
     public void Quit()
     {
-        AudioManager.Instance.PlaySFX(clickSFX);
+        //AudioManager.Instance.PlaySFX(clickSFX);
+        onPlaySfx?.Invoke(clickSFX);
         Application.Quit();
     }
 }

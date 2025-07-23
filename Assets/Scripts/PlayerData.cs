@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-//[CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObject/PlayerData")]
 public class PlayerData : MonoBehaviour
 {
     public GameObject[] playerCars;
@@ -77,12 +76,10 @@ public class PlayerData : MonoBehaviour
     {
         get
         {
-            //return carPrefabNumber;
             return PlayerPrefs.GetInt(CarPrefabNumberKey);
         }
         set
         {
-            //carPrefabNumber = value;
             PlayerPrefs.SetInt(CarPrefabNumberKey, value);
         }
     }
@@ -91,12 +88,10 @@ public class PlayerData : MonoBehaviour
     {
         get
         {
-            //return carPrefabNumber;
             return PlayerPrefs.GetInt(CarColorNumberKey);
         }
         set
         {
-            //carPrefabNumber = value;
             PlayerPrefs.SetInt(CarColorNumberKey, value);
         }
     }
