@@ -20,8 +20,8 @@ public class AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> musicClips = new Dictionary<string, AudioClip>();
 
     private AudioSource musicSource;
-    private float defaultMusicVolume;
-    private float defaultSFXVolume;
+    //private float defaultMusicVolume;
+    //private float defaultSFXVolume;
     private bool sfxMuted;
     private float sfxVolumeBeforeMute;
     private bool musicMuted;
@@ -55,8 +55,8 @@ public class AudioManager : MonoBehaviour
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.outputAudioMixerGroup = musicGroup;
 
-        musicGroup.audioMixer.GetFloat(musicVolumeParam, out defaultMusicVolume);
-        sfxGroup.audioMixer.GetFloat(sfxVolumeParam, out defaultSFXVolume);
+        //musicGroup.audioMixer.GetFloat(musicVolumeParam, out defaultMusicVolume);
+        //sfxGroup.audioMixer.GetFloat(sfxVolumeParam, out defaultSFXVolume);
     }
 
     public void PlaySFX(SoundType soundType, Vector3 position = default)
@@ -130,11 +130,11 @@ public class AudioManager : MonoBehaviour
         Debug.Log($"ToggleSFX {data.isOn}");
     }
 
-    public void ToggleMusic(bool musicEnabled)
+    public void ToggleMusic(AudioToggle.ToggleEventData data)
     {
-        musicMuted = !musicEnabled;
-        ToggleAudio(musicEnabled, musicGroup, musicVolumeParam, ref musicVolumeBeforeMute);
-        Debug.Log($"ToggleMusic {musicEnabled}");
+        musicMuted = !data.isOn;
+        ToggleAudio(data.isOn, musicGroup, musicVolumeParam, ref musicVolumeBeforeMute);
+        Debug.Log($"ToggleMusic {data.isOn}");
     }
 
     private void ToggleAudio(bool isEnabled, AudioMixerGroup audioMixerGroup, string volumeParam, ref float audioVolumeBeforeMute)

@@ -1,42 +1,47 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Toggle))]
 public class AudioToggle : MonoBehaviour
 {
-    [System.Serializable]
+    [Serializable]
     public class ToggleEventData
     {
         public bool isOn;
     }
 
     [SerializeField] private AudioType audioType;
-    [System.Serializable] // Unity не сериализует дженерик-классы, поэтому нужно создавать наследника с атрибутом [Serializable]
+    [Serializable] // Unity не сериализует дженерик-классы, поэтому нужно создавать наследника с атрибутом [Serializable]
     public class BoolUnityEvent : UnityEvent<ToggleEventData> { } 
     public BoolUnityEvent OnToggleChanged;
 
-    const string MusicOnKey = "MusicOn";
-    const string SFXOnKey = "SFXOn";
     private Toggle thisToggle;
-    private string audioKey;
-
+    private enum AudioType
+    {
+        Music,
+        SFX
+    }
     private GameSettings gameSettings = new GameSettings();
+    private Dictionary<AudioType, (Func<int> getter, Action<int> setter)> audioSettings;
 
     private void Awake()
     {
         thisToggle = GetComponent<Toggle>();
-
         if (thisToggle == null)
             Debug.LogWarning($"У {gameObject} не найден компонет Toggle");
 
         thisToggle.onValueChanged.AddListener(HandleToggle);
-        audioKey = GetAudioKey(audioType);
-    }
 
-    private void OnEnable()
-    {
-        SetToggleState(audioKey);
+        audioSettings = new Dictionary<AudioType, (Func<int>, Action<int>)>
+        {
+            { AudioType.Music, (() => gameSettings.MusicOn, value => gameSettings.MusicOn = value) },
+            { AudioType.SFX, (() => gameSettings.SFXOn, value => gameSettings.SFXOn = value) }
+        };
+
+        LoadAudioSettings();
     }
 
     private void HandleToggle(bool isOn)
@@ -46,41 +51,33 @@ public class AudioToggle : MonoBehaviour
         Debug.Log(isOn);
     }
 
-    private string GetAudioKey(AudioType _audioType)
+    void LoadAudioSettings()
     {
-        switch (_audioType)
+        if (audioSettings.TryGetValue(audioType, out var settings))
         {
-            case AudioType.Music:
-                return MusicOnKey;
-            case AudioType.SFX:
-                return SFXOnKey;
-            default:
-                Debug.LogWarning($"Неизвестный AudioType {_audioType}", this);
-                return "UnknownAudioKey";
+            thisToggle.isOn = settings.getter() != 0;
+        }
+        else
+        {
+            Debug.LogWarning($"Неизвестный AudioType {audioType}, значение не получено", this);
         }
     }
 
-    private void SetToggleState(string _key)
+    void SaveAudioSettings()
     {
-        if (PlayerPrefs.GetInt(_key, 1) == 0)
-            thisToggle.isOn = false;
+        if (audioSettings.TryGetValue(audioType, out var settings))
+        {
+            settings.setter(thisToggle.isOn ? 1 : 0);
+        }
         else
-            thisToggle.isOn = true;
-    }
-
-    private void OnDisable()
-    {
-        PlayerPrefs.SetInt(audioKey, thisToggle.isOn ? 1 : 0);
+        {
+            Debug.LogWarning($"Неизвестный AudioType {audioType}, значение не сохранено", this);
+        }
     }
 
     private void OnDestroy()
     {
         thisToggle.onValueChanged.RemoveListener(HandleToggle);
-    }
-
-    private enum AudioType
-    {
-        Music,
-        SFX
+        SaveAudioSettings();
     }
 }
