@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
-    //public static AudioManager Instance;
-
     [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private AudioMixerGroup musicGroup, sfxGroup;
     private string musicVolumeParam = "MusicVolume";
     private string sfxVolumeParam = "SFXVolume";
     [SerializeField, Min(0)] private float fadeDuration = 0.8f;
+    [SerializeField] private Toggle musicToggle, sfxToggle;
 
     [SerializeField] private AudioLibrary library;
 
@@ -20,25 +19,13 @@ public class AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> musicClips = new Dictionary<string, AudioClip>();
 
     private AudioSource musicSource;
-    //private float defaultMusicVolume;
-    //private float defaultSFXVolume;
-    private bool sfxMuted;
     private float sfxVolumeBeforeMute;
-    private bool musicMuted;
     private float musicVolumeBeforeMute;
 
-    void Awake()
-    {
-        //if (Instance == null)
-        //{
-        //    Instance = this;
-        //    DontDestroyOnLoad(gameObject);
-        //}
-        //else
-        //{
-        //    Destroy(gameObject);
-        //}
+    private GameSettings gameSettings = new GameSettings();
 
+    private void Awake()
+    {
         // Создаем словари для оптимизации доступа к звукам и 
         // возможности безопасно получать значение через TryGetValue()
         foreach (var sound in library.SFX)
@@ -55,8 +42,13 @@ public class AudioManager : MonoBehaviour
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.outputAudioMixerGroup = musicGroup;
 
-        //musicGroup.audioMixer.GetFloat(musicVolumeParam, out defaultMusicVolume);
-        //sfxGroup.audioMixer.GetFloat(sfxVolumeParam, out defaultSFXVolume);
+        musicToggle.onValueChanged.AddListener(ToggleMusic);
+        sfxToggle.onValueChanged.AddListener(ToggleSFX);
+    }
+
+    private void Start()
+    {
+        GetAudioSettings();
     }
 
     public void PlaySFX(SoundType soundType, Vector3 position = default)
@@ -123,18 +115,14 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(FadeOutAndStopMusic());
     }
 
-    public void ToggleSFX(AudioToggle.ToggleEventData data)
+    public void ToggleSFX(bool isOn)
     {
-        sfxMuted = !data.isOn;
-        ToggleAudio(data.isOn, sfxGroup, sfxVolumeParam, ref sfxVolumeBeforeMute);
-        Debug.Log($"ToggleSFX {data.isOn}");
+        ToggleAudio(isOn, sfxGroup, sfxVolumeParam, ref sfxVolumeBeforeMute);
     }
 
-    public void ToggleMusic(AudioToggle.ToggleEventData data)
+    public void ToggleMusic(bool isOn)
     {
-        musicMuted = !data.isOn;
-        ToggleAudio(data.isOn, musicGroup, musicVolumeParam, ref musicVolumeBeforeMute);
-        Debug.Log($"ToggleMusic {data.isOn}");
+        ToggleAudio(isOn, musicGroup, musicVolumeParam, ref musicVolumeBeforeMute);
     }
 
     private void ToggleAudio(bool isEnabled, AudioMixerGroup audioMixerGroup, string volumeParam, ref float audioVolumeBeforeMute)
@@ -148,6 +136,25 @@ public class AudioManager : MonoBehaviour
             audioMixerGroup.audioMixer.GetFloat(volumeParam, out audioVolumeBeforeMute);
             audioMixerGroup.audioMixer.SetFloat(volumeParam, -80f);
         }
+    }
+
+    private void GetAudioSettings()
+    {
+        musicToggle.isOn = gameSettings.MusicOn != 0;
+        sfxToggle.isOn = gameSettings.SFXOn != 0;
+    }
+
+    private void SetAudioSettings()
+    {
+        gameSettings.MusicOn = musicToggle.isOn? 1 : 0;
+        gameSettings.SFXOn = sfxToggle.isOn ? 1 : 0;
+    }
+
+    private void OnDestroy()
+    {
+        musicToggle.onValueChanged.RemoveListener(ToggleMusic);
+        sfxToggle.onValueChanged.RemoveListener(ToggleSFX);
+        SetAudioSettings();
     }
 
     // Класс-обертка для зацилкенных sfx, привязанных к объекту (например звук двигателя)

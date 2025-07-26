@@ -910,6 +910,8 @@ MonoBehaviour:
   sfxGroup: {fileID: -3526116532956834448, guid: ecaf03404a35b3447b3b2f7de6a738c3,
     type: 2}
   fadeDuration: 0.8
+  musicToggle: {fileID: 275480416}
+  sfxToggle: {fileID: 552078739}
   library: {fileID: 11400000, guid: d9f74e25e4e669641a87275525dea5eb, type: 2}
 --- !u!4 &82180085
 Transform:
@@ -923,7 +925,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &83519685
 PrefabInstance:
@@ -1052,7 +1054,7 @@ Transform:
   - {fileID: 83519686}
   - {fileID: 489978265}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &83877484
 MonoBehaviour:
@@ -3814,7 +3816,6 @@ GameObject:
   m_Component:
   - component: {fileID: 275480415}
   - component: {fileID: 275480416}
-  - component: {fileID: 275480417}
   m_Layer: 5
   m_Name: MusicToggle
   m_TagString: Untagged
@@ -3888,46 +3889,8 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 82180084}
-        m_MethodName: ToggleMusic
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &275480417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275480414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 238ff8db44a14d14db2c91172db33cf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioType: 0
-  OnToggleChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 82180084}
-        m_MethodName: ToggleMusic
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!43 &282671834
 Mesh:
   m_ObjectHideFlags: 0
@@ -10299,7 +10262,7 @@ Transform:
   - {fileID: 482501329}
   - {fileID: 1716516237}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &439933024
 GameObject:
@@ -16571,7 +16534,6 @@ GameObject:
   m_Component:
   - component: {fileID: 552078738}
   - component: {fileID: 552078739}
-  - component: {fileID: 552078740}
   m_Layer: 5
   m_Name: SFXToggle
   m_TagString: Untagged
@@ -16647,33 +16609,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
---- !u!114 &552078740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 552078737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 238ff8db44a14d14db2c91172db33cf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioType: 1
-  OnToggleChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 82180084}
-        m_MethodName: ToggleSFX
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!43 &552632132
 Mesh:
   m_ObjectHideFlags: 0
@@ -34588,7 +34523,7 @@ PrefabInstance:
     - target: {fileID: 2719223388021604644, guid: 7deb116327a959248ac25c3cc939cc4c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2719223388021604644, guid: 7deb116327a959248ac25c3cc939cc4c,
         type: 3}
@@ -50557,7 +50492,7 @@ RectTransform:
   - {fileID: 323986187}
   - {fileID: 904061633}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -51618,7 +51553,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2128563922
 GameObject:
