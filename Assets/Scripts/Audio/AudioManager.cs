@@ -10,14 +10,19 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup musicGroup, sfxGroup;
     private string musicVolumeParam = "MusicVolume";
     private string sfxVolumeParam = "SFXVolume";
-    [SerializeField, Min(0)] private float fadeDuration = 0.8f;
+    [SerializeField, Min(0)] private float fadeMusicDuration = 0.8f; // Длительность затухания музыки при переходе сцен
     [SerializeField] private Toggle musicToggle, sfxToggle;
-
     [SerializeField] private AudioLibrary library;
 
     private Dictionary<string, AudioClip> sfxClips = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> musicClips = new Dictionary<string, AudioClip>();
 
+    // Object pooling
+    [SerializeField, Min(1)] private int sfxPoolSize = 10; // Количество объектов sfx в пуле
+    private List<AudioSource> sfxSources;
+    private int currentIndex = 0;
+
+    // Music management
     private AudioSource musicSource;
     private float sfxVolumeBeforeMute;
     private float musicVolumeBeforeMute;
@@ -26,8 +31,28 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        // Создаем словари для оптимизации доступа к звукам и 
-        // возможности безопасно получать значение через TryGetValue()
+        InitializeDictionaries();
+
+        // Создаем источник для музыки
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.outputAudioMixerGroup = musicGroup;
+
+        // Подписка
+        musicToggle.onValueChanged.AddListener(ToggleMusic);
+        sfxToggle.onValueChanged.AddListener(ToggleSFX);
+
+        InitializeSfxPool();
+    }
+
+    private void Start()
+    {
+        GetAudioSettings();
+    }
+
+    // Создаем словари для оптимизации доступа к звукам и 
+    // возможности безопасно получать значение через TryGetValue()
+    private void InitializeDictionaries()
+    {
         foreach (var sound in library.SFX)
         {
             sfxClips.Add(sound.name, sound.clip);
@@ -37,18 +62,24 @@ public class AudioManager : MonoBehaviour
         {
             musicClips.Add(sound.name, sound.clip);
         }
-
-        // Создаем источник для музыки
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.outputAudioMixerGroup = musicGroup;
-
-        musicToggle.onValueChanged.AddListener(ToggleMusic);
-        sfxToggle.onValueChanged.AddListener(ToggleSFX);
     }
 
-    private void Start()
+    private void InitializeSfxPool()
     {
-        GetAudioSettings();
+        sfxSources = new List<AudioSource>(sfxPoolSize);
+
+        for (int i = 0; i < sfxPoolSize; i++)
+        {
+            GameObject obj = new GameObject($"SFX_Source_{i}");
+            obj.transform.SetParent(transform); // Перенести?
+
+            AudioSource source = obj.AddComponent<AudioSource>();
+            source.outputAudioMixerGroup = sfxGroup;
+            source.spatialBlend = 1f; // 3D-звук
+            source.playOnAwake = false;
+
+            sfxSources.Add(source);
+        }
     }
 
     public void PlaySFX(SoundType soundType, Vector3 position = default)
@@ -60,13 +91,20 @@ public class AudioManager : MonoBehaviour
             if (position == default)
                 position = Camera.main.transform.position;
 
-            GameObject sfxGO = new GameObject();
-            sfxGO.transform.position = position;
-            AudioSource sfxSource = sfxGO.AddComponent<AudioSource>();
-            sfxSource.spatialBlend = 1f; // Включаем 3D-звук
-            sfxSource.outputAudioMixerGroup = sfxGroup;
-            sfxSource.PlayOneShot(clip);
-            Destroy(sfxGO, clip.length);
+            // Берём текущий источник
+            AudioSource source = sfxSources[currentIndex];
+
+            // Настраиваем и играем
+            source.transform.position = position;
+            source.clip = clip;
+            source.Play();
+
+            // Переходим к следующему (с зацикливанием)
+            currentIndex = (currentIndex + 1) % sfxSources.Count;
+        }
+        else
+        {
+            Debug.Log($"Имя для audio '{sfxName}' не найдено");
         }
     }
 
@@ -99,9 +137,9 @@ public class AudioManager : MonoBehaviour
         // Переводим из децибел в линейное значение (0-1)
         startVolume = Mathf.Pow(10, startVolume / 20);
 
-        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+        for (float t = 0; t < fadeMusicDuration; t += Time.deltaTime)
         {
-            float newVolume = Mathf.Lerp(startVolume, 0.0001f, t / fadeDuration); // 0.0001f ~ -80dB
+            float newVolume = Mathf.Lerp(startVolume, 0.0001f, t / fadeMusicDuration); // 0.0001f ~ -80dB
             audioMixer.SetFloat(musicVolumeParam, Mathf.Log10(newVolume) * 20);
             yield return null;
         }
@@ -156,13 +194,4 @@ public class AudioManager : MonoBehaviour
         sfxToggle.onValueChanged.RemoveListener(ToggleSFX);
         SetAudioSettings();
     }
-
-    // Класс-обертка для зацилкенных sfx, привязанных к объекту (например звук двигателя)
-    //private class LoopedSFX
-    //{
-    //    public string soundName;
-    //    public AudioSource audioSource;
-    //    public GameObject targetObject;
-    //    public float maxDistance;
-    //}
 }

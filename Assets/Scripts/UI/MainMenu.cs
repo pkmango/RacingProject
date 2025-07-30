@@ -50,7 +50,6 @@ public class MainMenu : MonoBehaviour
 
         FirstLoad(); // Интро отображаем только при первой загрузке
 
-        //AudioManager.Instance.PlayMusic(musicName);
         onPlayMusic?.Invoke(musicName);
     }
 
@@ -76,7 +75,6 @@ public class MainMenu : MonoBehaviour
 
     public void LoadScene(string scene)
     {
-        //AudioManager.Instance.StartCoroutine(AudioManager.Instance.FadeOutAndStopMusic());
         onLoadScene?.Invoke();
         sceneLoader.gameObject.SetActive(true);
         sceneLoader.LoadScene(scene);
@@ -84,7 +82,6 @@ public class MainMenu : MonoBehaviour
 
     public void ShowTargetCanvas(GameObject target, GameObject current)
     {
-        //AudioManager.Instance.PlaySFX(clickSFX);
         onPlaySfx?.Invoke(clickSFX);
         target.SetActive(true);
         current.SetActive(false);
@@ -109,13 +106,11 @@ public class MainMenu : MonoBehaviour
 
     public void Options()
     {
-        //AudioManager.Instance.PlaySFX(clickSFX);
         onPlaySfx?.Invoke(clickSFX);
     }
 
     public void Quit()
     {
-        //AudioManager.Instance.PlaySFX(clickSFX);
         onPlaySfx?.Invoke(clickSFX);
         Application.Quit();
     }
