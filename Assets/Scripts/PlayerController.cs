@@ -276,12 +276,12 @@ public class PlayerController : MonoBehaviour
     {
         if (enabled && isCollision && !isNitrousOn && nitrousReady)
         {
-            //Debug.Log("Nitrous активирован");
             isNitrousOn = true;
             nitrousReady = false;
             pressNitrous?.Invoke();
             currentForwardForce += nitrousForce;
-            nitrousVFX?.Play();
+            if (nitrousVFX != null)
+                nitrousVFX.Play();
             nitrousActionCor = StartCoroutine(NitrousAction());
         }
     }

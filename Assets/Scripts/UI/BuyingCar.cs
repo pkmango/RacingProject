@@ -83,7 +83,8 @@ public class BuyingCar : MonoBehaviour
 
     private void ShowNextCar()
     {
-        currentCar?.gameObject.SetActive(false);
+        if(currentCar != null)
+            currentCar.gameObject.SetActive(false);
 
         currentCar = garageCar.cars[nextIndex];
         currentCar.gameObject.SetActive(true);
