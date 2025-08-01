@@ -909,10 +909,11 @@ MonoBehaviour:
     type: 2}
   sfxGroup: {fileID: -3526116532956834448, guid: ecaf03404a35b3447b3b2f7de6a738c3,
     type: 2}
-  fadeDuration: 0.8
+  fadeMusicDuration: 0.8
   musicToggle: {fileID: 275480416}
   sfxToggle: {fileID: 552078739}
   library: {fileID: 11400000, guid: d9f74e25e4e669641a87275525dea5eb, type: 2}
+  sfxPoolSize: 10
 --- !u!4 &82180085
 Transform:
   m_ObjectHideFlags: 0
@@ -24794,6 +24795,7 @@ MonoBehaviour:
   equipPrice: {fileID: 1614775088}
   buyBtnTxt: {fileID: 1204404319}
   buyBtn: {fileID: 1736192987}
+  clickSFX: 1
   nitrousUpPrice: 10000
   engineUpPrice: 12000
   armorUpPrice: 15000
@@ -24863,6 +24865,20 @@ MonoBehaviour:
       - m_Target: {fileID: 1673215763}
         m_MethodName: SetMoneyUI
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onPlayAudio:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 82180084}
+        m_MethodName: PlaySFXWrapper
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

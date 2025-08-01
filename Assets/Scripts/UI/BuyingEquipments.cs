@@ -10,6 +10,10 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
     private Text equipText, equipPrice, buyBtnTxt;
     [SerializeField]
     private Button buyBtn;
+    [SerializeField]
+    private SoundType clickSFX = SoundType.Click;
+    [SerializeField]
+    private SoundType buySFX = SoundType.Buy;
 
     [Header("Upgrade Prices")]
     [SerializeField, Min(0)]
@@ -35,6 +39,10 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
     private OnClickEvent newUpgradeLvl; // Событие срабатывает покупке нового апгрейда
     [SerializeField]
     private UnityEvent moneyHasChanged; // Событие срабатывает при изменении количества денег
+    [System.Serializable]
+    public class AudioEvent : UnityEvent<SoundType> { }
+    [Tooltip("На это событие нужно подписать метод из AudioManager")]
+    public AudioEvent onPlayAudio;
 
     private void Awake()
     {
@@ -64,6 +72,13 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
     // Метод добавляется через редактор в EquipmentBtn в качестве слушателя на событие клика по иконке эквипмента
     public void ShowEquipDescription(UpgradeType upgradeType, Button selectedBtn)
     {
+        if (currentBtn == selectedBtn && buyBtn.gameObject.activeSelf)
+        {
+            Debug.Log("Повторное нажатие upgrade button");
+            return;
+        }
+
+        onPlayAudio?.Invoke(clickSFX);
         buyBtn.gameObject.SetActive(true);
         equipPrice.gameObject.SetActive(true);
         currentBtn = selectedBtn;
@@ -127,6 +142,7 @@ public class BuyingEquipments : MonoBehaviour, IPointerClickHandler
             playerData.Money -= currentUpPrice;
             moneyHasChanged?.Invoke();
             PurchasePossibilityCheck(currentUpPrice);
+            onPlayAudio?.Invoke(buySFX);
         }
 
         currentBtn.Select();

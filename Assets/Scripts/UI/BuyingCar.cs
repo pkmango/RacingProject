@@ -54,12 +54,11 @@ public class BuyingCar : MonoBehaviour
     {
         if(newColor != currentColor)
         {
-            //AudioManager.Instance.PlaySFX(clickSFX);
-            onPlayAudio?.Invoke(clickSFX);
             currentColor = newColor;
         }
 
         currentCar.GetComponent<Renderer>().material = currentColor;
+        onPlayAudio?.Invoke(clickSFX);
 
         // Проверка условий для покупки и установка режима отображения кнопки "Buy"
         SetBuyButton(!PlayerCarComparison() && playerData.Money >= currentCar.carPrice);

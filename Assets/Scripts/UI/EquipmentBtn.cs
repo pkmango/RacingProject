@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class EquipmentBtn : MonoBehaviour, IPointerClickHandler
 {
-    public UpgradeType upgradeType;
+    [SerializeField]
+    private UpgradeType upgradeType;
     [SerializeField]
     private UpgradeLvlIndicator upgradeLvlIndicator;
+
     private PlayerData playerData;
 
     [System.Serializable]
