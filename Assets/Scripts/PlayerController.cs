@@ -620,14 +620,14 @@ public class PlayerController : MonoBehaviour
         weaponController.numberOfBullets += UpgradeRatio.ammo * ammoLvl;
         weaponController.numberOfMines += UpgradeRatio.mines * minesLvl;
 
-        if (!isAgent)
-        {
-            Debug.Log($"engineLvl = {engineLvl}  forwardForce = {forwardForce}" +
-                $"    nitrousLvl = {nitrousLvl}  nitrousForce = {nitrousForce}" +
-                $"    armorLvl = {armorLvl}  hp = {hp}" +
-                $"    ammoLvl = {ammoLvl}  numberOfBullets = {weaponController.numberOfBullets}" +
-                $"    minesLvl = {minesLvl}  numberOfMines = {weaponController.numberOfMines}");
-        }
+        //if (!isAgent)
+        //{
+        //    Debug.Log($"engineLvl = {engineLvl}  forwardForce = {forwardForce}" +
+        //        $"    nitrousLvl = {nitrousLvl}  nitrousForce = {nitrousForce}" +
+        //        $"    armorLvl = {armorLvl}  hp = {hp}" +
+        //        $"    ammoLvl = {ammoLvl}  numberOfBullets = {weaponController.numberOfBullets}" +
+        //        $"    minesLvl = {minesLvl}  numberOfMines = {weaponController.numberOfMines}");
+        //}
     }
 
     public void Restart()
