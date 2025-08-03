@@ -8,8 +8,8 @@ public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private AudioMixerGroup musicGroup, sfxGroup;
-    private string musicVolumeParam = "MusicVolume";
-    private string sfxVolumeParam = "SFXVolume";
+    private readonly string musicVolumeParam = "MusicVolume";
+    private readonly string sfxVolumeParam = "SFXVolume";
     [SerializeField, Min(0)] private float fadeMusicDuration = 0.8f; // Длительность затухания музыки при переходе сцен
     [SerializeField] private Toggle musicToggle, sfxToggle;
     [SerializeField] private AudioLibrary library;
@@ -22,35 +22,43 @@ public class AudioManager : MonoBehaviour
     private List<AudioSource> sfxSources;
     private int currentIndex = 0;
 
-    // Music management
     private AudioSource musicSource;
     private float sfxVolumeBeforeMute;
     private float musicVolumeBeforeMute;
 
-    private GameSettings gameSettings = new GameSettings();
+    private readonly GameSettings gameSettings = new GameSettings();
 
     private void Awake()
     {
         InitializeDictionaries();
-
-        // Создаем источник для музыки
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.outputAudioMixerGroup = musicGroup;
-
-        // Подписка
-        musicToggle.onValueChanged.AddListener(ToggleMusic);
-        sfxToggle.onValueChanged.AddListener(ToggleSFX);
-
         InitializeSfxPool();
+
+        // Проверяем, первый ли это запуск. Если да, считываем значения по умолчанию из микшера и сохраняем их.
+        if (!gameSettings.HasInitialSettings())
+        {
+            Debug.Log("Первый запуск: сохраняем громкость по умолчанию из микшера.");
+            audioMixer.GetFloat(musicVolumeParam, out float defaultMusicVol);
+            audioMixer.GetFloat(sfxVolumeParam, out float defaultSfxVol);
+
+            gameSettings.MusicVolume = defaultMusicVol;
+            gameSettings.SFXVolume = defaultSfxVol;
+
+            // Сохраняем сразу, чтобы при следующем запуске HasInitialSettings() сработало корректно
+            gameSettings.Save();
+        }
     }
 
     private void Start()
     {
-        GetAudioSettings();
+        LoadAndApplySettings();
+
+        musicToggle.onValueChanged.AddListener(OnMusicToggleChanged);
+        sfxToggle.onValueChanged.AddListener(OnSFXToggleChanged);
     }
 
-    // Создаем словари для оптимизации доступа к звукам и 
-    // возможности безопасно получать значение через TryGetValue()
+    // Создаем словари для оптимизации доступа к звукам и возможности безопасно получать значение через TryGetValue()
     private void InitializeDictionaries()
     {
         foreach (var sound in library.SFX)
@@ -71,7 +79,7 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < sfxPoolSize; i++)
         {
             GameObject obj = new GameObject($"SFX_Source_{i}");
-            obj.transform.SetParent(transform); // Перенести?
+            obj.transform.SetParent(transform);
 
             AudioSource source = obj.AddComponent<AudioSource>();
             source.outputAudioMixerGroup = sfxGroup;
@@ -80,6 +88,26 @@ public class AudioManager : MonoBehaviour
 
             sfxSources.Add(source);
         }
+    }
+
+    // Метод для начальной загрузки и применения настроек
+    private void LoadAndApplySettings()
+    {
+        // Загружаем значения из PlayerPrefs
+        musicVolumeBeforeMute = gameSettings.MusicVolume;
+        sfxVolumeBeforeMute = gameSettings.SFXVolume;
+        bool musicIsOn = gameSettings.MusicOn != 0;
+        bool sfxIsOn = gameSettings.SFXOn != 0;
+
+        // Устанавливаем состояние UI без вызова событий
+        musicToggle.SetIsOnWithoutNotify(musicIsOn);
+        sfxToggle.SetIsOnWithoutNotify(sfxIsOn);
+
+        // Применяем громкость к микшеру
+        audioMixer.SetFloat(musicVolumeParam, musicIsOn ? musicVolumeBeforeMute : -80f);
+        audioMixer.SetFloat(sfxVolumeParam, sfxIsOn ? sfxVolumeBeforeMute : -80f);
+
+        Debug.Log($"Настройки Audio загружены: MusicOn={musicIsOn} (vol:{musicVolumeBeforeMute}dB), SFXOn={sfxIsOn} (vol:{sfxVolumeBeforeMute}dB)");
     }
 
     public void PlaySFX(SoundType soundType, Vector3 position = default)
@@ -153,45 +181,38 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(FadeOutAndStopMusic());
     }
 
-    public void ToggleSFX(bool isOn)
+    public void OnMusicToggleChanged(bool isOn)
     {
-        ToggleAudio(isOn, sfxGroup, sfxVolumeParam, ref sfxVolumeBeforeMute);
+        audioMixer.SetFloat(musicVolumeParam, isOn ? musicVolumeBeforeMute : -80f);
     }
 
-    public void ToggleMusic(bool isOn)
+    public void OnSFXToggleChanged(bool isOn)
     {
-        ToggleAudio(isOn, musicGroup, musicVolumeParam, ref musicVolumeBeforeMute);
+        audioMixer.SetFloat(sfxVolumeParam, isOn ? sfxVolumeBeforeMute : -80f);
     }
 
-    private void ToggleAudio(bool isEnabled, AudioMixerGroup audioMixerGroup, string volumeParam, ref float audioVolumeBeforeMute)
+    // Этот метод понадобится, когда будет добавлен слайдер громкости
+    public void SetMusicVolume(float volume) // volume от 0 до 1 со слайдера
     {
-        if (isEnabled)
-        {
-            audioMixerGroup.audioMixer.SetFloat(volumeParam, audioVolumeBeforeMute);
-        }
-        else
-        {
-            audioMixerGroup.audioMixer.GetFloat(volumeParam, out audioVolumeBeforeMute);
-            audioMixerGroup.audioMixer.SetFloat(volumeParam, -80f);
-        }
-    }
+        // Переводим линейное значение (0-1) в логарифмическое (дБ)
+        float dbVolume = Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20f;
+        musicVolumeBeforeMute = dbVolume; // Сохраняем новое значение "до выключения"
+        gameSettings.MusicVolume = dbVolume; // Сохраняем в настройки
 
-    private void GetAudioSettings()
-    {
-        musicToggle.isOn = gameSettings.MusicOn != 0;
-        sfxToggle.isOn = gameSettings.SFXOn != 0;
-    }
-
-    private void SetAudioSettings()
-    {
-        gameSettings.MusicOn = musicToggle.isOn? 1 : 0;
-        gameSettings.SFXOn = sfxToggle.isOn ? 1 : 0;
+        // Если музыка включена, сразу применяем новую громкость
+        if (musicToggle.isOn)
+            audioMixer.SetFloat(musicVolumeParam, dbVolume);
     }
 
     private void OnDestroy()
     {
-        musicToggle.onValueChanged.RemoveListener(ToggleMusic);
-        sfxToggle.onValueChanged.RemoveListener(ToggleSFX);
-        SetAudioSettings();
+        musicToggle.onValueChanged.RemoveAllListeners();
+        sfxToggle.onValueChanged.RemoveAllListeners();
+
+        // Считываем и сохраняем финальное состояние в PlayerPrefs
+        gameSettings.MusicOn = musicToggle.isOn ? 1 : 0;
+        gameSettings.SFXOn = sfxToggle.isOn ? 1 : 0;
+        gameSettings.Save();
+        Debug.Log("Финальные настройки Audio сохранены в PlayerPrefs.");
     }
 }
