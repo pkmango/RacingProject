@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -43,6 +44,8 @@ public class PlayerController : MonoBehaviour
     public float dragMax = 1.5f;
     private float dragDelta;
     private float penaltyDrag = 0f;
+
+    public Action OnDestroyCallback; // Колбэк для надежной отписки
 
     [HideInInspector] public Rigidbody rb;
     //private float mass;
@@ -667,5 +670,11 @@ public class PlayerController : MonoBehaviour
     {
         controls.Disable();
         weaponController.AutoMode(false);     
+    }
+
+    private void OnDestroy()
+    {
+        // Перед тем, как исчезнуть, мы уведомляем
+        OnDestroyCallback?.Invoke();
     }
 }

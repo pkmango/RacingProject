@@ -7,8 +7,13 @@ public class WeaponController : MonoBehaviour
     public GameObject bullet;
     public Transform bulletSpawnPoint;
     public int numberOfBullets;
+    [SerializeField]
+    private SoundType shotSFX = SoundType.LaserShot;
+    [System.Serializable]
+    public class SFXEvent : UnityEvent<SoundType, Vector3> { }
+    public SFXEvent onPlaySFX;
     private int currentNumberOfBullets;
-    private float bulletSpeedRatio = 0.0125f; // Понижающий коэффициент для передачи влияния скорости авто на скорость пули
+    private readonly float bulletSpeedRatio = 0.0125f; // Понижающий коэффициент для передачи влияния скорости авто на скорость пули
     
     public GameObject mine;
     public Transform mineSpawnPoint;
@@ -60,6 +65,7 @@ public class WeaponController : MonoBehaviour
             ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
             Bullet newBullet = Instantiate(bullet, bulletSpawnPoint.position, transform.rotation).GetComponent<Bullet>();
             newBullet.speed += GetComponent<PlayerController>().Speed * bulletSpeedRatio;
+            onPlaySFX?.Invoke(shotSFX, bulletSpawnPoint.position);
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -12,6 +13,10 @@ public class GameController : MonoBehaviour
 
     public PlayerController player;
     public PlayerData playerData;
+    [System.Serializable]
+    public class PlayerSpawnedEvent : UnityEvent<PlayerController> { }
+    public PlayerSpawnedEvent OnPlayerSpawned; // Событие созднаия нового игрока
+    private bool playerWasAddedInAwake = false; // Флаг для реализации отложенного вызова
     public CameraController mainCamera;
     public string nextLevel = "Level_2";
     public string mainMenuName = "MainMenu";
@@ -57,14 +62,27 @@ public class GameController : MonoBehaviour
     private List<Transform> startPositions; // It's for training
     private List<Transform> dutyPositionsList; // It's for training
 
+    public Action OnControllerDestroyed; // Колбэк для надежной отписки от событий
+
     private void Awake()
     {
-        if(!isTraining)
+        if (!isTraining)
+        {
+            if (OnPlayerSpawned == null)
+                OnPlayerSpawned = new PlayerSpawnedEvent();
+
             AddPlayer();
+        }
     }
 
     void Start()
     {
+        // Проверяем флаг. Если игрок был добавлен, вызываем событие
+        if (playerWasAddedInAwake && player != null)
+        {
+            OnPlayerSpawned.Invoke(player);
+        }
+
         trafficLights.SetActive(false);
         pauseBtn.SetActive(false);
 
@@ -142,6 +160,7 @@ public class GameController : MonoBehaviour
         }
 
         mainCamera.SetPlayer(player.transform);
+        playerWasAddedInAwake = true;
     }
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
@@ -443,5 +462,11 @@ public class GameController : MonoBehaviour
     {
         sceneLoader.gameObject.SetActive(true);
         sceneLoader.LoadScene(nextLevel);
+    }
+
+    private void OnDestroy()
+    {
+        // Уведомляем подписчиков, что объект унчитожается
+        OnControllerDestroyed?.Invoke();
     }
 }
