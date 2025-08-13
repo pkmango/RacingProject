@@ -28,7 +28,7 @@ public class AudioManager : MonoBehaviour
     private float musicVolumeBeforeMute;
 
     private readonly GameSettings gameSettings = new GameSettings();
-    private PlayerController _subscribedPlayer;
+    private PlayerController subscribedPlayer;
 
     private void Awake()
     {
@@ -129,22 +129,22 @@ public class AudioManager : MonoBehaviour
     private void HandlePlayerSpawned(PlayerController newPlayer)
     {
         CleanUpPlayerSubscriptions(); // Если по какой-то причине мы уже подписаны на старый экземпляр
-        _subscribedPlayer = newPlayer;
+        subscribedPlayer = newPlayer;
 
-        _subscribedPlayer.weaponController.onPlaySFX.AddListener(PlaySFX);
+        subscribedPlayer.weaponController.onPlaySFX.AddListener(PlaySFX);
 
         // Регистрируем наш метод очистки, который будет вызван при уничтожении игрока
-        _subscribedPlayer.OnDestroyCallback += CleanUpPlayerSubscriptions;
+        subscribedPlayer.OnDestroyCallback += CleanUpPlayerSubscriptions;
     }
 
     // Отписывается от событий текущего игрока
     private void CleanUpPlayerSubscriptions()
     {
-        if (_subscribedPlayer == null) return;
+        if (subscribedPlayer == null) return;
 
-        _subscribedPlayer.weaponController.onPlaySFX.RemoveListener(PlaySFX);
-        _subscribedPlayer.OnDestroyCallback -= CleanUpPlayerSubscriptions; // Отписываемся и от колбэка
-        _subscribedPlayer = null;
+        subscribedPlayer.weaponController.onPlaySFX.RemoveListener(PlaySFX);
+        subscribedPlayer.OnDestroyCallback -= CleanUpPlayerSubscriptions; // Отписываемся и от колбэка
+        subscribedPlayer = null;
     }
 
     // Отписываемся от событий GameController
