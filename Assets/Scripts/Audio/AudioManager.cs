@@ -13,7 +13,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField, Min(0)] private float fadeMusicDuration = 0.8f; // Длительность затухания музыки при переходе сцен
     [SerializeField] private Toggle musicToggle, sfxToggle;
     [SerializeField] private AudioLibrary library;
-    [SerializeField] private GameController gameController;
+    [SerializeField, Tooltip("Ассет для события из папки Scripts/Events")]
+    private SoundPositionEvent onPlaySoundWithPositionRequest;
+    //[SerializeField] private GameController gameController;
 
     private Dictionary<string, AudioClip> sfxClips = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> musicClips = new Dictionary<string, AudioClip>();
@@ -28,7 +30,7 @@ public class AudioManager : MonoBehaviour
     private float musicVolumeBeforeMute;
 
     private readonly GameSettings gameSettings = new GameSettings();
-    private PlayerController subscribedPlayer;
+    //private PlayerController subscribedPlayer;
 
     private void Awake()
     {
@@ -51,18 +53,19 @@ public class AudioManager : MonoBehaviour
             gameSettings.Save();
         }
 
-        if (gameController != null)
-        {
-            // Подписываемся на глобальное событие спауна игрока.
-            // Это безопасно делать в Awake, так как мы знаем, что событие будет вызвано не раньше Start()
-            gameController.OnPlayerSpawned.AddListener(HandlePlayerSpawned);
-            // Регистрируем колбэк на уничтожение самого GameController
-            gameController.OnControllerDestroyed += CleanUpGameControllerSubscription;
-        }
-        else
-        {
-            Debug.Log("У AudioManager отсутствует ссылка на GameController");
-        }
+        onPlaySoundWithPositionRequest.AddListener(PlaySFX);
+        //if (gameController != null)
+        //{
+        //    // Подписываемся на глобальное событие спауна игрока.
+        //    // Это безопасно делать в Awake, так как мы знаем, что событие будет вызвано не раньше Start()
+        //    gameController.OnPlayerSpawned.AddListener(HandlePlayerSpawned);
+        //    // Регистрируем колбэк на уничтожение самого GameController
+        //    gameController.OnControllerDestroyed += CleanUpGameControllerSubscription;
+        //}
+        //else
+        //{
+        //    Debug.Log("У AudioManager отсутствует ссылка на GameController");
+        //}
         
     }
 
@@ -126,35 +129,35 @@ public class AudioManager : MonoBehaviour
         Debug.Log($"Настройки Audio загружены: MusicOn={musicIsOn} (vol:{musicVolumeBeforeMute}dB), SFXOn={sfxIsOn} (vol:{sfxVolumeBeforeMute}dB)");
     }
 
-    private void HandlePlayerSpawned(PlayerController newPlayer)
-    {
-        CleanUpPlayerSubscriptions(); // Если по какой-то причине мы уже подписаны на старый экземпляр
-        subscribedPlayer = newPlayer;
+    //private void HandlePlayerSpawned(PlayerController newPlayer)
+    //{
+    //    CleanUpPlayerSubscriptions(); // Если по какой-то причине мы уже подписаны на старый экземпляр
+    //    subscribedPlayer = newPlayer;
 
-        subscribedPlayer.weaponController.onPlaySFX.AddListener(PlaySFX);
+    //    subscribedPlayer.weaponController.onPlaySFX.AddListener(PlaySFX);
 
-        // Регистрируем наш метод очистки, который будет вызван при уничтожении игрока
-        subscribedPlayer.OnDestroyCallback += CleanUpPlayerSubscriptions;
-    }
+    //    // Регистрируем наш метод очистки, который будет вызван при уничтожении игрока
+    //    subscribedPlayer.OnDestroyCallback += CleanUpPlayerSubscriptions;
+    //}
 
     // Отписывается от событий текущего игрока
-    private void CleanUpPlayerSubscriptions()
-    {
-        if (subscribedPlayer == null) return;
+    //private void CleanUpPlayerSubscriptions()
+    //{
+    //    if (subscribedPlayer == null) return;
 
-        subscribedPlayer.weaponController.onPlaySFX.RemoveListener(PlaySFX);
-        subscribedPlayer.OnDestroyCallback -= CleanUpPlayerSubscriptions; // Отписываемся и от колбэка
-        subscribedPlayer = null;
-    }
+    //    subscribedPlayer.weaponController.onPlaySFX.RemoveListener(PlaySFX);
+    //    subscribedPlayer.OnDestroyCallback -= CleanUpPlayerSubscriptions; // Отписываемся и от колбэка
+    //    subscribedPlayer = null;
+    //}
 
     // Отписываемся от событий GameController
-    private void CleanUpGameControllerSubscription()
-    {
-        if (gameController == null) return;
+    //private void CleanUpGameControllerSubscription()
+    //{
+    //    if (gameController == null) return;
 
-        gameController.OnPlayerSpawned.RemoveListener(HandlePlayerSpawned);
-        gameController.OnControllerDestroyed -= CleanUpGameControllerSubscription;
-    }
+    //    gameController.OnPlayerSpawned.RemoveListener(HandlePlayerSpawned);
+    //    gameController.OnControllerDestroyed -= CleanUpGameControllerSubscription;
+    //}
 
     public void PlaySFX(SoundType soundType, Vector3 position = default)
     {
@@ -262,7 +265,9 @@ public class AudioManager : MonoBehaviour
         Debug.Log("Финальные настройки Audio сохранены в PlayerPrefs.");
 
         // Вызываем оба метода очистки на случай, если AudioManager уничтожается раньше, чем GameController или Player
-        CleanUpGameControllerSubscription();
-        CleanUpPlayerSubscriptions();
+        //CleanUpGameControllerSubscription();
+        //CleanUpPlayerSubscriptions();
+
+        onPlaySoundWithPositionRequest.RemoveListener(PlaySFX);
     }
 }
