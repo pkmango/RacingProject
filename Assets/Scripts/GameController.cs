@@ -13,10 +13,6 @@ public class GameController : MonoBehaviour
 
     public PlayerController player;
     public PlayerData playerData;
-    //[System.Serializable]
-    //public class PlayerSpawnedEvent : UnityEvent<PlayerController> { }
-    //public PlayerSpawnedEvent OnPlayerSpawned; // Событие созднаия нового игрока
-    //private bool playerWasAddedInAwake = false; // Флаг для реализации отложенного вызова
     public CameraController mainCamera;
     public string nextLevel = "Level_2";
     public string mainMenuName = "MainMenu";
@@ -62,27 +58,16 @@ public class GameController : MonoBehaviour
     private List<Transform> startPositions; // It's for training
     private List<Transform> dutyPositionsList; // It's for training
 
-    //public Action OnControllerDestroyed; // Колбэк для надежной отписки от событий
-
     private void Awake()
     {
         if (!isTraining)
         {
-            //if (OnPlayerSpawned == null)
-            //    OnPlayerSpawned = new PlayerSpawnedEvent();
-
             AddPlayer();
         }
     }
 
     void Start()
     {
-        // Проверяем флаг. Если игрок был добавлен, вызываем событие
-        //if (playerWasAddedInAwake && player != null)
-        //{
-        //    OnPlayerSpawned.Invoke(player);
-        //}
-
         trafficLights.SetActive(false);
         pauseBtn.SetActive(false);
 
@@ -148,10 +133,11 @@ public class GameController : MonoBehaviour
             playerObj.GetComponent<Renderer>().material = playerData.GetCarMaterial(); // Цвет машины
             player = playerObj.GetComponent<PlayerController>();
             player.agentCheckPoints = agentCheckPoints;
+            player.playerName = playerData.Name;
             player.lapIsOver.AddListener(OnLapIsOver);
             player.pressNitrous.AddListener(NitroButtonDeactivation);
             player.weaponController.ammoIsChanged.AddListener(SetUIAmmoValue);
-            player.playerName = playerData.Name;
+            // Нет отписки: Unity уничтожит PlayerController и GameController вместе, при смене сцены, утечки невозможны
         }
         else
         {
@@ -160,7 +146,6 @@ public class GameController : MonoBehaviour
         }
 
         mainCamera.SetPlayer(player.transform);
-        //playerWasAddedInAwake = true;
     }
 
     // Корутина для периодического отображения времени круга, скорости, текущей позиции
@@ -467,6 +452,6 @@ public class GameController : MonoBehaviour
     private void OnDestroy()
     {
         // Уведомляем подписчиков, что объект унчитожается
-        //OnControllerDestroyed?.Invoke();
+        //
     }
 }
