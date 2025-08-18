@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private Toggle musicToggle, sfxToggle;
     [SerializeField] private AudioLibrary library;
     [SerializeField, Tooltip("Ассет для события из папки Scripts/Events")]
-    private SoundPositionEvent onPlaySoundWithPositionRequest;
+    private SoundEvent onPlaySoundRequest;
 
     private Dictionary<string, AudioClip> sfxClips = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> musicClips = new Dictionary<string, AudioClip>();
@@ -52,8 +52,8 @@ public class AudioManager : MonoBehaviour
             gameSettings.Save();
         }
 
-        if(onPlaySoundWithPositionRequest != null)
-            onPlaySoundWithPositionRequest.AddListener(PlaySFX);
+        if(onPlaySoundRequest != null)
+            onPlaySoundRequest.AddListener(PlaySFX);
     }
 
     private void Start()
@@ -89,7 +89,6 @@ public class AudioManager : MonoBehaviour
 
             AudioSource source = obj.AddComponent<AudioSource>();
             source.outputAudioMixerGroup = sfxGroup;
-            source.spatialBlend = 1f; // 3D-звук
             source.rolloffMode = AudioRolloffMode.Linear;
             source.maxDistance = sfxVolumeMaxDistance;
             source.playOnAwake = false;
@@ -118,7 +117,7 @@ public class AudioManager : MonoBehaviour
         Debug.Log($"Настройки Audio загружены: MusicOn={musicIsOn} (vol:{musicVolumeBeforeMute}dB), SFXOn={sfxIsOn} (vol:{sfxVolumeBeforeMute}dB)");
     }
 
-    public void PlaySFX(SoundType soundType, Vector3 position = default)
+    public void PlaySFX(SoundType soundType, Vector3 position = default, float spatialBlend = 0f)
     {
         string sfxName = soundType.ToString();
 
@@ -133,6 +132,7 @@ public class AudioManager : MonoBehaviour
             // Настраиваем и играем
             source.transform.position = position;
             source.clip = clip;
+            source.spatialBlend = Mathf.Clamp01(spatialBlend);
             source.Play();
 
             // Переходим к следующему (с зацикливанием)
@@ -223,7 +223,7 @@ public class AudioManager : MonoBehaviour
         gameSettings.Save();
         Debug.Log("Финальные настройки Audio сохранены в PlayerPrefs.");
 
-        if(onPlaySoundWithPositionRequest != null)
-            onPlaySoundWithPositionRequest.RemoveListener(PlaySFX);
+        if(onPlaySoundRequest != null)
+            onPlaySoundRequest.RemoveListener(PlaySFX);
     }
 }

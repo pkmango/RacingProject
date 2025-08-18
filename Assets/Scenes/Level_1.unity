@@ -35395,12 +35395,12 @@ MonoBehaviour:
     type: 2}
   sfxGroup: {fileID: -3526116532956834448, guid: ecaf03404a35b3447b3b2f7de6a738c3,
     type: 2}
+  sfxVolumeMaxDistance: 250
   fadeMusicDuration: 0.8
   musicToggle: {fileID: 541885213}
   sfxToggle: {fileID: 1072690808}
   library: {fileID: 11400000, guid: d9f74e25e4e669641a87275525dea5eb, type: 2}
-  onPlaySoundWithPositionRequest: {fileID: 11400000, guid: ceec91a30b32a55458f3d83a51291b83,
-    type: 2}
+  onPlaySoundRequest: {fileID: 11400000, guid: e73e5d83e3076e242adf19887139fc36, type: 2}
   sfxPoolSize: 10
 --- !u!4 &2088652912
 Transform:

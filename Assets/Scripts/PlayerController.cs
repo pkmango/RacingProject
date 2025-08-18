@@ -48,8 +48,6 @@ public class PlayerController : MonoBehaviour
     public Action OnDestroyCallback; // Колбэк для надежной отписки
 
     [HideInInspector] public Rigidbody rb;
-    //private float mass;
-    //public IEnumerator changeMassCor;
     [HideInInspector] public bool isCollision = true;
     [HideInInspector] public Vector3 spawnPosition;
     [HideInInspector] public Quaternion spawnRotation;
@@ -75,6 +73,11 @@ public class PlayerController : MonoBehaviour
 
     private const string HotZoneTag = "HotZone"; // Для зоны с при въезде в которую происходит мгновенное уничтожение
     private bool isHotZoneTouch = false;
+
+    [Header("Audio")]
+    [SerializeField, Tooltip("Ассет для события из папки Scripts/Events")]
+    private SoundEvent onPlaySoundRequest;
+    [SerializeField] private SoundType explosionSFX = SoundType.Explosion;
 
     [Header("Upgrade Levels for Agents")]
     [SerializeField, Range(0, 3)]
@@ -306,7 +309,11 @@ public class PlayerController : MonoBehaviour
     public void Respawn()
     {
         if (explosion != null)
+        {
             Instantiate(explosion, transform.position, Quaternion.identity);
+            if (onPlaySoundRequest != null)
+                onPlaySoundRequest.Raise(explosionSFX, transform.position, 1.0f);
+        }
         
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;

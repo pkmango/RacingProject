@@ -9,11 +9,10 @@ public class WeaponController : MonoBehaviour
     public int numberOfBullets;
     [SerializeField, Tooltip("Выбрать из выпадающего списка навазние для звука выстрела")]
     private SoundType shotSFX = SoundType.LaserShot;
+    [SerializeField, Tooltip("Выбрать из выпадающего списка навазние для звука установки мины")]
+    private SoundType mineSFX = SoundType.Mine;
     [SerializeField, Tooltip("Ассет для события из папки Scripts/Events")]
-    private SoundPositionEvent onPlaySoundWithPositionRequest; 
-    //[System.Serializable]
-    //public class SFXEvent : UnityEvent<SoundType, Vector3> { }
-    //public SFXEvent onPlaySFX;
+    private SoundEvent onPlaySoundRequest; 
     private int currentNumberOfBullets;
     private readonly float bulletSpeedRatio = 0.0125f; // Понижающий коэффициент для передачи влияния скорости авто на скорость пули
     
@@ -67,8 +66,8 @@ public class WeaponController : MonoBehaviour
             ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
             Bullet newBullet = Instantiate(bullet, bulletSpawnPoint.position, transform.rotation).GetComponent<Bullet>();
             newBullet.speed += GetComponent<PlayerController>().Speed * bulletSpeedRatio;
-            if (onPlaySoundWithPositionRequest != null)
-                onPlaySoundWithPositionRequest.Raise(shotSFX, bulletSpawnPoint.position);
+            if (onPlaySoundRequest != null)
+                onPlaySoundRequest.Raise(shotSFX, bulletSpawnPoint.position, 1.0f);
         }
     }
 
@@ -94,6 +93,8 @@ public class WeaponController : MonoBehaviour
                 currentNumberOfMines--;
                 ammoIsChanged?.Invoke(currentNumberOfBullets, currentNumberOfMines);
                 Instantiate(mine, mineSpawnPoint.position, transform.rotation);
+                if (onPlaySoundRequest != null)
+                    onPlaySoundRequest.Raise(mineSFX, mineSpawnPoint.position, 1.0f);
             }
         }
     }

@@ -242,6 +242,8 @@ MonoBehaviour:
   isSpinOut: 0
   flipCheckDelay: 12
   forbiddenAreaDelay: 2
+  onPlaySoundRequest: {fileID: 11400000, guid: e73e5d83e3076e242adf19887139fc36, type: 2}
+  explosionSFX: 2
   nitrousLvl: 0
   engineLvl: 0
   armorLvl: 0
@@ -300,8 +302,8 @@ MonoBehaviour:
   bulletSpawnPoint: {fileID: 6279102483087949472}
   numberOfBullets: 3
   shotSFX: 3
-  onPlaySoundWithPositionRequest: {fileID: 11400000, guid: ceec91a30b32a55458f3d83a51291b83,
-    type: 2}
+  mineSFX: 5
+  onPlaySoundRequest: {fileID: 11400000, guid: e73e5d83e3076e242adf19887139fc36, type: 2}
   mine: {fileID: 194253707870813631, guid: 37c2587cdb8a157458065007536fada8, type: 3}
   mineSpawnPoint: {fileID: 7490190973237288038}
   numberOfMines: 3
