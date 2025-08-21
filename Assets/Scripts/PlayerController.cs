@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("Ассет для события из папки Scripts/Events")]
     private SoundEvent onPlaySoundRequest;
     [SerializeField] private SoundType explosionSFX = SoundType.Explosion;
+    [SerializeField] private SoundType nitrousSFX = SoundType.Nitrous1;
 
     [Header("Upgrade Levels for Agents")]
     [SerializeField, Range(0, 3)]
@@ -286,6 +287,8 @@ public class PlayerController : MonoBehaviour
             nitrousReady = false;
             pressNitrous?.Invoke();
             currentForwardForce += nitrousForce;
+            if (onPlaySoundRequest != null)
+                onPlaySoundRequest.Raise(nitrousSFX, transform.position, 1.0f);
             if (nitrousVFX != null)
                 nitrousVFX.Play();
             nitrousActionCor = StartCoroutine(NitrousAction());
@@ -303,7 +306,8 @@ public class PlayerController : MonoBehaviour
     {
         currentForwardForce = forwardForce;
         isNitrousOn = false;
-        nitrousVFX?.Stop();
+        if (nitrousVFX != null)
+            nitrousVFX.Stop();
     }
 
     public void Respawn()

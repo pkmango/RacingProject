@@ -8,5 +8,7 @@ public enum SoundType
     LevelUp,
     Mine,
     TrafficLigts1,
-    Buy
+    Buy,
+    TrafficLigts2,
+    Nitrous1
 }
