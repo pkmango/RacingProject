@@ -480,20 +480,20 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        int numberOfContacts = 0;
+        int wheelContacts = 0;
 
         for (int i = 0; i < collision.contactCount; i++)
         {
-            if (collision.GetContact(0).thisCollider.tag == wheelTag)
+            if (collision.GetContact(i).thisCollider.CompareTag(wheelTag))
             {
-                numberOfContacts++;
-
-                if (numberOfContacts > 1)
-                {
-                    isCollision = true;
-                    weaponController.groundCollision = true;
-                }
+                wheelContacts++;
             }
+        }
+
+        if (wheelContacts > 1)
+        {
+            isCollision = true;
+            weaponController.groundCollision = true;
         }
     }
 
