@@ -79,6 +79,14 @@ public class PlayerController : MonoBehaviour
     private SoundEvent onPlaySoundRequest;
     [SerializeField] private SoundType explosionSFX = SoundType.Explosion;
     [SerializeField] private SoundType nitrousSFX = SoundType.Nitrous1;
+    [SerializeField] private SoundType impactSFX = SoundType.Impact1;
+    private float minImpactSpeedWall = 10.0f; // Минимальная скорость для звука удара о стену
+    private float minImpactSpeedAgent = 6.0f; // Минимальная скорость для звука удара о другого агента
+    [Tooltip("Кулдаун в секундах, чтобы звук не спамил при одном столкновении")]
+    private float collisionCooldown = 0.33f;
+    // Словарь для хранения времени последнего удара для каждого коллайдера
+    // Ключ: Collider, с которым столкнулись. Значение: Время (Time.time), когда произошел последний сильный удар
+    private Dictionary<Collider, float> lastCollisionTimes = new Dictionary<Collider, float>();
 
     [Header("Upgrade Levels for Agents")]
     [SerializeField, Range(0, 3)]
@@ -497,6 +505,51 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Collider otherCollider = collision.collider;
+        float requiredMinSpeed; // Локальная переменная для нужного порога скорости
+
+        // Определяем тег и выбираем нужный порог скорости
+        if (otherCollider.CompareTag("Wall"))
+        {
+            requiredMinSpeed = minImpactSpeedWall;
+        }
+        else if (otherCollider.CompareTag("Agent"))
+        {
+            requiredMinSpeed = minImpactSpeedAgent;
+        }
+        else
+        {
+            return; // Если это не стена и не агент, то выходим
+        }
+
+        // Проверка скорости с использованием выбранного порога
+        float impactSpeed = collision.relativeVelocity.magnitude;
+
+        if (impactSpeed < requiredMinSpeed)
+        {
+            return; // Скорость слишком маленькая для этого типа объекта, игнорируем
+        }
+
+        // Проверка кулдауна
+        if (lastCollisionTimes.TryGetValue(otherCollider, out float lastHitTime))
+        {
+            if (Time.time - lastHitTime < collisionCooldown)
+            {
+                return;
+            }
+        }
+
+        // Публикуем событие
+        Debug.Log($"Звук удара! Столкновение с '{otherCollider.name}' (тег: {otherCollider.tag}) на скорости {impactSpeed:F2}");
+        onPlaySoundRequest.Raise(impactSFX, transform.position, 1.0f);
+
+
+        // Обновляем (или добавляем) время последнего удара для этого коллайдера
+        lastCollisionTimes[otherCollider] = Time.time;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("AgentCheckPoint") && other.transform == agentCheckPoints[currentCheckPointInd])
@@ -543,6 +596,11 @@ public class PlayerController : MonoBehaviour
             isHotZoneTouch = true;
             StartCoroutine(HotZoneTouch());
         }
+
+        //if (other.CompareTag("Agent") || other.CompareTag("Wall"))
+        //{
+        //    Debug.Log("Boom!");
+        //}
     }
 
     IEnumerator HotZoneTouch()

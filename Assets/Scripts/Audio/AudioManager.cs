@@ -10,7 +10,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup musicGroup, sfxGroup;
     private readonly string musicVolumeParam = "MusicVolume";
     private readonly string sfxVolumeParam = "SFXVolume";
-    [SerializeField] private float sfxVolumeMaxDistance = 250f;
+    private float sfxVolumeMaxDistance = 180f;
     [SerializeField, Min(0)] private float fadeMusicDuration = 0.8f; // Длительность затухания музыки при переходе сцен
     [SerializeField] private Toggle musicToggle, sfxToggle;
     [SerializeField] private AudioLibrary library;
