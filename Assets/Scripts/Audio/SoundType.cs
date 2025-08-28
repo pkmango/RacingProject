@@ -12,5 +12,6 @@ public enum SoundType
     TrafficLigts2,
     Nitrous1,
     Impact1,
-    tireScreech1
+    TireScreech1,
+    Hit
 }
