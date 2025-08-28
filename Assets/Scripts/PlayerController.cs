@@ -295,10 +295,17 @@ public class PlayerController : MonoBehaviour
             nitrousReady = false;
             pressNitrous?.Invoke();
             currentForwardForce += nitrousForce;
+
             if (onPlaySoundRequest != null)
                 onPlaySoundRequest.Raise(nitrousSFX, transform.position, 1.0f);
             if (nitrousVFX != null)
                 nitrousVFX.Play();
+
+            if (nitrousActionCor != null)
+            {
+                StopCoroutine(nitrousActionCor);
+            }
+
             nitrousActionCor = StartCoroutine(NitrousAction());
         }
     }
@@ -312,10 +319,24 @@ public class PlayerController : MonoBehaviour
 
     private void NitrousStop()
     {
+        // Если нитро и так выключено, ничего не делаем
+        if (!isNitrousOn)
+        {
+            return;
+        }
+
         currentForwardForce = forwardForce;
         isNitrousOn = false;
+
         if (nitrousVFX != null)
             nitrousVFX.Stop();
+
+        if (nitrousActionCor != null)
+        {
+            StopCoroutine(nitrousActionCor);
+        }
+
+        nitrousActionCor = null;
     }
 
     public void Respawn()
@@ -329,13 +350,9 @@ public class PlayerController : MonoBehaviour
         
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        
+
         // Если включено нитро, то отключаем
-        if (nitrousActionCor != null)
-        {
-            StopCoroutine(nitrousActionCor);
-            NitrousStop();
-        }
+        NitrousStop();
 
         // Ищем предыдущий чекпоинт
         Vector3 previousAgentCheckPoint;
@@ -542,7 +559,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Публикуем событие
-        Debug.Log($"Звук удара! Столкновение с '{otherCollider.name}' (тег: {otherCollider.tag}) на скорости {impactSpeed:F2}");
+        //Debug.Log($"Звук удара! Столкновение с '{otherCollider.name}' (тег: {otherCollider.tag}) на скорости {impactSpeed:F2}");
         onPlaySoundRequest.Raise(impactSFX, transform.position, 1.0f);
 
 
@@ -715,6 +732,7 @@ public class PlayerController : MonoBehaviour
         healthBar.ChangeHP(hp, currentHp);
         hpIsChanged?.Invoke(hp, currentHp);
         weaponController.AmmoReload();
+        nitrousReady = true;
     }
 
     private void ResetCoroutines()
@@ -738,7 +756,8 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         controls.Disable();
-        weaponController.AutoMode(false);     
+        weaponController.AutoMode(false);
+        NitrousStop();
     }
 
     private void OnDestroy()
