@@ -80,6 +80,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SoundType explosionSFX = SoundType.Explosion;
     [SerializeField] private SoundType nitrousSFX = SoundType.Nitrous1;
     [SerializeField] private SoundType impactSFX = SoundType.Impact1;
+    [SerializeField] private SoundType hitSFX = SoundType.Hit;
     private float minImpactSpeedWall = 10.0f; // Минимальная скорость для звука удара о стену
     private float minImpactSpeedAgent = 6.0f; // Минимальная скорость для звука удара о другого агента
     [Tooltip("Кулдаун в секундах, чтобы звук не спамил при одном столкновении")]
@@ -407,6 +408,8 @@ public class PlayerController : MonoBehaviour
     public void HitHandler(int damage = 1)
     {
         currentHp -= damage;
+        if (onPlaySoundRequest != null)
+            onPlaySoundRequest.Raise(hitSFX, transform.position, 1.0f);
 
         if (currentHp > 0)
         {
@@ -559,9 +562,8 @@ public class PlayerController : MonoBehaviour
         }
 
         // Публикуем событие
-        //Debug.Log($"Звук удара! Столкновение с '{otherCollider.name}' (тег: {otherCollider.tag}) на скорости {impactSpeed:F2}");
-        onPlaySoundRequest.Raise(impactSFX, transform.position, 1.0f);
-
+        if(onPlaySoundRequest != null)
+            onPlaySoundRequest.Raise(impactSFX, transform.position, 1.0f);
 
         // Обновляем (или добавляем) время последнего удара для этого коллайдера
         lastCollisionTimes[otherCollider] = Time.time;
