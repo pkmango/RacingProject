@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SoundType nitrousSFX = SoundType.Nitrous1;
     [SerializeField] private SoundType impactSFX = SoundType.Impact1;
     [SerializeField] private SoundType hitSFX = SoundType.Hit;
+    [SerializeField] private SoundType tireSreech = SoundType.TireScreech1;
     private float minImpactSpeedWall = 10.0f; // Минимальная скорость для звука удара о стену
     private float minImpactSpeedAgent = 6.0f; // Минимальная скорость для звука удара о другого агента
     [Tooltip("Кулдаун в секундах, чтобы звук не спамил при одном столкновении")]
@@ -273,10 +274,10 @@ public class PlayerController : MonoBehaviour
 
     private void CheckButtons()
     {
-        rightBtnOn = controls.Player.Right.ReadValue<float>() > 0 ? true : false;
-        leftBtnOn = controls.Player.Left.ReadValue<float>() > 0 ? true : false;
-        gasOn = controls.Player.Gas.ReadValue<float>() > 0 ? true : false;
-        reverseOn = controls.Player.Reverse.ReadValue<float>() > 0 ? true : false;
+        rightBtnOn = controls.Player.Right.ReadValue<float>() > 0;
+        leftBtnOn = controls.Player.Left.ReadValue<float>() > 0;
+        gasOn = controls.Player.Gas.ReadValue<float>() > 0;
+        reverseOn = controls.Player.Reverse.ReadValue<float>() > 0;
     }
 
     public void Jump()
