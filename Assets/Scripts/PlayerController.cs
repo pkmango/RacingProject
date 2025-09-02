@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SoundType nitrousSFX = SoundType.Nitrous1;
     [SerializeField] private SoundType impactSFX = SoundType.Impact1;
     [SerializeField] private SoundType hitSFX = SoundType.Hit;
-    [SerializeField] private SoundType tireSreech = SoundType.TireScreech1;
+    [SerializeField] private SoundType tireSreechSFX = SoundType.TireScreech1;
     private float minImpactSpeedWall = 10.0f; // Минимальная скорость для звука удара о стену
     private float minImpactSpeedAgent = 6.0f; // Минимальная скорость для звука удара о другого агента
     [Tooltip("Кулдаун в секундах, чтобы звук не спамил при одном столкновении")]
@@ -426,6 +426,7 @@ public class PlayerController : MonoBehaviour
     private void PlayerRotation(float _rotationSpeed)
     {
         Vector3 newRotationAngle = rb.rotation.eulerAngles;
+        float speed = rb.velocity.magnitude;
 
         if (gasOn)
         {
@@ -435,9 +436,9 @@ public class PlayerController : MonoBehaviour
         {
             newRotationAngle -= new Vector3(0f, _rotationSpeed, 0f);
         }
-        else if (rb.velocity.magnitude != 0f)
+        else if (speed != 0f)
         {
-            float speedPercent = rb.velocity.magnitude / (maxSpeed * 0.01f) / 100f;
+            float speedPercent = speed / maxSpeed;
 
             if (moveForward)
                 newRotationAngle += new Vector3(0f, _rotationSpeed * speedPercent, 0f);
@@ -484,6 +485,11 @@ public class PlayerController : MonoBehaviour
             }
         }
         return velocityAngle;
+    }
+
+    private void PlayScreechingTiresSFX()
+    {
+
     }
 
     private void FlyBehavior()
