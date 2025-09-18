@@ -90,6 +90,13 @@ public class PlayerController : MonoBehaviour
     // Ключ: Collider, с которым столкнулись. Значение: Время (Time.time), когда произошел последний сильный удар
     private Dictionary<Collider, float> lastCollisionTimes = new Dictionary<Collider, float>();
 
+    // Угол в градусах между направлением машины и вектором скорости, при превышении которого включается звук заноса
+    private float minSkidAngle = 35.0f; 
+    // Минимальная скорость (м/с), при которой может возникнуть звук заноса
+    private float minSkidSpeed = 20.0f;
+    private float tireScreechCooldown = 1.3f; // "Задержка в секундах между повторными проигрываниями звука заноса
+    private float lastTireScreechTime; // Переменная для отслеживания времени последнего проигрывания звука
+
     [Header("Upgrade Levels for Agents")]
     [SerializeField, Range(0, 3)]
     private int nitrousLvl = 0;
@@ -144,6 +151,8 @@ public class PlayerController : MonoBehaviour
         else
             Debug.Log(name + ": Healthbar not found");
 
+        // Устанавливаем таймер в прошлое, чтобы звук мог проиграться при первом же заносе
+        lastTireScreechTime = -tireScreechCooldown;
     }
 
     private void Start()
@@ -247,6 +256,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        // Обработка звука заноса шин
+        HandleTireScreechSound();
     }
 
     // Метод возрвращает смещение относительно центра при респауне,
@@ -487,9 +499,49 @@ public class PlayerController : MonoBehaviour
         return velocityAngle;
     }
 
-    private void PlayScreechingTiresSFX()
+    // Проверяет условия заноса и при необходимости воспроизводит звук скрежета шин
+    private void HandleTireScreechSound()
     {
+        // Проверяем, достаточно ли быстро движется машина
+        if (Speed < minSkidSpeed)
+        {
+            return; // Если скорость слишком мала, ничего не делаем
+        }
 
+        // Определяем, движется ли машина вперед или назад с помощью скалярного произведения
+        // Dot > 0, если едем вперед и Dot < 0, если едем назад
+        float directionDot = Vector3.Dot(transform.right, rb.velocity.normalized);
+        bool isReversing = directionDot < 0f;
+
+        // Определяем "целевой" угол, с которым будем сравнивать. По умолчанию это направление переда машины
+        float targetAngle = rb.rotation.eulerAngles.y;
+
+        // Если машина едет назад, мы добавляем 180 градусов к углу направления переда
+        if (isReversing)
+        {
+            // Mathf.Repeat гарантирует, что угол останется в пределах 0-360
+            targetAngle = Mathf.Repeat(targetAngle + 180f, 360f);
+        }
+
+        // Вычисляем угол заноса
+        float skidAngle = Mathf.Abs(Mathf.DeltaAngle(targetAngle, VelocityAngle()));
+
+        // Проверяем, превышает ли угол заноса порог и прошел ли кулдаун
+        bool isSkidding = skidAngle > minSkidAngle;
+        bool canPlaySound = Time.time >= lastTireScreechTime + tireScreechCooldown;
+
+        if (isSkidding && canPlaySound)
+        {
+            // Проверяем, назначено ли событие, чтобы избежать ошибок
+            if (onPlaySoundRequest != null)
+            {
+                // Вызываем событие для проигрывания звука.
+                onPlaySoundRequest.Raise(tireSreechSFX, transform.position, 1.0f);
+
+                // Обновляем таймер, чтобы избежать спама звуком.
+                lastTireScreechTime = Time.time;
+            }
+        }
     }
 
     private void FlyBehavior()
