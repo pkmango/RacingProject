@@ -91,11 +91,13 @@ public class PlayerController : MonoBehaviour
     private Dictionary<Collider, float> lastCollisionTimes = new Dictionary<Collider, float>();
 
     // Угол в градусах между направлением машины и вектором скорости, при превышении которого включается звук заноса
-    private float minSkidAngle = 35.0f; 
+    private float minSkidAngle = 36.0f; 
     // Минимальная скорость (м/с), при которой может возникнуть звук заноса
-    private float minSkidSpeed = 20.0f;
-    private float tireScreechCooldown = 1.3f; // "Задержка в секундах между повторными проигрываниями звука заноса
+    private float minSkidSpeed = 22.0f;
+    private float tireScreechCooldown = 1.4f; // "Задержка в секундах между повторными проигрываниями звука заноса
     private float lastTireScreechTime; // Переменная для отслеживания времени последнего проигрывания звука
+    private float skidActivationTime = 0.15f; // Время в секундах, которое машина должна непрерывно скользить, прежде чем включится звук заноса
+    private float _currentSkidDuration = 0f; // Таймер для отслеживания текущей длительности заноса
 
     [Header("Upgrade Levels for Agents")]
     [SerializeField, Range(0, 3)]
@@ -505,7 +507,9 @@ public class PlayerController : MonoBehaviour
         // Проверяем, достаточно ли быстро движется машина
         if (Speed < minSkidSpeed)
         {
-            return; // Если скорость слишком мала, ничего не делаем
+            // Если скорость упала, сбрасываем таймер заноса
+            _currentSkidDuration = 0f;
+            return;
         }
 
         // Определяем, движется ли машина вперед или назад с помощью скалярного произведения
@@ -513,7 +517,7 @@ public class PlayerController : MonoBehaviour
         float directionDot = Vector3.Dot(transform.right, rb.velocity.normalized);
         bool isReversing = directionDot < 0f;
 
-        // Определяем "целевой" угол, с которым будем сравнивать. По умолчанию это направление переда машины
+        // Определяем целевой угол, с которым будем сравнивать
         float targetAngle = rb.rotation.eulerAngles.y;
 
         // Если машина едет назад, мы добавляем 180 градусов к углу направления переда
@@ -526,20 +530,28 @@ public class PlayerController : MonoBehaviour
         // Вычисляем угол заноса
         float skidAngle = Mathf.Abs(Mathf.DeltaAngle(targetAngle, VelocityAngle()));
 
-        // Проверяем, превышает ли угол заноса порог и прошел ли кулдаун
-        bool isSkidding = skidAngle > minSkidAngle;
+        // Накопление времени заноса
+        if (skidAngle > minSkidAngle)
+        {
+            // Если мы в заносе, увеличиваем таймер
+            _currentSkidDuration += Time.fixedDeltaTime;
+        }
+        else
+        {
+            // Если занос прекратился, сбрасываем таймер
+            _currentSkidDuration = 0f;
+        }
+
+        // Проверяем все условия для проигрывания звука
+        bool hasSkidPersisted = _currentSkidDuration > skidActivationTime;
         bool canPlaySound = Time.time >= lastTireScreechTime + tireScreechCooldown;
 
-        if (isSkidding && canPlaySound)
+        if (hasSkidPersisted && canPlaySound)
         {
-            // Проверяем, назначено ли событие, чтобы избежать ошибок
             if (onPlaySoundRequest != null)
             {
-                // Вызываем событие для проигрывания звука.
                 onPlaySoundRequest.Raise(tireSreechSFX, transform.position, 1.0f);
-
-                // Обновляем таймер, чтобы избежать спама звуком.
-                lastTireScreechTime = Time.time;
+                lastTireScreechTime = Time.time; // Обновляем таймер
             }
         }
     }
